@@ -3,10 +3,10 @@ package captcha
 import (
 	"bytes"
 
-	captcha "github.com/dchest/captcha"
-	uuid "github.com/go-basic/uuid"
-	fiber "github.com/gofiber/fiber/v2"
-	session "github.com/quarkcms/quark-go/pkg/session"
+	"github.com/dchest/captcha"
+	"github.com/go-basic/uuid"
+	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/session"
 )
 
 // 创建session验证码
