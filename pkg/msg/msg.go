@@ -15,7 +15,7 @@ func Init(c *fiber.Ctx) {
 	ctx = c
 }
 
-// 生成随机字符串
+// 返回错误信息
 func Error(msg string, url string) error {
 	return ctx.JSON(fiber.Map{
 		"status": "error",
@@ -24,7 +24,7 @@ func Error(msg string, url string) error {
 	})
 }
 
-// 生成字母类型字符串
+// 返回正确信息
 func Success(msg string, url string, data interface{}) error {
 	return ctx.JSON(fiber.Map{
 		"status": "success",

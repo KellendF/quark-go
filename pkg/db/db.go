@@ -20,14 +20,16 @@ func init() {
 	database := config.Get("database.mysql.database")
 	charset := config.Get("database.mysql.charset")
 
-	dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + database + "?charset=" + charset + "&parseTime=True&loc=Local"
-	conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if username != "" && host != "" && port != "" && database != "" && charset != "" {
+		dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + database + "?charset=" + charset + "&parseTime=True&loc=Local"
+		conn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	if err != nil {
-		fmt.Println(err)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		SqlConn = conn
 	}
-
-	SqlConn = conn
 }
 
 // 数据库链接句柄
