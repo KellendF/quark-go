@@ -6,7 +6,7 @@ import (
 	captcha "github.com/dchest/captcha"
 	uuid "github.com/go-basic/uuid"
 	fiber "github.com/gofiber/fiber/v2"
-	sessions "github.com/quarkcms/quark-go/pkg/sessions"
+	session "github.com/quarkcms/quark-go/pkg/session"
 )
 
 // 创建session验证码
@@ -14,7 +14,7 @@ func Make(c *fiber.Ctx) error {
 
 	digits := captcha.RandomDigits(4)
 
-	sessions.Set("captcha", digits)
+	session.Set("captcha", digits)
 
 	image := captcha.NewImage(uuid.New(), digits, 110, 38)
 	writer := bytes.Buffer{}
@@ -25,7 +25,7 @@ func Make(c *fiber.Ctx) error {
 
 // 验证session验证码
 func Check(digits string) bool {
-	sessionCaptcha := sessions.Get("captcha")
+	sessionCaptcha := session.Get("captcha")
 
 	if digits == "" || sessionCaptcha == nil {
 		return false
