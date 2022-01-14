@@ -1,12 +1,12 @@
 package login
 
 import (
-	"strconv"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/http/controllers/tool/captcha"
+	"github.com/quarkcms/quark-go/pkg/component/login"
 	"github.com/quarkcms/quark-go/pkg/db"
 	"github.com/quarkcms/quark-go/pkg/hash"
+	"github.com/quarkcms/quark-go/pkg/msg"
 	"github.com/quarkcms/quark-go/pkg/token"
 )
 
@@ -26,30 +26,19 @@ type Admin struct {
 	Avatar   string `json:"avatar"`
 }
 
-// 表结构体
-type Component struct {
-	Component   string              `json:"component"`
-	Api         string              `json:"api"`
-	Redirect    string              `json:"redirect"`
-	Title       string              `json:"title"`
-	Description string              `json:"description"`
-	CaptchaUrl  string              `json:"captchaUrl"`
-	Copyright   string              `json:"copyright"`
-	Links       []map[string]string `json:"links"`
-}
-
 // 登录页面
 func Show(c *fiber.Ctx) error {
 
-	Component := &Component{
-		Component:   "login",
-		Api:         "admin/login",
-		Redirect:    "/index?api=admin/dashboard/index",
-		Title:       "QuarkAdmin",
-		Description: "信息丰富的世界里，唯一稀缺的就是人类的注意力",
-		CaptchaUrl:  "api/admin/captcha",
-		Copyright:   "版权所有",
-		Links: []map[string]string{
+	loginComponent := &login.Component{}
+
+	component := loginComponent.
+		SetApi("admin/login").
+		SetRedirect("/index?api=admin/dashboard/index").
+		SetTitle("QuarkAdmin").
+		SetDescription("信息丰富的世界里，唯一稀缺的就是人类的注意力").
+		SetCaptchaUrl("api/admin/captcha").
+		SetCopyright("版权所有").
+		SetLinks([]map[string]string{
 			{
 				"title": "迁安信息港",
 				"href":  "http://www.qa114.com/",
@@ -62,10 +51,10 @@ func Show(c *fiber.Ctx) error {
 				"title": "深蓝科技",
 				"href":  "https://www.qasl.cn",
 			},
-		},
-	}
+		}).
+		JsonSerialize()
 
-	return c.JSON(Component)
+	return c.JSON(component)
 }
 
 // 登录方法
@@ -77,47 +66,31 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if !captcha.Check(request.Captcha) {
-		return c.JSON(fiber.Map{
-			"status": "error",
-			"msg":    "验证码错误！",
-		})
+		return msg.Error("验证码错误", msg.DEFAULT_URL)
 	}
 
 	if request.Username == "" || request.Password == "" {
-		return c.JSON(fiber.Map{
-			"status": "error",
-			"msg":    "用户名或密码不能为空！",
-		})
+		return msg.Error("用户名或密码不能为空", msg.DEFAULT_URL)
 	}
 
 	admin := Admin{}
 	db.Conn().Where("username = ?", request.Username).First(&admin)
 
-	dict := make(map[string]interface{})
-	dict["id"] = admin.Id
-	dict["avatar"] = admin.Avatar
-	dict["nickname"] = admin.Nickname
-	dict["username"] = admin.Username
-	dict["guard_name"] = "admin"
-
-	getToken, _ := token.Make(dict)
-
+	// 检验账号和密码
 	if !hash.Check(admin.Password, request.Password) {
-		return c.JSON(fiber.Map{
-			"status": "error",
-			"msg":    "用户名或密码错误！",
-		})
-	} else {
-		return c.JSON(fiber.Map{
-			"status": "success",
-			"msg":    "登录成功！",
-			"data": map[string]string{
-				"id":       strconv.Itoa(admin.Id),
-				"avatar":   admin.Avatar,
-				"nickname": admin.Nickname,
-				"username": admin.Username,
-				"token":    getToken,
-			},
-		})
+		return msg.Error("用户名或密码错误", msg.DEFAULT_URL)
 	}
+
+	data := make(map[string]interface{})
+	data["id"] = admin.Id
+	data["avatar"] = admin.Avatar
+	data["nickname"] = admin.Nickname
+	data["username"] = admin.Username
+	data["guard_name"] = "admin"
+
+	// 创建token
+	getToken, _ := token.Make(data)
+	data["token"] = getToken
+
+	return msg.Success("登录成功", msg.DEFAULT_URL, data)
 }
