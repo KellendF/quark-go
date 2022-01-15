@@ -34,7 +34,7 @@ func Show(c *fiber.Ctx) error {
 	component := loginComponent.
 		SetApi("admin/login").
 		SetRedirect("/index?api=admin/dashboard/index").
-		SetTitle("QuarkAdmin").
+		SetTitle("QuarkGo").
 		SetDescription("信息丰富的世界里，唯一稀缺的就是人类的注意力").
 		SetCaptchaUrl("api/admin/captcha").
 		SetCopyright("版权所有").
