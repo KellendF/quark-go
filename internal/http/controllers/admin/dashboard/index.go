@@ -2,21 +2,18 @@ package dashboard
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/component/page"
 )
-
-// 表结构体
-type Component struct {
-	Component string `json:"component"`
-	Body      string `json:"body"`
-}
 
 // 主页面
 func Index(c *fiber.Ctx) error {
 
-	Component := &Component{
-		Component: "page",
-		Body:      "test",
-	}
+	pageComponent := &page.Component{}
 
-	return c.JSON(Component)
+	component := pageComponent.
+		SetTitle("测试").
+		SetBody("test").
+		JsonSerialize()
+
+	return c.JSON(component)
 }
