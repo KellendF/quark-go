@@ -1,9 +1,9 @@
 package page
 
 type Component struct {
-	Component string `json:"component"`
-	Title     string `json:"title"`
-	Body      string `json:"body"`
+	Component string      `json:"component"`
+	Title     string      `json:"title"`
+	Body      interface{} `json:"body"`
 }
 
 // 标题
@@ -13,7 +13,7 @@ func (p *Component) SetTitle(title string) *Component {
 }
 
 // 内容
-func (p *Component) SetBody(body string) *Component {
+func (p *Component) SetBody(body interface{}) *Component {
 	p.Body = body
 	return p
 }

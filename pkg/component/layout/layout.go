@@ -16,7 +16,7 @@ type Component struct {
 	PrimaryColor  string              `json:"primaryColor"`
 	FixedHeader   bool                `json:"fixedHeader"`
 	FixSiderbar   bool                `json:"fixSiderbar"`
-	IconfontUrl   bool                `json:"iconfontUrl"`
+	IconfontUrl   string              `json:"iconfontUrl"`
 	Locale        string              `json:"locale"`
 	SiderWidth    int                 `json:"siderWidth"`
 	Collapsed     bool                `json:"collapsed"`
@@ -91,7 +91,7 @@ func (p *Component) SetPrimaryColor(primaryColor string) *Component {
 	return p
 }
 
-// 是否固定导航
+// 是否固定 header 到顶部
 func (p *Component) SetFixedHeader(fixedHeader bool) *Component {
 	p.FixedHeader = fixedHeader
 	return p
@@ -103,7 +103,53 @@ func (p *Component) SetFixSiderbar(fixSiderbar bool) *Component {
 	return p
 }
 
-// todo
+// 使用 IconFont 的图标配置
+func (p *Component) SetIconfontUrl(iconfontUrl string) *Component {
+	p.IconfontUrl = iconfontUrl
+	return p
+}
+
+// 当前 layout 的语言设置，'zh-CN' | 'zh-TW' | 'en-US'
+func (p *Component) SetLocale(locale string) *Component {
+	p.Locale = locale
+	return p
+}
+
+// 侧边菜单宽度
+func (p *Component) SetSiderWidth(siderWidth int) *Component {
+	p.SiderWidth = siderWidth
+	return p
+}
+
+// 控制菜单的收起和展开
+func (p *Component) SetCollapsed(collapsed bool) *Component {
+	p.Collapsed = collapsed
+	return p
+}
+
+// 自动分割菜单
+func (p *Component) SetSplitMenus(splitMenus bool) *Component {
+	p.SplitMenus = splitMenus
+	return p
+}
+
+// 菜单
+func (p *Component) SetMenu(menu interface{}) *Component {
+	p.Menu = menu
+	return p
+}
+
+// 页脚
+func (p *Component) SetFooter(footer interface{}) *Component {
+	p.Footer = footer
+	return p
+}
+
+// 内容
+func (p *Component) SetBody(body interface{}) *Component {
+	p.Body = body
+	return p
+}
 
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
