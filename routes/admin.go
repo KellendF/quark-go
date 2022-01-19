@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/http/controllers/admin/login"
 	"github.com/quarkcms/quark-go/internal/http/controllers/admin/resources/administrator"
@@ -23,7 +25,9 @@ func Admin(app *fiber.App) {
 	amg.Get("/dashboard/index", func(c *fiber.Ctx) error {
 		component := &administrator.Component{}
 
-		index := component.Render(component.IndexComponentRender())
+		fmt.Println(component.GetTitle(component))
+
+		index := component.Render(c, component, component.IndexComponentRender())
 
 		return c.JSON(index)
 	})

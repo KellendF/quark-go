@@ -7,4 +7,10 @@ type Resource struct {
 type IResource interface {
 	Fields() interface{}
 	Actions() interface{}
+	Title() string
+}
+
+// 列表行为
+func (p *Resource) GetTitle(child IResource) string {
+	return child.Title()
 }

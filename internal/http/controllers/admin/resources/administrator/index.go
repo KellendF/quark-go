@@ -10,9 +10,8 @@ type Component struct {
 	admin.Resource
 }
 
-func init() {
-	p := &Component{}
-	p.Title = "测试了"
+func (p *Component) Title() string {
+	return "测试了"
 }
 
 // 字段
