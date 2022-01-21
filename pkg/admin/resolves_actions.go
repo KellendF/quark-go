@@ -1,8 +1,8 @@
 package admin
 
 // 列表行为
-func (p *Resource) IndexActions(child IResource) interface{} {
-	return child.Actions()
+func (p *Resource) IndexActions(resource ResourceInterface) interface{} {
+	return resource.Actions()
 }
 
 // 行为接口

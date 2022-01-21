@@ -1,8 +1,8 @@
 package admin
 
 // 列表行为
-func (p *Resource) IndexFields(child IResource) interface{} {
-	return child.Fields()
+func (p *Resource) IndexFields(resource ResourceInterface) interface{} {
+	return resource.Fields()
 }
 
 // 字段接口

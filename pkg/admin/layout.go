@@ -8,26 +8,22 @@ import (
 )
 
 // 渲染页面组件
-func PageComponentRender(c *fiber.Ctx, child IResource, content interface{}) interface{} {
+func PageComponentRender(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
 	component := &page.Component{}
 
-	layoutComponent := LayoutComponentRender(content)
-
-	p := &Resource{}
+	layoutComponent := LayoutComponentRender(c, resource, content)
 
 	return component.
-		SetTitle(p.GetTitle(child)).
+		SetTitle(resource.GetTitle()).
 		SetBody(layoutComponent).
 		JsonSerialize()
 }
 
 // 渲染页面布局组件
-func LayoutComponentRender(content interface{}) interface{} {
-
-	p := &Resource{}
+func LayoutComponentRender(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
 
 	component := &layout.Component{}
-	return component.SetTitle(p.Title).
+	return component.SetTitle(resource.GetTitle()).
 		SetBody(PageContainerComponentRender(content)).
 		JsonSerialize()
 }
@@ -44,6 +40,10 @@ func (p *Resource) IndexComponentRender() interface{} {
 }
 
 // 渲染列表页组件
-func (p *Resource) Render(c *fiber.Ctx, child IResource, content interface{}) interface{} {
-	return PageComponentRender(c, child, content)
+func (p *Resource) Render(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
+
+	// 初始化资源
+	resource.HandleInit(resource)
+
+	return PageComponentRender(c, resource, content)
 }
