@@ -35,15 +35,16 @@ func PageContainerComponentRender(content interface{}) interface{} {
 }
 
 // 渲染列表页组件
-func (p *Dashboard) DashboardComponentRender() interface{} {
-	return "xxxx"
+func (p *Dashboard) DashboardComponentRender(c *fiber.Ctx, dashboard DashboardInterface) interface{} {
+
+	return p.GetCards(dashboard)
 }
 
 // 渲染列表页组件
 func (p *Dashboard) Render(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{} {
 
 	// 初始化资源
-	dashboard.HandleInit(dashboard)
+	p.HandleInit(dashboard)
 
 	return PageComponentRender(c, dashboard, content)
 }

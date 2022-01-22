@@ -32,7 +32,7 @@ func loadDashboardRoute(app *fiber.App) {
 
 		for key, provider := range providers {
 			if key == c.Params("dashboard") {
-				component = provider.Render(c, provider, provider.DashboardComponentRender())
+				component = provider.Render(c, provider, provider.DashboardComponentRender(c, provider))
 			}
 		}
 

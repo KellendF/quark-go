@@ -13,3 +13,9 @@ func (p *Component) Init() {
 
 	p.Title = "测试的标题"
 }
+
+// 内容
+func (p *Component) Cards() interface{} {
+
+	return "测试内容"
+}
