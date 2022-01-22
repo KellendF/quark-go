@@ -1,4 +1,4 @@
-package routes
+package resource
 
 import (
 	"github.com/quarkcms/quark-go/internal/http/controllers/admin/resources/administrator"

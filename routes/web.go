@@ -5,9 +5,8 @@ import (
 	"github.com/quarkcms/quark-go/internal/http/controllers/tool/captcha"
 )
 
+// web路由
 func Web(app *fiber.App) {
-
-	// 工具箱路由
 	tg := app.Group("/tool")
 	tg.Get("/captcha/getId", captcha.GetID)
 	tg.Get("/captcha/id/:id?", captcha.MakeByID)

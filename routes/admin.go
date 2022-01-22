@@ -9,7 +9,6 @@ import (
 // 后台路由
 func Admin(app *fiber.App) {
 	ag := app.Group("/api/admin")
-
 	ag.Get("/login", login.Show)
 	ag.Post("/login", login.Login)
 	ag.Get("/captcha", captcha.Make)

@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/http/middleware"
 	"github.com/quarkcms/quark-go/routes"
+	"github.com/quarkcms/quark-go/routes/resource"
 )
 
 // 注册服务
@@ -27,7 +28,7 @@ func loadDashboardRoute(app *fiber.App) {
 	amg := app.Group("/api/admin", middleware.Admin)
 	amg.Get("/dashboard/:dashboard", func(c *fiber.Ctx) error {
 		var component interface{}
-		providers := routes.Dashboard()
+		providers := resource.Dashboard()
 
 		for key, provider := range providers {
 			if key == c.Params("dashboard") {
@@ -44,7 +45,7 @@ func loadResourceRoute(app *fiber.App) {
 	amg := app.Group("/api/admin", middleware.Admin)
 	amg.Get("/:resource/index", func(c *fiber.Ctx) error {
 		var component interface{}
-		providers := routes.Resource()
+		providers := resource.Resource()
 
 		for key, provider := range providers {
 			if key == c.Params("resource") {
