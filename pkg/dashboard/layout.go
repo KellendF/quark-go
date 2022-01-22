@@ -1,4 +1,4 @@
-package admin
+package dashboard
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -8,22 +8,22 @@ import (
 )
 
 // 渲染页面组件
-func PageComponentRender(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
+func PageComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{} {
 	component := &page.Component{}
 
-	layoutComponent := LayoutComponentRender(c, resource, content)
+	layoutComponent := LayoutComponentRender(c, dashboard, content)
 
 	return component.
-		SetTitle(resource.GetTitle()).
+		SetTitle(dashboard.GetTitle()).
 		SetBody(layoutComponent).
 		JsonSerialize()
 }
 
 // 渲染页面布局组件
-func LayoutComponentRender(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
+func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{} {
 
 	component := &layout.Component{}
-	return component.SetTitle(resource.GetTitle()).
+	return component.SetTitle(dashboard.GetTitle()).
 		SetBody(PageContainerComponentRender(content)).
 		JsonSerialize()
 }
@@ -35,15 +35,15 @@ func PageContainerComponentRender(content interface{}) interface{} {
 }
 
 // 渲染列表页组件
-func (p *Resource) IndexComponentRender() interface{} {
-	return "xxx"
+func (p *Dashboard) DashboardComponentRender() interface{} {
+	return "xxxx"
 }
 
 // 渲染列表页组件
-func (p *Resource) Render(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
+func (p *Dashboard) Render(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{} {
 
 	// 初始化资源
-	resource.HandleInit(resource)
+	dashboard.HandleInit(dashboard)
 
-	return PageComponentRender(c, resource, content)
+	return PageComponentRender(c, dashboard, content)
 }

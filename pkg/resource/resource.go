@@ -1,4 +1,6 @@
-package admin
+package resource
+
+import "github.com/gofiber/fiber/v2"
 
 // 资源结构体
 type Resource struct {
@@ -13,6 +15,8 @@ type ResourceInterface interface {
 	GetTitle() string
 	Fields() interface{}
 	Actions() interface{}
+	Render(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{}
+	IndexComponentRender() interface{}
 }
 
 // 初始化资源

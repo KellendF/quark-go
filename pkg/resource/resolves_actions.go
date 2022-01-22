@@ -1,4 +1,4 @@
-package admin
+package resource
 
 // 列表行为
 func (p *Resource) IndexActions(resource ResourceInterface) interface{} {
