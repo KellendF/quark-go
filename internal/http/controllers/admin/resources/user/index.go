@@ -1,13 +1,13 @@
 package user
 
 import (
-	"github.com/quarkcms/quark-go/pkg/admin"
 	"github.com/quarkcms/quark-go/pkg/component/action"
 	"github.com/quarkcms/quark-go/pkg/component/field"
+	"github.com/quarkcms/quark-go/pkg/resource"
 )
 
 type Component struct {
-	admin.Resource
+	resource.Resource
 }
 
 // 字段

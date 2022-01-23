@@ -1,4 +1,4 @@
-package administrator
+package admin
 
 import (
 	"github.com/quarkcms/quark-go/pkg/component/action"
