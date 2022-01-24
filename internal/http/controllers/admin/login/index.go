@@ -3,8 +3,8 @@ package login
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/http/controllers/tool/captcha"
+	"github.com/quarkcms/quark-go/internal/model"
 	"github.com/quarkcms/quark-go/pkg/component/login"
-	"github.com/quarkcms/quark-go/pkg/db"
 	"github.com/quarkcms/quark-go/pkg/hash"
 	"github.com/quarkcms/quark-go/pkg/msg"
 	"github.com/quarkcms/quark-go/pkg/token"
@@ -15,15 +15,6 @@ type Request struct {
 	Username string `json:"username" form:"username"`
 	Password string `json:"password" form:"password"`
 	Captcha  string `json:"captcha" form:"captcha"`
-}
-
-// admins表结构体
-type Admin struct {
-	Id       int    `json:"id"`
-	Username string `json:"username"`
-	Nickname string `json:"nickname"`
-	Password string `json:"password"`
-	Avatar   string `json:"avatar"`
 }
 
 // 登录页面
@@ -73,8 +64,8 @@ func Login(c *fiber.Ctx) error {
 		return msg.Error("用户名或密码不能为空", msg.DEFAULT_URL)
 	}
 
-	admin := Admin{}
-	db.Conn().Where("username = ?", request.Username).First(&admin)
+	model := &model.AdminModel{}
+	admin := model.FindByUsername(request.Username)
 
 	// 检验账号和密码
 	if !hash.Check(admin.Password, request.Password) {

@@ -8,10 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
-var SqlConn *gorm.DB
+// Model结构体
+type Model struct {
+	Conn *gorm.DB
+}
 
-// 初始化
-func init() {
+// 数据库链接句柄
+func (model *Model) conn() *gorm.DB {
+
+	if model.Conn != nil {
+		return model.Conn
+	}
 
 	username := config.Get("database.mysql.username")
 	password := config.Get("database.mysql.password")
@@ -28,11 +35,14 @@ func init() {
 			fmt.Println(err)
 		}
 
-		SqlConn = conn
+		model.Conn = conn
 	}
+
+	return model.Conn
 }
 
-// 数据库链接句柄
-func Conn() *gorm.DB {
-	return SqlConn
+// 数据库实例
+func (model *Model) DB() *gorm.DB {
+
+	return model.conn()
 }
