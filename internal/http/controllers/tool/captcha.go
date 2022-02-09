@@ -1,4 +1,4 @@
-package captcha
+package tool
 
 import (
 	"bytes"
@@ -9,8 +9,10 @@ import (
 	"github.com/quarkcms/quark-go/pkg/framework/session"
 )
 
+type Captcha struct{}
+
 // 创建session验证码
-func Make(c *fiber.Ctx) error {
+func (p *Captcha) Make(c *fiber.Ctx) error {
 
 	digits := captcha.RandomDigits(4)
 
@@ -24,7 +26,7 @@ func Make(c *fiber.Ctx) error {
 }
 
 // 验证session验证码
-func Check(digits string) bool {
+func (p *Captcha) Check(digits string) bool {
 	sessionCaptcha := session.Get("captcha")
 
 	if digits == "" || sessionCaptcha == nil {
@@ -48,7 +50,7 @@ func Check(digits string) bool {
 }
 
 // 获取验证码ID
-func GetID(c *fiber.Ctx) error {
+func (p *Captcha) GetID(c *fiber.Ctx) error {
 	id := captcha.NewLen(4)
 
 	return c.JSON(fiber.Map{
@@ -58,7 +60,7 @@ func GetID(c *fiber.Ctx) error {
 }
 
 // 创建ID验证码
-func MakeByID(c *fiber.Ctx) error {
+func (p *Captcha) MakeByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	if id == "" {
 		return c.SendString("Bad Request")
@@ -71,7 +73,7 @@ func MakeByID(c *fiber.Ctx) error {
 }
 
 // 验证ID验证码
-func CheckByID(id string, value string) bool {
+func (p *Captcha) CheckByID(id string, value string) bool {
 
 	result := captcha.VerifyString(id, value)
 	captcha.Reload(id)

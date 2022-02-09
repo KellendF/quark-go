@@ -4,13 +4,9 @@ import (
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 )
 
-// 模型
-type MenuModel struct {
-	db.Model
-}
-
 // 字段
 type Menu struct {
+	db.Model
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
 	GuardName string `json:"guard_name"`
@@ -24,7 +20,7 @@ type Menu struct {
 }
 
 // 获取菜单
-func (model *MenuModel) GetMenus(username string) *Menu {
+func (model *Menu) GetMenus(username string) *Menu {
 	menu := &Menu{}
 	model.DB().Where("status = ?", 1).Find(&menu)
 

@@ -1,7 +1,7 @@
 package resource
 
 import (
-	"github.com/quarkcms/quark-go/internal/http/controllers/admin/dashboards/index"
+	"github.com/quarkcms/quark-go/internal/http/controllers/admin/dashboards"
 	"github.com/quarkcms/quark-go/pkg/ui/dashboard"
 )
 
@@ -9,6 +9,6 @@ import (
 func Dashboard() map[string]dashboard.DashboardInterface {
 
 	return map[string]dashboard.DashboardInterface{
-		"index": &index.Component{},
+		"index": &dashboards.Index{},
 	}
 }

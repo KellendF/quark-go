@@ -1,4 +1,4 @@
-package user
+package resources
 
 import (
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
@@ -6,12 +6,18 @@ import (
 	"github.com/quarkcms/quark-go/pkg/ui/resource"
 )
 
-type Component struct {
+type Admin struct {
 	resource.Resource
 }
 
+// 初始化
+func (p *Admin) Init() {
+
+	p.Title = "测试的标题"
+}
+
 // 字段
-func (p *Component) Fields() interface{} {
+func (p *Admin) Fields() interface{} {
 
 	field := &field.Component{}
 
@@ -22,7 +28,7 @@ func (p *Component) Fields() interface{} {
 }
 
 // 资源行为
-func (p *Component) Actions() interface{} {
+func (p *Admin) Actions() interface{} {
 
 	action := &action.Component{}
 

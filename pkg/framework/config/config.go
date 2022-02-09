@@ -11,7 +11,7 @@ import (
 func Set(key string, value string) bool {
 	keys := strings.Split(key, ".")
 
-	cfg, err := goconfig.LoadConfigFile("./config/" + keys[0] + ".ini")
+	cfg, err := goconfig.LoadConfigFile("../../config/" + keys[0] + ".ini")
 
 	if err != nil {
 		fmt.Println(err)
@@ -33,7 +33,7 @@ func Get(key string) string {
 
 	keys := strings.Split(key, ".")
 
-	cfg, err := goconfig.LoadConfigFile("./config/" + keys[0] + ".ini")
+	cfg, err := goconfig.LoadConfigFile("../../config/" + keys[0] + ".ini")
 
 	if err != nil {
 		fmt.Println(err)
