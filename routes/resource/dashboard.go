@@ -2,7 +2,7 @@ package resource
 
 import (
 	"github.com/quarkcms/quark-go/internal/http/controllers/admin/dashboards/index"
-	"github.com/quarkcms/quark-go/pkg/dashboard"
+	"github.com/quarkcms/quark-go/pkg/ui/dashboard"
 )
 
 // 仪表盘资源

@@ -2,7 +2,7 @@ package resource
 
 import (
 	"github.com/quarkcms/quark-go/internal/http/controllers/admin/resources/admin"
-	"github.com/quarkcms/quark-go/pkg/resource"
+	"github.com/quarkcms/quark-go/pkg/ui/resource"
 )
 
 // 资源
