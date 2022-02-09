@@ -1,4 +1,4 @@
-package route
+package providers
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -7,8 +7,11 @@ import (
 	"github.com/quarkcms/quark-go/routes/resource"
 )
 
+// 结构体
+type Route struct{}
+
 // 注册服务
-func Register(app *fiber.App) {
+func (p *Route) Register(app *fiber.App) {
 
 	// 注册Admin路由
 	routes.Admin(app)
