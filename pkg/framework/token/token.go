@@ -2,8 +2,8 @@ package token
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"github.com/quarkcms/quark-go/pkg/config"
-	"github.com/quarkcms/quark-go/pkg/rand"
+	"github.com/quarkcms/quark-go/pkg/framework/config"
+	"github.com/quarkcms/quark-go/pkg/framework/rand"
 )
 
 var appKey string

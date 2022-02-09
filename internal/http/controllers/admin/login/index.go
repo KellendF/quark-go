@@ -3,11 +3,11 @@ package login
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/http/controllers/tool/captcha"
-	"github.com/quarkcms/quark-go/internal/model"
-	"github.com/quarkcms/quark-go/pkg/component/login"
-	"github.com/quarkcms/quark-go/pkg/hash"
-	"github.com/quarkcms/quark-go/pkg/msg"
-	"github.com/quarkcms/quark-go/pkg/token"
+	"github.com/quarkcms/quark-go/internal/models"
+	"github.com/quarkcms/quark-go/pkg/framework/hash"
+	"github.com/quarkcms/quark-go/pkg/framework/msg"
+	"github.com/quarkcms/quark-go/pkg/framework/token"
+	"github.com/quarkcms/quark-go/pkg/ui/component/login"
 )
 
 // 请求结构体
@@ -64,7 +64,7 @@ func Login(c *fiber.Ctx) error {
 		return msg.Error("用户名或密码不能为空", msg.DEFAULT_URL)
 	}
 
-	model := &model.AdminModel{}
+	model := &models.AdminModel{}
 	admin := model.FindByUsername(request.Username)
 
 	// 检验账号和密码

@@ -6,7 +6,7 @@ import (
 	"github.com/dchest/captcha"
 	"github.com/go-basic/uuid"
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/session"
+	"github.com/quarkcms/quark-go/pkg/framework/session"
 )
 
 // 创建session验证码

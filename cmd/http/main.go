@@ -1,11 +1,16 @@
 package main
 
 import (
+	"github.com/quarkcms/quark-go/internal/http"
 	"github.com/quarkcms/quark-go/pkg/framework/foundation"
 )
 
 func main() {
-	app := &foundation.Application{}
+	kernel := &http.Kernel{}
 
-	app.Singleton("httpkernel","love")
+	foundation.Singleton("httpkernel", kernel)
+
+	httpkernel := foundation.Make("httpkernel")
+
+	httpkernel.(interface{ Run() }).Run()
 }

@@ -1,7 +1,7 @@
-package model
+package models
 
 import (
-	"github.com/quarkcms/quark-go/pkg/db"
+	"github.com/quarkcms/quark-go/pkg/framework/db"
 )
 
 // 模型

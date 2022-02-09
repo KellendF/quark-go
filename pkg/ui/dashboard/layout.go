@@ -2,9 +2,9 @@ package dashboard
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/component/layout"
-	"github.com/quarkcms/quark-go/pkg/component/page"
-	"github.com/quarkcms/quark-go/pkg/component/pagecontainer"
+	"github.com/quarkcms/quark-go/pkg/ui/component/layout"
+	"github.com/quarkcms/quark-go/pkg/ui/component/page"
+	"github.com/quarkcms/quark-go/pkg/ui/component/pagecontainer"
 )
 
 // 渲染页面组件

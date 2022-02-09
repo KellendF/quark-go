@@ -1,9 +1,9 @@
 package admin
 
 import (
-	"github.com/quarkcms/quark-go/pkg/component/action"
-	"github.com/quarkcms/quark-go/pkg/component/field"
-	"github.com/quarkcms/quark-go/pkg/resource"
+	"github.com/quarkcms/quark-go/pkg/ui/component/action"
+	"github.com/quarkcms/quark-go/pkg/ui/component/field"
+	"github.com/quarkcms/quark-go/pkg/ui/resource"
 )
 
 type Component struct {

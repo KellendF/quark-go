@@ -3,11 +3,13 @@ package http
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/http/middleware"
-	"github.com/quarkcms/quark-go/internal/http/providers/route"
-	"github.com/quarkcms/quark-go/pkg/config"
+	"github.com/quarkcms/quark-go/internal/providers/route"
+	"github.com/quarkcms/quark-go/pkg/framework/config"
 )
 
-func Run() {
+type Kernel struct{}
+
+func (p *Kernel) Run() {
 
 	// 默认配置
 	app := fiber.New(fiber.Config{

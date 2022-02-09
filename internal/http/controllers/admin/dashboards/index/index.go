@@ -1,7 +1,7 @@
 package index
 
 import (
-	"github.com/quarkcms/quark-go/pkg/dashboard"
+	"github.com/quarkcms/quark-go/pkg/ui/dashboard"
 )
 
 type Component struct {

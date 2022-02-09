@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 
-	"github.com/quarkcms/quark-go/pkg/config"
+	"github.com/quarkcms/quark-go/pkg/framework/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

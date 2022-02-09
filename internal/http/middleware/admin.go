@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/token"
+	"github.com/quarkcms/quark-go/pkg/framework/token"
 )
 
 // 后台中间件

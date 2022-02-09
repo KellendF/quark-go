@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/msg"
-	"github.com/quarkcms/quark-go/pkg/session"
+	"github.com/quarkcms/quark-go/pkg/framework/msg"
+	"github.com/quarkcms/quark-go/pkg/framework/session"
 )
 
 // 全局中间件
