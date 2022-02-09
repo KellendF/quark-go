@@ -6,8 +6,10 @@ import (
 	"github.com/quarkcms/quark-go/pkg/framework/session"
 )
 
+type App struct{}
+
 // 全局中间件
-func App(c *fiber.Ctx) error {
+func (p *App) Handle(c *fiber.Ctx) error {
 	// 初始化msg
 	msg.Init(c)
 

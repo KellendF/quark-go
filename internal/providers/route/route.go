@@ -25,7 +25,8 @@ func Register(app *fiber.App) {
 
 // 加载仪表盘路由
 func loadDashboardRoute(app *fiber.App) {
-	amg := app.Group("/api/admin", middleware.Admin)
+	adminMiddleware := &middleware.Admin{}
+	amg := app.Group("/api/admin", adminMiddleware.Handle)
 	amg.Get("/dashboard/:dashboard", func(c *fiber.Ctx) error {
 		var component interface{}
 		providers := resource.Dashboard()
@@ -42,7 +43,8 @@ func loadDashboardRoute(app *fiber.App) {
 
 // 加载资源路由
 func loadResourceRoute(app *fiber.App) {
-	amg := app.Group("/api/admin", middleware.Admin)
+	adminMiddleware := &middleware.Admin{}
+	amg := app.Group("/api/admin", adminMiddleware.Handle)
 	amg.Get("/:resource/index", func(c *fiber.Ctx) error {
 		var component interface{}
 		providers := resource.Resource()

@@ -16,8 +16,11 @@ func (p *Kernel) Run() {
 		AppName: config.Get("app.name"),
 	})
 
-	// 中间件
-	app.Use(middleware.App)
+	// 获取中间件
+	appMiddleware := &middleware.App{}
+
+	// 使用中间件
+	app.Use(appMiddleware.Handle)
 
 	// 注册路由
 	route.Register(app)
