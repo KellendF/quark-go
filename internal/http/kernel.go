@@ -10,12 +10,13 @@ import (
 type Kernel struct{}
 
 func (p *Kernel) Run() {
+
 	appMiddleware := &middleware.App{}
 	route := &providers.Route{}
 
 	// 默认配置
 	app := fiber.New(fiber.Config{
-		AppName: config.Get("app.name"),
+		AppName: config.Get("app.name").(string),
 	})
 
 	// 使用中间件
@@ -24,5 +25,5 @@ func (p *Kernel) Run() {
 	// 注册路由
 	route.Register(app)
 
-	app.Listen(config.Get("app.host") + ":" + config.Get("app.port"))
+	app.Listen(config.Get("app.host").(string))
 }

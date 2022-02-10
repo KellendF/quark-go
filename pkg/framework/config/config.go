@@ -1,55 +1,40 @@
 package config
 
 import (
-	"fmt"
 	"strings"
 
-	"github.com/Unknwon/goconfig"
+	"github.com/quarkcms/quark-go/config"
 )
 
+var configs = make(map[string]interface{})
+
+func init() {
+	configs["app"] = config.App
+	configs["database"] = config.Database
+}
+
 // 设置值
-func Set(key string, value string) bool {
+func Set(key string, value interface{}) {
 	keys := strings.Split(key, ".")
 
-	cfg, err := goconfig.LoadConfigFile("./config/" + keys[0] + ".ini")
-
-	if err != nil {
-		fmt.Println(err)
+	configs[keys[0]] = map[string]interface{}{
+		keys[1]: value,
 	}
-
-	var result bool
-
-	if len(keys) == 2 {
-		result = cfg.SetValue(goconfig.DEFAULT_SECTION, keys[1], value)
-	} else {
-		result = cfg.SetValue(keys[1], keys[2], value)
-	}
-
-	return result
 }
 
 // 获取值
-func Get(key string) string {
-
+func Get(key string) interface{} {
 	keys := strings.Split(key, ".")
 
-	cfg, err := goconfig.LoadConfigFile("./config/" + keys[0] + ".ini")
+	return parseKey(keys, configs[keys[0]])
+}
 
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	var value string
-	var valueErr error
-
-	if len(keys) == 2 {
-		value, valueErr = cfg.GetValue(goconfig.DEFAULT_SECTION, keys[1])
-	} else {
-		value, valueErr = cfg.GetValue(keys[1], keys[2])
-	}
-
-	if valueErr != nil {
-		fmt.Println(valueErr)
+// 解析key
+func parseKey(keys []string, value interface{}) interface{} {
+	for k, v := range keys {
+		if k != 0 {
+			value = value.(map[string]interface{})[v]
+		}
 	}
 
 	return value

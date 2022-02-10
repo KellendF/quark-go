@@ -10,7 +10,7 @@ var appKey string
 
 // 初始化
 func init() {
-	key := config.Get("app.key")
+	key := config.Get("app.key").(string)
 	if key == "" {
 		key = rand.Make("alphanumeric", 950)
 	}

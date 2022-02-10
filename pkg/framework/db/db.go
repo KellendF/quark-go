@@ -12,12 +12,12 @@ type Model struct{}
 var conn *gorm.DB
 
 func init() {
-	username := config.Get("database.mysql.username")
-	password := config.Get("database.mysql.password")
-	host := config.Get("database.mysql.host")
-	port := config.Get("database.mysql.port")
-	database := config.Get("database.mysql.database")
-	charset := config.Get("database.mysql.charset")
+	username := config.Get("database.mysql.username").(string)
+	password := config.Get("database.mysql.password").(string)
+	host := config.Get("database.mysql.host").(string)
+	port := config.Get("database.mysql.port").(string)
+	database := config.Get("database.mysql.database").(string)
+	charset := config.Get("database.mysql.charset").(string)
 
 	if username != "" && host != "" && port != "" && database != "" && charset != "" {
 		dsn := username + ":" + password + "@tcp(" + host + ":" + port + ")/" + database + "?charset=" + charset + "&parseTime=True&loc=Local"
