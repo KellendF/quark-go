@@ -8,10 +8,11 @@ import (
 	"github.com/quarkcms/quark-go/pkg/framework/token"
 )
 
-type Admin struct{}
+type AdminMiddleware struct{}
 
 // 后台中间件
-func (p *Admin) Handle(c *fiber.Ctx) error {
+func (p *AdminMiddleware) Handle(c *fiber.Ctx) error {
+
 	// token认证
 	header := c.GetReqHeaders()
 	getToken := strings.Split(header["Authorization"], " ")

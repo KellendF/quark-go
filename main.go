@@ -2,15 +2,13 @@ package main
 
 import (
 	"github.com/quarkcms/quark-go/internal/http"
-	"github.com/quarkcms/quark-go/pkg/framework/foundation"
 )
 
 func main() {
+
+	// 服务实例
 	kernel := &http.Kernel{}
 
-	foundation.Singleton("httpkernel", kernel)
-
-	httpkernel := foundation.Make("httpkernel")
-
-	httpkernel.(interface{ Run() }).Run()
+	// 启动服务
+	kernel.Run()
 }

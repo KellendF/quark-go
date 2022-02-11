@@ -11,18 +11,17 @@ type Kernel struct{}
 
 func (p *Kernel) Run() {
 
-	appMiddleware := &middleware.App{}
-	route := &providers.Route{}
-
-	// 默认配置
+	// 配置
 	app := fiber.New(fiber.Config{
 		AppName: config.Get("app.name").(string),
 	})
 
-	// 使用中间件
-	app.Use(appMiddleware.Handle)
+	// 中间件
+	appServiceInit := &middleware.AppServiceInit{}
+	app.Use(appServiceInit.Handle)
 
-	// 注册路由
+	// 路由
+	route := &providers.Route{}
 	route.Register(app)
 
 	app.Listen(config.Get("app.host").(string))
