@@ -20,9 +20,22 @@ type Menu struct {
 }
 
 // 获取菜单
-func (model *Menu) GetMenus(username string) *Menu {
-	menu := &Menu{}
-	model.DB().Where("status = ?", 1).Find(&menu)
+func (model *Menu) List() *Menu {
+	result := &Menu{}
+	model.DB().Where("status = ?", 1).Find(&result)
 
-	return menu
+	return result
+}
+
+// 获取管理员权限菜单
+func (model *Menu) PermissionList(adminId int) *Menu {
+	result := &Menu{}
+
+	if adminId == 1 {
+		model.DB().Where("status = ?", 1).Find(&result)
+	} else {
+		model.DB().Where("status = ?", 1).Find(&result)
+	}
+
+	return result
 }

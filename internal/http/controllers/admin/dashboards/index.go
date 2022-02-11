@@ -1,7 +1,7 @@
 package dashboards
 
 import (
-	"github.com/quarkcms/quark-go/pkg/ui/dashboard"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/dashboard"
 )
 
 type Index struct {

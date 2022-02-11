@@ -5,8 +5,8 @@ import (
 	"github.com/quarkcms/quark-go/internal/http/controllers/admin/dashboards"
 	"github.com/quarkcms/quark-go/internal/http/controllers/admin/resources"
 	"github.com/quarkcms/quark-go/internal/http/middleware"
-	"github.com/quarkcms/quark-go/pkg/ui/dashboard"
-	"github.com/quarkcms/quark-go/pkg/ui/resource"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/dashboard"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/resource"
 )
 
 // 结构体

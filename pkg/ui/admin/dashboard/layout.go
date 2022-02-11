@@ -1,7 +1,10 @@
 package dashboard
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/ui/component/layout"
 	"github.com/quarkcms/quark-go/pkg/ui/component/page"
 	"github.com/quarkcms/quark-go/pkg/ui/component/pagecontainer"
@@ -21,6 +24,12 @@ func PageComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content int
 
 // 渲染页面布局组件
 func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{} {
+
+	menu := models.Menu{}
+
+	getMenus := menu.List()
+
+	fmt.Println(getMenus)
 
 	component := &layout.Component{}
 	return component.SetTitle(dashboard.GetTitle()).
