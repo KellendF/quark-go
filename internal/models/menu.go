@@ -28,7 +28,7 @@ func (model *Menu) List() *Menu {
 }
 
 // 获取管理员权限菜单
-func (model *Menu) PermissionList(adminId int) *Menu {
+func (model *Menu) PermissionList(adminId float64) *Menu {
 	result := &Menu{}
 
 	if adminId == 1 {

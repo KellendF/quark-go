@@ -1,9 +1,9 @@
 package resources
 
 import (
+	"github.com/quarkcms/quark-go/pkg/ui/admin/resource"
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
 	"github.com/quarkcms/quark-go/pkg/ui/component/field"
-	"github.com/quarkcms/quark-go/pkg/ui/resource"
 )
 
 type User struct {

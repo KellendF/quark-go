@@ -1,10 +1,9 @@
 package dashboard
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"github.com/quarkcms/quark-go/pkg/ui/component/layout"
 	"github.com/quarkcms/quark-go/pkg/ui/component/page"
 	"github.com/quarkcms/quark-go/pkg/ui/component/pagecontainer"
@@ -12,11 +11,9 @@ import (
 
 // 渲染页面组件
 func PageComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{} {
-	component := &page.Component{}
-
 	layoutComponent := LayoutComponentRender(c, dashboard, content)
 
-	return component.
+	return (&page.Component{}).
 		SetTitle(dashboard.GetTitle()).
 		SetBody(layoutComponent).
 		JsonSerialize()
@@ -25,22 +22,22 @@ func PageComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content int
 // 渲染页面布局组件
 func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{} {
 
-	menu := models.Menu{}
+	// 获取登录管理员信息
+	admin := utils.Admin(c, "id")
 
-	getMenus := menu.List()
+	// 获取管理员菜单
+	getMenus := (&models.Menu{}).PermissionList(admin.(float64))
 
-	fmt.Println(getMenus)
-
-	component := &layout.Component{}
-	return component.SetTitle(dashboard.GetTitle()).
+	return (&layout.Component{}).SetTitle(dashboard.GetTitle()).
 		SetBody(PageContainerComponentRender(content)).
+		SetMenu(getMenus).
 		JsonSerialize()
 }
 
 // 渲染页面容器组件
 func PageContainerComponentRender(content interface{}) interface{} {
-	component := &pagecontainer.Component{}
-	return component.SetBody(content).JsonSerialize()
+
+	return (&pagecontainer.Component{}).SetBody(content).JsonSerialize()
 }
 
 // 渲染列表页组件
