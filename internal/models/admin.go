@@ -60,15 +60,15 @@ func (model *Admin) GetRoles(id float64) *ModelHasRole {
 func (model *Admin) GetMenus(adminId float64) interface{} {
 
 	menu := &Menu{}
-	var menu1 interface{}
+	var menus interface{}
 	var result interface{}
 	var resultKey int
 
-	menu1 = &Menu{}
+	menus = &Menu{}
 
 	if adminId == 1 {
-		menu.DB().Where("status = ?", 1).Where("guard_name", "admin").Order("sort asc").Find(&menu1)
-		result = menu1
+		menu.DB().Where("status = ?", 1).Where("guard_name", "admin").Order("sort asc").Find(&menus)
+		result = menus
 	} else {
 		var menuIds []float64
 		permissions := model.GetPermissionsViaRoles(adminId)
@@ -87,9 +87,9 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 			Where("id in (?)", menuIds).
 			Where("pid <> ?", 0).
 			Order("sort asc").
-			Find(&menu1)
+			Find(&menus)
 
-		for key, v := range menu1.([]map[string]interface{}) {
+		for key, v := range menus.([]map[string]interface{}) {
 			if v["pid"] != 0 {
 				pids1[key] = v["pid"].(float64)
 			}
