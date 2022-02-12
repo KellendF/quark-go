@@ -61,14 +61,12 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 
 	menu := &Menu{}
 	var menus interface{}
-	var result interface{}
-	var resultKey int
+	var menuKey int
 
 	menus = &Menu{}
 
 	if adminId == 1 {
 		menu.DB().Where("status = ?", 1).Where("guard_name", "admin").Order("sort asc").Find(&menus)
-		result = menus
 	} else {
 		var menuIds []float64
 		permissions := model.GetPermissionsViaRoles(adminId)
@@ -93,8 +91,7 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 			if v["pid"] != 0 {
 				pids1[key] = v["pid"].(float64)
 			}
-			resultKey = key
-			result.([]map[string]interface{})[resultKey] = v
+			menuKey = key
 		}
 
 		var pids2 []float64
@@ -114,8 +111,8 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 				pids2[key] = v["pid"].(float64)
 			}
 
-			resultKey = resultKey + key
-			result.([]map[string]interface{})[resultKey] = v
+			menuKey = menuKey + key
+			menus.([]map[string]interface{})[menuKey] = v
 		}
 
 		var menu3 interface{}
@@ -130,10 +127,10 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 			Find(&menu3)
 
 		for key, v := range menu3.([]map[string]interface{}) {
-			resultKey = resultKey + key
-			result.([]map[string]interface{})[resultKey] = v
+			menuKey = menuKey + key
+			menus.([]map[string]interface{})[menuKey] = v
 		}
 	}
 
-	return result
+	return menus
 }
