@@ -26,16 +26,3 @@ func (model *Menu) List() *Menu {
 
 	return result
 }
-
-// 获取管理员权限菜单
-func (model *Menu) PermissionList(adminId float64) *Menu {
-	result := &Menu{}
-
-	if adminId == 1 {
-		model.DB().Where("status = ?", 1).Find(&result)
-	} else {
-		model.DB().Where("status = ?", 1).Find(&result)
-	}
-
-	return result
-}

@@ -68,7 +68,7 @@ func (p *Login) Login(c *fiber.Ctx) error {
 	}
 
 	model := &models.Admin{}
-	admin := model.FindByUsername(request.Username)
+	admin := model.GetAdminViaUsername(request.Username)
 
 	// 检验账号和密码
 	if !hash.Check(admin.Password, request.Password) {

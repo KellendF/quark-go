@@ -23,14 +23,14 @@ func PageComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content int
 func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{} {
 
 	// 获取登录管理员信息
-	admin := utils.Admin(c, "id")
+	adminId := utils.Admin(c, "id")
 
 	// 获取管理员菜单
-	getMenus := (&models.Menu{}).PermissionList(admin.(float64))
+	(&models.Admin{}).GetMenus(adminId.(float64))
 
 	return (&layout.Component{}).SetTitle(dashboard.GetTitle()).
 		SetBody(PageContainerComponentRender(content)).
-		SetMenu(getMenus).
+		// SetMenu(getMenus).
 		JsonSerialize()
 }
 
