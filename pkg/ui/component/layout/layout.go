@@ -19,7 +19,6 @@ type Component struct {
 	IconfontUrl   string              `json:"iconfontUrl"`
 	Locale        string              `json:"locale"`
 	SiderWidth    int                 `json:"siderWidth"`
-	Collapsed     bool                `json:"collapsed"`
 	Menu          interface{}         `json:"menu"`
 	Footer        interface{}         `json:"footer"`
 	Body          interface{}         `json:"body"`
@@ -118,12 +117,6 @@ func (p *Component) SetLocale(locale string) *Component {
 // 侧边菜单宽度
 func (p *Component) SetSiderWidth(siderWidth int) *Component {
 	p.SiderWidth = siderWidth
-	return p
-}
-
-// 控制菜单的收起和展开
-func (p *Component) SetCollapsed(collapsed bool) *Component {
-	p.Collapsed = collapsed
 	return p
 }
 

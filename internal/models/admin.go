@@ -1,7 +1,11 @@
 package models
 
 import (
+	"strings"
+
+	"github.com/go-basic/uuid"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 )
 
 // 字段
@@ -60,10 +64,8 @@ func (model *Admin) GetRoles(id float64) *ModelHasRole {
 func (model *Admin) GetMenus(adminId float64) interface{} {
 
 	menu := &Menu{}
-	var menus interface{}
+	var menus []Menu
 	var menuKey int
-
-	menus = &Menu{}
 
 	if adminId == 1 {
 		menu.DB().Where("status = ?", 1).Where("guard_name", "admin").Order("sort asc").Find(&menus)
@@ -87,16 +89,15 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 			Order("sort asc").
 			Find(&menus)
 
-		for key, v := range menus.([]map[string]interface{}) {
-			if v["pid"] != 0 {
-				pids1[key] = v["pid"].(float64)
+		for key, v := range menus {
+			if v.Pid != 0 {
+				pids1[key] = v.Pid
 			}
 			menuKey = key
 		}
 
 		var pids2 []float64
-		var menu2 interface{}
-		menu2 = &Menu{}
+		var menu2 []Menu
 
 		// 二级查询列表
 		menu.DB().
@@ -106,17 +107,16 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 			Order("sort asc").
 			Find(&menu2)
 
-		for key, v := range menu2.([]map[string]interface{}) {
-			if v["pid"] != 0 {
-				pids2[key] = v["pid"].(float64)
+		for key, v := range menu2 {
+			if v.Pid != 0 {
+				pids2[key] = v.Pid
 			}
 
 			menuKey = menuKey + key
-			menus.([]map[string]interface{})[menuKey] = v
+			menus[menuKey] = v
 		}
 
-		var menu3 interface{}
-		menu3 = &Menu{}
+		var menu3 []Menu
 
 		// 一级查询列表
 		menu.DB().
@@ -126,11 +126,26 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 			Order("sort asc").
 			Find(&menu3)
 
-		for key, v := range menu3.([]map[string]interface{}) {
+		for key, v := range menu3 {
 			menuKey = menuKey + key
-			menus.([]map[string]interface{})[menuKey] = v
+			menus[menuKey] = v
 		}
 	}
 
-	return menus
+	for key, v := range menus {
+		menus[key].Key = uuid.New()
+		menus[key].Locale = strings.Replace(v.Path, "/", ".", -1)
+
+		if v.Show == 1 {
+			menus[key].HideInMenu = false
+		} else {
+			menus[key].HideInMenu = true
+		}
+
+		if v.Type == "engine" {
+			menus[key].Path = "/index?api=" + v.Path
+		}
+	}
+
+	return utils.ListToTree(utils.StructToMap(menus).([]interface{}), "id", "pid", "routes", 0)
 }

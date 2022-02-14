@@ -35,6 +35,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.3 // indirect
 	github.com/klauspost/compress v1.13.4 // indirect
+	github.com/satori/go.uuid v1.2.0
 	github.com/smartystreets/goconvey v1.7.2 // indirect
 	github.com/spf13/viper v1.10.1
 	github.com/valyala/bytebufferpool v1.0.0 // indirect

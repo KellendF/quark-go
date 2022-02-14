@@ -7,16 +7,19 @@ import (
 // 字段
 type Menu struct {
 	db.Model
-	Id        int    `json:"id"`
-	Name      string `json:"name"`
-	GuardName string `json:"guard_name"`
-	Icon      string `json:"icon"`
-	Type      string `json:"type"`
-	Pid       string `json:"pid"`
-	Sort      string `json:"sort"`
-	Path      string `json:"path"`
-	Show      string `json:"show"`
-	Status    string `json:"status"`
+	Key        string  `json:"key"`
+	Id         float64 `json:"id"`
+	Name       string  `json:"name"`
+	GuardName  string  `json:"guard_name"`
+	Icon       string  `json:"icon"`
+	Type       string  `json:"type"`
+	Pid        float64 `json:"pid"`
+	Sort       float64 `json:"sort"`
+	Path       string  `json:"path"`
+	Show       int     `json:"show"`
+	Status     bool    `json:"status"`
+	Locale     string  `json:"locale"`
+	HideInMenu bool    `json:"hideInMenu"`
 }
 
 // 获取菜单

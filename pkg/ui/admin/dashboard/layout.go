@@ -26,11 +26,18 @@ func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content i
 	adminId := utils.Admin(c, "id")
 
 	// 获取管理员菜单
-	(&models.Admin{}).GetMenus(adminId.(float64))
+	getMenus := (&models.Admin{}).GetMenus(adminId.(float64))
 
 	return (&layout.Component{}).SetTitle(dashboard.GetTitle()).
 		SetBody(PageContainerComponentRender(content)).
-		// SetMenu(getMenus).
+		SetContentWidth("Fluid").
+		SetMenu(getMenus).
+		SetFixSiderbar(true).
+		SetFixedHeader(true).
+		SetLayout("side").
+		SetSiderWidth(208).
+		SetLocale("zh-CN").
+		SetNavTheme("dark").
 		JsonSerialize()
 }
 
