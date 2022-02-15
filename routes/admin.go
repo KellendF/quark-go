@@ -22,23 +22,19 @@ var resourceService = map[string]resource.ResourceInterface{
 	"admin": &resources.Admin{},
 }
 
-// 后台路由
+// 路由
 func (p *Admin) Route(app *fiber.App) {
-
-	login := &controllers.Login{}
 	ag := app.Group("/api/admin")
-	ag.Get("/login", login.Show)
-	ag.Post("/login", login.Login)
-
+	ag.Get("/login", (&controllers.Login{}).Show)
+	ag.Post("/login", (&controllers.Login{}).Login)
 	ag.Get("/captcha", (&controllers.Captcha{}).Make)
 
-	registerRouteService(app)
+	registerService(app)
 }
 
-// 注册路由服务
-func registerRouteService(app *fiber.App) {
-	adminMiddleware := &middleware.AdminMiddleware{}
-	amg := app.Group("/api/admin", adminMiddleware.Handle)
+// 注册服务
+func registerService(app *fiber.App) {
+	amg := app.Group("/api/admin", (&middleware.AdminMiddleware{}).Handle)
 
 	// 仪表盘
 	amg.Get("/dashboard/:dashboard", func(c *fiber.Ctx) error {
