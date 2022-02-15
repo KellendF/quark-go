@@ -1,33 +1,42 @@
 package middleware
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/framework/token"
+	"github.com/quarkcms/quark-go/internal/models"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 )
 
 type AdminMiddleware struct{}
 
 // 后台中间件
 func (p *AdminMiddleware) Handle(c *fiber.Ctx) error {
-
-	// token认证
-	header := c.GetReqHeaders()
-	getToken := strings.Split(header["Authorization"], " ")
-
-	if len(getToken) != 2 {
+	guardName := utils.Admin(c, "guard_name")
+	if guardName != "admin" {
 		return c.SendStatus(401)
 	}
 
-	userInfo, err := token.Parse(getToken[1])
-	if err != nil {
-		fmt.Println(err)
+	// 管理员id
+	adminId := utils.Admin(c, "id")
+	if adminId == nil {
+		return c.SendStatus(401)
 	}
 
-	if userInfo["guard_name"] != "admin" {
-		return c.SendStatus(401)
+	if adminId.(float64) != 1 {
+		permissions := (&models.Admin{}).GetPermissionsViaRoles(adminId.(float64))
+		if permissions == nil {
+			return c.SendStatus(403)
+		}
+
+		hasPermission := false
+		for _, v := range permissions {
+			if "/"+v.Name == c.Path() {
+				hasPermission = true
+			}
+		}
+
+		if !hasPermission {
+			return c.SendStatus(403)
+		}
 	}
 
 	return c.Next()

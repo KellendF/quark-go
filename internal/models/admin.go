@@ -27,7 +27,7 @@ func (model *Admin) GetAdminViaUsername(username string) *Admin {
 }
 
 // 通过角色获取管理员权限
-func (model *Admin) GetPermissionsViaRoles(id float64) interface{} {
+func (model *Admin) GetPermissionsViaRoles(id float64) []Permission {
 	var roleIds []float64
 	var permissionIds []float64
 
@@ -46,10 +46,10 @@ func (model *Admin) GetPermissionsViaRoles(id float64) interface{} {
 	}
 
 	// 角色权限列表
-	permission := &Permission{}
-	permission.DB().Where("id in (?)", &permissionIds).Find(&permission)
+	var permissions []Permission
+	(&Permission{}).DB().Where("id in (?)", &permissionIds).Find(&permissions)
 
-	return permission
+	return permissions
 }
 
 // 获取管理员角色
@@ -73,9 +73,12 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 		var menuIds []float64
 		permissions := model.GetPermissionsViaRoles(adminId)
 
-		if permissions != nil {
-			for key, v := range permissions.([]map[string]float64) {
-				menuIds[key] = v["menu_id"]
+		// 转换map
+		getPermissions := utils.StructToMap(permissions).([]interface{})
+
+		if getPermissions != nil {
+			for key, v := range getPermissions {
+				menuIds[key] = v.(map[string]float64)["menu_id"]
 			}
 		}
 

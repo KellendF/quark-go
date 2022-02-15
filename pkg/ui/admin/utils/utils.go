@@ -9,20 +9,24 @@ import (
 	"github.com/quarkcms/quark-go/pkg/framework/token"
 )
 
-// 获取当前登录管理员信息
-func Admin(c *fiber.Ctx, field string) interface{} {
-
-	// token认证
+// 获取管理员Token
+func GetAdminToken(c *fiber.Ctx) string {
 	header := c.GetReqHeaders()
 	getToken := strings.Split(header["Authorization"], " ")
 
 	if len(getToken) != 2 {
-		return nil
+		return ""
 	}
 
-	userInfo, err := token.Parse(getToken[1])
+	return getToken[1]
+}
+
+// 获取当前登录管理员信息
+func Admin(c *fiber.Ctx, field string) interface{} {
+	getToken := GetAdminToken(c)
+	userInfo, err := token.Parse(getToken)
 	if err != nil {
-		fmt.Println(err)
+		return nil
 	}
 
 	return userInfo[field]
@@ -42,6 +46,21 @@ func ListToTree(list []interface{}, pk string, pid string, child string, root fl
 	}
 
 	return treeList
+}
+
+// Tree转换为有序列表
+func TreeToOrderedList(tree []interface{}, level int, field string, child string) []interface{} {
+	var list []interface{}
+	for _, v := range tree {
+		v.(map[string]string)[field] = strings.Repeat("—", level) + v.(map[string]string)[field]
+		if v.(map[string][]interface{})[child] != nil {
+			children := TreeToOrderedList(v.(map[string][]interface{})[child], level, field, child)
+			v = append(v.([]interface{}), children)
+		}
+		list = append(list, v)
+	}
+
+	return list
 }
 
 // struct转map
