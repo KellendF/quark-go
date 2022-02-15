@@ -2,15 +2,14 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/internal/http/controllers/tool"
+	"github.com/quarkcms/quark-go/internal/http/controllers"
 )
 
-// web路由
-func Web(app *fiber.App) {
-	tg := app.Group("/tool")
+type Web struct{}
 
-	captcha := &tool.Captcha{}
-	tg.Get("/captcha/getId", captcha.GetID)
-	tg.Get("/captcha/id/:id?", captcha.MakeByID)
-	tg.Get("/captcha/session", captcha.Make)
+// web路由
+func (p *Web) Route(app *fiber.App) {
+
+	// hello world
+	app.Get("/", (&controllers.Index{}).Index)
 }

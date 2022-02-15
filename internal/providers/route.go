@@ -12,16 +12,8 @@ type Route struct{}
 func (p *Route) Register(app *fiber.App) {
 
 	// 注册Admin路由
-	routes.Admin(app)
+	(&routes.Admin{}).Route(app)
 
 	// 注册Web路由
-	routes.Web(app)
-
-	resource := &Resource{}
-
-	// 加载仪表盘路由
-	resource.DashboardRoute(app)
-
-	// 加载资源路由
-	resource.ResourceRoute(app)
+	(&routes.Web{}).Route(app)
 }

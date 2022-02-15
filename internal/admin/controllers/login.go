@@ -1,8 +1,7 @@
-package resources
+package controllers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/internal/http/controllers/tool"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/hash"
 	"github.com/quarkcms/quark-go/pkg/framework/msg"
@@ -58,8 +57,7 @@ func (p *Login) Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	captcha := &tool.Captcha{}
-	if !captcha.Check(request.Captcha) {
+	if !(&Captcha{}).Check(request.Captcha) {
 		return msg.Error("验证码错误", msg.DEFAULT_URL)
 	}
 
