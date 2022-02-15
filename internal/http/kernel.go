@@ -17,12 +17,10 @@ func (p *Kernel) Run() {
 	})
 
 	// 中间件
-	appServiceInit := &middleware.AppServiceInit{}
-	app.Use(appServiceInit.Handle)
+	app.Use((&middleware.AppServiceInit{}).Handle)
 
 	// 路由
-	route := &providers.Route{}
-	route.Register(app)
+	(&providers.Route{}).Register(app)
 
 	app.Listen(config.Get("app.host").(string))
 }
