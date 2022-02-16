@@ -1,6 +1,11 @@
 package dashboard
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"fmt"
+	"reflect"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 // 资源结构体
 type Dashboard struct {
@@ -14,8 +19,8 @@ type DashboardInterface interface {
 	HandleInit(dashboard DashboardInterface)
 	SetTitle(title string)
 	GetTitle() string
-	Cards() interface{}
-	GetCards(dashboard DashboardInterface) interface{}
+	Cards(c *fiber.Ctx) []any
+	GetCards(c *fiber.Ctx, dashboard DashboardInterface) interface{}
 	Render(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{}
 	DashboardComponentRender(c *fiber.Ctx, dashboard DashboardInterface) interface{}
 }
@@ -49,45 +54,17 @@ func (p *Dashboard) GetSubTitle() string {
 }
 
 // 卡片列表
-func (p *Dashboard) Cards() interface{} {
+func (p *Dashboard) Cards(c *fiber.Ctx) []any {
 	return nil
 }
 
 // 获取卡片列表
-func (p *Dashboard) GetCards(dashboard DashboardInterface) interface{} {
+func (p *Dashboard) GetCards(c *fiber.Ctx, dashboard DashboardInterface) interface{} {
+	cards := dashboard.Cards(c)
+	for _, v := range cards {
 
-	// $cards = $this->cards();
+		fmt.Println(reflect.ValueOf(v))
+	}
 
-	// $colNum = 0;
-	// $rows = $cols = [];
-
-	// foreach ($cards as $key => $card) {
-	// 	$colNum = $colNum + $card->col;
-
-	// 	$cardItem = Card::body(
-	// 		$card->calculate($request)
-	// 	);
-
-	// 	$cols[] = Col::span($card->col)->body($cardItem);
-	// 	if($colNum%24 === 0) {
-	// 		$row = Row::gutter(8);
-	// 		if($key !== 1) {
-	// 			$row = $row->style(['marginTop' => '20px']);
-	// 		}
-	// 		$rows[] = $row->body($cols);
-	// 		$cols = [];
-	// 	}
-	// }
-
-	// if($cols) {
-	// 	$row = Row::gutter(8);
-	// 	if($colNum > 24) {
-	// 		$row = $row->style(['marginTop' => '20px']);
-	// 	}
-	// 	$rows[] = $row->body($cols);
-	// }
-
-	// return $rows;
-
-	return dashboard.Cards()
+	return cards
 }

@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Model结构体
+// 结构体
 type Model struct{}
 
 var conn *gorm.DB
@@ -25,8 +25,14 @@ func init() {
 	}
 }
 
-// 数据库实例
-func (model *Model) DB() *gorm.DB {
+// 实例
+func (p *Model) DB() *gorm.DB {
 
 	return conn
+}
+
+// 模型
+func (p *Model) Model(model interface{}) *gorm.DB {
+
+	return conn.Model(model)
 }

@@ -50,7 +50,7 @@ func PageContainerComponentRender(content interface{}) interface{} {
 // 渲染列表页组件
 func (p *Dashboard) DashboardComponentRender(c *fiber.Ctx, dashboard DashboardInterface) interface{} {
 
-	return p.GetCards(dashboard)
+	return p.GetCards(c, dashboard)
 }
 
 // 渲染列表页组件
