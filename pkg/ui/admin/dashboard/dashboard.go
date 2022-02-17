@@ -1,10 +1,8 @@
 package dashboard
 
 import (
-	"fmt"
-	"reflect"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/ui/component/statistic"
 )
 
 // 资源结构体
@@ -63,7 +61,7 @@ func (p *Dashboard) GetCards(c *fiber.Ctx, dashboard DashboardInterface) interfa
 	cards := dashboard.Cards(c)
 	for _, v := range cards {
 
-		fmt.Println(reflect.ValueOf(v))
+		v.(interface{ Calculate() *statistic.Component }).Calculate()
 	}
 
 	return cards

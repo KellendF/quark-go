@@ -1,7 +1,6 @@
 package metrics
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/component/statistic"
 	"gorm.io/gorm"
 )
@@ -12,7 +11,7 @@ type Value struct {
 }
 
 // 记录条数
-func (p *Value) Count(c *fiber.Ctx, DB *gorm.DB) *statistic.Component {
+func (p *Value) Count(DB *gorm.DB) *statistic.Component {
 	var count int64
 	DB.Count(&count)
 

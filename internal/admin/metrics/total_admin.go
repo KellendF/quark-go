@@ -1,10 +1,10 @@
 package metrics
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/metrics"
+	"github.com/quarkcms/quark-go/pkg/ui/component/statistic"
 )
 
 type TotalAdmin struct {
@@ -18,7 +18,7 @@ func (p *TotalAdmin) Init() {
 }
 
 // 计算数值
-func (p *TotalAdmin) Calculate(c *fiber.Ctx) interface{} {
+func (p *TotalAdmin) Calculate() *statistic.Component {
 
-	return p.Count(c, (&db.Model{}).Model(&models.Admin{})).SetValueStyle(map[string]string{"color": "#3f8600"})
+	return p.Count((&db.Model{}).Model(&models.Admin{})).SetValueStyle(map[string]string{"color": "#3f8600"})
 }
