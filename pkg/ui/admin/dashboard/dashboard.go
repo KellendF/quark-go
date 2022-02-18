@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/ui/component/card"
 	"github.com/quarkcms/quark-go/pkg/ui/component/statistic"
 )
 
@@ -17,6 +18,8 @@ type DashboardInterface interface {
 	HandleInit(dashboard DashboardInterface)
 	SetTitle(title string)
 	GetTitle() string
+	SetSubTitle(subTitle string)
+	GetSubTitle() string
 	Cards(c *fiber.Ctx) []any
 	GetCards(c *fiber.Ctx, dashboard DashboardInterface) interface{}
 	Render(c *fiber.Ctx, dashboard DashboardInterface, content interface{}) interface{}
@@ -59,10 +62,12 @@ func (p *Dashboard) Cards(c *fiber.Ctx) []any {
 // 获取卡片列表
 func (p *Dashboard) GetCards(c *fiber.Ctx, dashboard DashboardInterface) interface{} {
 	cards := dashboard.Cards(c)
-	for _, v := range cards {
+	var result []interface{}
 
-		v.(interface{ Calculate() *statistic.Component }).Calculate()
+	for _, v := range cards {
+		item := (&card.Component{}).Init().SetBody(v.(interface{ Calculate() *statistic.Component }).Calculate())
+		result = append(result, item)
 	}
 
-	return cards
+	return result
 }

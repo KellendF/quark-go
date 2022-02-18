@@ -14,7 +14,6 @@ func PageComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content int
 	layoutComponent := LayoutComponentRender(c, dashboard, content)
 
 	return (&page.Component{}).
-		SetTitle(dashboard.GetTitle()).
 		SetBody(layoutComponent).
 		JsonSerialize()
 }
@@ -28,8 +27,8 @@ func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content i
 	// 获取管理员菜单
 	getMenus := (&models.Admin{}).GetMenus(adminId.(float64))
 
-	return (&layout.Component{}).SetTitle(dashboard.GetTitle()).
-		SetBody(PageContainerComponentRender(content)).
+	return (&layout.Component{}).SetTitle("QuarkGo").
+		SetBody(PageContainerComponentRender(content, dashboard)).
 		SetContentWidth("Fluid").
 		SetMenu(getMenus).
 		SetFixSiderbar(true).
@@ -42,9 +41,11 @@ func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content i
 }
 
 // 渲染页面容器组件
-func PageContainerComponentRender(content interface{}) interface{} {
+func PageContainerComponentRender(content interface{}, dashboard DashboardInterface) interface{} {
 
-	return (&pagecontainer.Component{}).SetBody(content).JsonSerialize()
+	header := (&pagecontainer.PageHeader{}).Init().SetTitle(dashboard.GetTitle()).SetSubTitle(dashboard.GetSubTitle())
+
+	return (&pagecontainer.Component{}).SetHeader(header).SetBody(content).JsonSerialize()
 }
 
 // 渲染列表页组件
