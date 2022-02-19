@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"github.com/quarkcms/quark-go/pkg/ui/component/card"
 	"github.com/quarkcms/quark-go/pkg/ui/component/statistic"
 )
@@ -63,9 +64,16 @@ func (p *Dashboard) Cards(c *fiber.Ctx) []any {
 func (p *Dashboard) GetCards(c *fiber.Ctx, dashboard DashboardInterface) interface{} {
 	cards := dashboard.Cards(c)
 	var result []interface{}
+	var colNum float64 = 0
 
 	for _, v := range cards {
+
 		item := (&card.Component{}).Init().SetBody(v.(interface{ Calculate() *statistic.Component }).Calculate())
+
+		// struct转换map
+		vMap := utils.StructToMap(v).(map[string]interface{})
+		colNum = colNum + vMap["Col"].(float64)
+
 		result = append(result, item)
 	}
 
