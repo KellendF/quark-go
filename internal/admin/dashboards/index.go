@@ -20,5 +20,8 @@ func (dashboard *Index) Init() {
 func (dashboard *Index) Cards(c *fiber.Ctx) []any {
 	return []any{
 		&metrics.TotalAdmin{},
+		&metrics.TotalLog{},
+		&metrics.TotalPicture{},
+		&metrics.TotalFile{},
 	}
 }

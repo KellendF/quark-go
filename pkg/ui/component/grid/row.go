@@ -1,142 +1,77 @@
 package grid
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Row struct {
-	Component        string      `json:"component"`
-	Title            string      `json:"title"`
-	SubTitle         string      `json:"subTitle"`
-	Tip              string      `json:"tip"`
-	Extra            string      `json:"extra"`
-	Layout           string      `json:"layout"`
-	Loading          bool        `json:"loading"`
-	ColSpan          interface{} `json:"colSpan"`
-	Gutter           interface{} `json:"gutter"`
-	Split            string      `json:"split"`
-	Bordered         bool        `json:"bordered"`
-	Ghost            bool        `json:"ghost"`
-	HeaderBordered   bool        `json:"headerBordered"`
-	Collapsible      bool        `json:"collapsible"`
-	DefaultCollapsed bool        `json:"defaultCollapsed"`
-	Body             interface{} `json:"body"`
+	component.Element
+	Align   string      `json:"align"`
+	Gutter  interface{} `json:"gutter"`
+	Justify string      `json:"justify"`
+	Wrap    bool        `json:"wrap"`
+	Col     *Col        `json:"col"`
+	Body    interface{} `json:"body"`
 }
 
 // 初始化
-func (p *Component) Init() *Component {
-	p.Component = "card"
-	p.Layout = "default"
-	p.ColSpan = 24
-	p.Gutter = 0
+func (p *Row) Init() *Row {
+	p.Component = "row"
 
 	return p
 }
 
-// 设置标题文字
-func (p *Component) SetTitle(title string) *Component {
-	p.Title = title
+// Set style.
+func (p *Row) SetStyle(style map[string]interface{}) *Row {
+	p.Style = style
 
 	return p
 }
 
-// 设置二级标题文字
-func (p *Component) SetSubTitle(subTitle string) *Component {
-	p.SubTitle = subTitle
+// 垂直对齐方式
+func (p *Row) SetAlign(align string) *Row {
+	p.Align = align
 
 	return p
 }
 
-// 标题右侧图标 hover 提示信息
-func (p *Component) SetTip(tip string) *Component {
-	p.Tip = tip
-
-	return p
-}
-
-// 右上角自定义区域
-func (p *Component) SetExtra(extra string) *Component {
-	p.Extra = extra
-
-	return p
-}
-
-// 内容布局，支持垂直居中 default | center
-func (p *Component) SetLayout(layout string) *Component {
-	p.Layout = layout
-
-	return p
-}
-
-// 加载中，支持自定义 loading 样式
-func (p *Component) SetLoading(loading bool) *Component {
-	p.Loading = loading
-
-	return p
-}
-
-// 栅格布局宽度，24 栅格，支持指定宽度 px 或百分比, 支持响应式的对象写法 { xs: 8, sm: 16, md: 24}
-func (p *Component) SetColSpan(colSpan interface{}) *Component {
-	p.ColSpan = colSpan
-
-	return p
-}
-
-// 栅格布局宽度，24 栅格，支持指定宽度 px 或百分比, 支持响应式的对象写法 { xs: 8, sm: 16, md: 24}
-func (p *Component) SetGutter(gutter interface{}) *Component {
+// 栅格间隔，可以写成像素值或支持响应式的对象写法来设置水平间隔 { xs: 8, sm: 16, md: 24}。
+// 或者使用数组形式同时设置 [水平间距, 垂直间距]
+func (p *Row) SetGutter(gutter interface{}) *Row {
 	p.Gutter = gutter
 
 	return p
 }
 
-// 拆分卡片的方向,vertical | horizontal
-func (p *Component) SetSplit(split string) *Component {
-	p.Split = split
+// 水平排列方式，start | end | center | space-around | space-between
+func (p *Row) SetJustify(justify string) *Row {
+	p.Justify = justify
 
 	return p
 }
 
-// 是否有边框
-func (p *Component) SetBordered(bordered bool) *Component {
-	p.Bordered = bordered
+// 是否自动换行
+func (p *Row) SetWrap(wrap bool) *Row {
+	p.Wrap = wrap
 
 	return p
 }
 
-// 幽灵模式，即是否取消卡片内容区域的 padding 和 卡片的背景颜色。
-func (p *Component) SetGhost(ghost bool) *Component {
-	p.Ghost = ghost
+// 设置列
+func (p *Row) SetCol(col *Col) *Row {
+	p.Col = col
 
 	return p
 }
 
-// 页头是否有分割线
-func (p *Component) SetHeaderBordered(headerBordered bool) *Component {
-	p.HeaderBordered = headerBordered
-
-	return p
-}
-
-// 页头是否有分割线
-func (p *Component) SetCollapsible(collapsible bool) *Component {
-	p.Collapsible = collapsible
-
-	return p
-}
-
-// 默认折叠, 受控时无效
-func (p *Component) SetDefaultCollapsed(defaultCollapsed bool) *Component {
-	p.DefaultCollapsed = defaultCollapsed
-
-	return p
-}
-
-// 卡牌内容
-func (p *Component) SetBody(body interface{}) *Component {
+// 内容
+func (p *Row) SetBody(body interface{}) *Row {
 	p.Body = body
 
 	return p
 }
 
 // 组件json序列化
-func (p *Component) JsonSerialize() *Component {
-	p.Component = "card"
+func (p *Row) JsonSerialize() *Row {
+	p.Component = "row"
 
 	return p
 }

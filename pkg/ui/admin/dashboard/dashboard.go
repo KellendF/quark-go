@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"github.com/quarkcms/quark-go/pkg/ui/component/card"
+	"github.com/quarkcms/quark-go/pkg/ui/component/grid"
 	"github.com/quarkcms/quark-go/pkg/ui/component/statistic"
 )
 
@@ -63,19 +64,42 @@ func (p *Dashboard) Cards(c *fiber.Ctx) []any {
 // 获取卡片列表
 func (p *Dashboard) GetCards(c *fiber.Ctx, dashboard DashboardInterface) interface{} {
 	cards := dashboard.Cards(c)
-	var result []interface{}
-	var colNum float64 = 0
+	var cols []interface{}
+	var rows []interface{}
+	var colNum int = 0
 
-	for _, v := range cards {
+	for key, v := range cards {
 
 		item := (&card.Component{}).Init().SetBody(v.(interface{ Calculate() *statistic.Component }).Calculate())
 
 		// struct转换map
 		vMap := utils.StructToMap(v).(map[string]interface{})
-		colNum = colNum + vMap["Col"].(float64)
 
-		result = append(result, item)
+		// float64转换成int
+		col := int(vMap["Col"].(float64))
+
+		colInfo := (&grid.Col{}).Init().SetSpan(col).SetBody(item)
+		cols = append(cols, colInfo)
+
+		colNum = colNum + col
+
+		if colNum%24 == 0 {
+			row := (&grid.Row{}).Init().SetGutter(8).SetBody(cols)
+			if key != 1 {
+				row = row.SetStyle(map[string]interface{}{"marginTop": "20px"})
+			}
+			rows = append(rows, row)
+			cols = nil
+		}
 	}
 
-	return result
+	if cols != nil {
+		row := (&grid.Row{}).Init().SetGutter(8).SetBody(cols)
+		if colNum > 24 {
+			row = row.SetStyle(map[string]interface{}{"marginTop": "20px"})
+		}
+		rows = append(rows, row)
+	}
+
+	return rows
 }
