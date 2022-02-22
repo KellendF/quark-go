@@ -1,27 +1,27 @@
 package layout
 
 type Component struct {
-	Component     string              `json:"component"`
-	Cache         bool                `json:"cache"`
-	Title         string              `json:"title"`
-	Logo          string              `json:"logo"`
-	Loading       bool                `json:"loading"`
-	ContentStyle  map[string]string   `json:"contentStyle"`
-	HeaderActions []map[string]string `json:"headerActions"`
-	Layout        string              `json:"layout"`
-	HeaderTheme   string              `json:"headerTheme"`
-	SplitMenus    bool                `json:"splitMenus"`
-	ContentWidth  string              `json:"contentWidth"`
-	NavTheme      string              `json:"navTheme"`
-	PrimaryColor  string              `json:"primaryColor"`
-	FixedHeader   bool                `json:"fixedHeader"`
-	FixSiderbar   bool                `json:"fixSiderbar"`
-	IconfontUrl   string              `json:"iconfontUrl"`
-	Locale        string              `json:"locale"`
-	SiderWidth    int                 `json:"siderWidth"`
-	Menu          interface{}         `json:"menu"`
-	Footer        interface{}         `json:"footer"`
-	Body          interface{}         `json:"body"`
+	Component     string                   `json:"component"`
+	Cache         bool                     `json:"cache"`
+	Title         string                   `json:"title"`
+	Logo          interface{}              `json:"logo"`
+	Loading       bool                     `json:"loading"`
+	ContentStyle  map[string]string        `json:"contentStyle"`
+	HeaderActions []map[string]interface{} `json:"headerActions"`
+	Layout        string                   `json:"layout"`
+	HeaderTheme   string                   `json:"headerTheme"`
+	SplitMenus    bool                     `json:"splitMenus"`
+	ContentWidth  string                   `json:"contentWidth"`
+	NavTheme      string                   `json:"navTheme"`
+	PrimaryColor  string                   `json:"primaryColor"`
+	FixedHeader   bool                     `json:"fixedHeader"`
+	FixSiderbar   bool                     `json:"fixSiderbar"`
+	IconfontUrl   string                   `json:"iconfontUrl"`
+	Locale        string                   `json:"locale"`
+	SiderWidth    int                      `json:"siderWidth"`
+	Menu          interface{}              `json:"menu"`
+	Footer        interface{}              `json:"footer"`
+	Body          interface{}              `json:"body"`
 }
 
 // 是否缓存layout
@@ -37,7 +37,7 @@ func (p *Component) SetTitle(title string) *Component {
 }
 
 // layout 的左上角的 logo
-func (p *Component) SetLogo(logo string) *Component {
+func (p *Component) SetLogo(logo interface{}) *Component {
 	p.Logo = logo
 	return p
 }
@@ -55,7 +55,7 @@ func (p *Component) SetContentStyle(contentStyle map[string]string) *Component {
 }
 
 // layout 的头部行为
-func (p *Component) SetHeaderActions(headerActions []map[string]string) *Component {
+func (p *Component) SetHeaderActions(headerActions []map[string]interface{}) *Component {
 	p.HeaderActions = headerActions
 	return p
 }

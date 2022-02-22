@@ -1,6 +1,9 @@
 package descriptions
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
+	component.Element
 	Component  string      `json:"component"`
 	Title      string      `json:"title"`
 	Tooltip    string      `json:"tooltip"`
@@ -19,6 +22,18 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "descriptions"
+	p.Column = 1
+	p.Layout = "horizontal"
+	p.Colon = true
+	p.Size = "default"
+
+	return p
+}
+
+// Set style.
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
+	p.Style = style
+
 	return p
 }
 

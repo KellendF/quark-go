@@ -1,5 +1,7 @@
 package descriptions
 
+import "github.com/quarkcms/quark-go/pkg/ui/component/descriptions/fields"
+
 type Field struct {
 	Component string `json:"component"`
 }
@@ -11,15 +13,16 @@ func (p *Field) Init() *Field {
 	return p
 }
 
-// 标题栏旁的头像
-func (p *Field) text(label string) *Field {
-	p.label = label
-	return p
-}
+// text组件
+func (p *Field) Text(params ...string) *fields.Text {
 
-// 组件json序列化
-func (p *Field) JsonSerialize() *Field {
-	p.Component = "descriptionField"
+	fields := &fields.Text{}
 
-	return p
+	if len(params) == 1 {
+		fields = fields.Init().SetDataIndex(params[0]).SetLabel(params[0])
+	} else {
+		fields = fields.Init().SetDataIndex(params[0]).SetLabel(params[1])
+	}
+
+	return fields
 }

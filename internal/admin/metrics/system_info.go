@@ -1,29 +1,33 @@
 package metrics
 
 import (
-	"github.com/quarkcms/quark-go/internal/models"
-	"github.com/quarkcms/quark-go/pkg/framework/db"
+	"runtime"
+
+	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/metrics"
-	"github.com/quarkcms/quark-go/pkg/ui/component/statistic"
+	"github.com/quarkcms/quark-go/pkg/ui/component/descriptions"
 )
 
 type SystemInfo struct {
-	metrics.Value
+	metrics.Descriptions
 }
 
 // 初始化
 func (p *SystemInfo) Init() *SystemInfo {
-	p.Title = "团队信息"
+	p.Title = "系统信息"
 	p.Col = 12
 
 	return p
 }
 
 // 计算数值
-func (p *SystemInfo) Calculate() *statistic.Component {
+func (p *SystemInfo) Calculate() *descriptions.Component {
 
-	return p.
-		Init().
-		Count((&db.Model{}).Model(&models.Admin{})).
-		SetValueStyle(map[string]string{"color": "#3f8600"})
+	field := &descriptions.Field{}
+
+	return p.Init().Result([]interface{}{
+		field.Text("系统版本").SetValue("0.01"),
+		field.Text("服务器操作系统").SetValue(runtime.GOOS),
+		field.Text("Fiber版本").SetValue(fiber.Version),
+	})
 }

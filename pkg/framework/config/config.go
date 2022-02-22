@@ -11,6 +11,7 @@ var configs = make(map[string]interface{})
 func init() {
 	configs["app"] = config.App
 	configs["database"] = config.Database
+	configs["admin"] = config.Admin
 }
 
 // 设置值

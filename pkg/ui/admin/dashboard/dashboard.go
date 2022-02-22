@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"github.com/quarkcms/quark-go/pkg/ui/component/card"
+	"github.com/quarkcms/quark-go/pkg/ui/component/descriptions"
 	"github.com/quarkcms/quark-go/pkg/ui/component/grid"
 	"github.com/quarkcms/quark-go/pkg/ui/component/statistic"
 )
@@ -70,7 +71,21 @@ func (p *Dashboard) GetCards(c *fiber.Ctx, dashboard DashboardInterface) interfa
 
 	for key, v := range cards {
 
-		item := (&card.Component{}).Init().SetBody(v.(interface{ Calculate() *statistic.Component }).Calculate())
+		// 断言statistic组件类型
+		statistic, ok := v.(interface{ Calculate() *statistic.Component })
+		item := (&card.Component{}).Init()
+		if ok {
+			item = item.SetBody(statistic.Calculate())
+		} else {
+
+			// 断言descriptions组件类型
+			descriptions, ok := v.(interface {
+				Calculate() *descriptions.Component
+			})
+			if ok {
+				item = item.SetBody(descriptions.Calculate())
+			}
+		}
 
 		// struct转换map
 		vMap := utils.StructToMap(v).(map[string]interface{})
