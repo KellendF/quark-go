@@ -5,6 +5,7 @@ import (
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/config"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
+	"github.com/quarkcms/quark-go/pkg/ui/component/footer"
 	"github.com/quarkcms/quark-go/pkg/ui/component/layout"
 	"github.com/quarkcms/quark-go/pkg/ui/component/page"
 	"github.com/quarkcms/quark-go/pkg/ui/component/pagecontainer"
@@ -28,6 +29,12 @@ func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content i
 	// 获取管理员菜单
 	getMenus := (&models.Admin{}).GetMenus(adminId.(float64))
 
+	// 页脚
+	footer := (&footer.Component{}).
+		Init().
+		SetCopyright(config.Get("admin.copyright").(string)).
+		SetLinks(config.Get("admin.links").([]map[string]interface{}))
+
 	return (&layout.Component{}).SetTitle(config.Get("admin.name").(string)).
 		SetLogo(config.Get("admin.layout.logo")).
 		SetHeaderActions(config.Get("admin.layout.header_actions").([]map[string]interface{})).
@@ -44,6 +51,7 @@ func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content i
 		SetSiderWidth(config.Get("admin.layout.sider_width").(int)).
 		SetMenu(getMenus).
 		SetBody(PageContainerComponentRender(content, dashboard)).
+		SetFooter(footer).
 		JsonSerialize()
 }
 

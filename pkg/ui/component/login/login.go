@@ -1,14 +1,14 @@
 package login
 
 type Component struct {
-	Component   string              `json:"component"`
-	Api         string              `json:"api"`
-	Redirect    string              `json:"redirect"`
-	Title       string              `json:"title"`
-	Description string              `json:"description"`
-	CaptchaUrl  string              `json:"captchaUrl"`
-	Copyright   string              `json:"copyright"`
-	Links       []map[string]string `json:"links"`
+	Component   string                   `json:"component"`
+	Api         string                   `json:"api"`
+	Redirect    string                   `json:"redirect"`
+	Title       string                   `json:"title"`
+	Description string                   `json:"description"`
+	CaptchaUrl  string                   `json:"captchaUrl"`
+	Copyright   string                   `json:"copyright"`
+	Links       []map[string]interface{} `json:"links"`
 }
 
 // 登录接口
@@ -48,7 +48,7 @@ func (p *Component) SetCopyright(copyright string) *Component {
 }
 
 // 页脚友情链接
-func (p *Component) SetLinks(links []map[string]string) *Component {
+func (p *Component) SetLinks(links []map[string]interface{}) *Component {
 	p.Links = links
 	return p
 }

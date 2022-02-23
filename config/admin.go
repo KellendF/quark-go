@@ -10,6 +10,9 @@ var Admin = map[string]interface{}{
 	// QuarkAdmin App Name
 	"name": APP_NAME,
 
+	// QuarkAdmin Version
+	"version": "0.0.1",
+
 	// QuarkAdmin logo
 	"logo": APP_LOGO,
 

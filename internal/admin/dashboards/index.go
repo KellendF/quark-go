@@ -24,5 +24,6 @@ func (dashboard *Index) Cards(c *fiber.Ctx) []any {
 		&metrics.TotalPicture{},
 		&metrics.TotalFile{},
 		&metrics.SystemInfo{},
+		&metrics.TeamInfo{},
 	}
 }

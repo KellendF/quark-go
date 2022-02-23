@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
+	"github.com/quarkcms/quark-go/pkg/framework/config"
 	"github.com/quarkcms/quark-go/pkg/framework/hash"
 	"github.com/quarkcms/quark-go/pkg/framework/msg"
 	"github.com/quarkcms/quark-go/pkg/framework/token"
@@ -26,24 +27,11 @@ func (p *Login) Show(c *fiber.Ctx) error {
 	component := loginComponent.
 		SetApi("admin/login").
 		SetRedirect("/index?api=admin/dashboard/index").
-		SetTitle("QuarkGo").
-		SetDescription("信息丰富的世界里，唯一稀缺的就是人类的注意力").
+		SetTitle(config.Get("admin.name").(string)).
+		SetDescription(config.Get("admin.description").(string)).
 		SetCaptchaUrl("api/admin/captcha").
-		SetCopyright("版权所有").
-		SetLinks([]map[string]string{
-			{
-				"title": "迁安信息港",
-				"href":  "http://www.qa114.com/",
-			},
-			{
-				"title": "迁安人才网",
-				"href":  "http://www.qarc.cn",
-			},
-			{
-				"title": "深蓝科技",
-				"href":  "https://www.qasl.cn",
-			},
-		}).
+		SetCopyright(config.Get("admin.copyright").(string)).
+		SetLinks(config.Get("admin.links").([]map[string]interface{})).
 		JsonSerialize()
 
 	return c.JSON(component)
