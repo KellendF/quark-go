@@ -25,6 +25,13 @@ func (p *Component) Init() *Component {
 	return p
 }
 
+// Set style.
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
+	p.Style = style
+
+	return p
+}
+
 // 设置小数点
 func (p *Component) SetDecimalSeparator(decimalSeparator string) *Component {
 	p.DecimalSeparator = decimalSeparator

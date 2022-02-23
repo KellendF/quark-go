@@ -25,6 +25,13 @@ func (p *PageHeader) Init() *PageHeader {
 	return p
 }
 
+// Set style.
+func (p *PageHeader) SetStyle(style map[string]interface{}) *PageHeader {
+	p.Style = style
+
+	return p
+}
+
 // 标题栏旁的头像
 func (p *PageHeader) SetAvatar(avatar interface{}) *PageHeader {
 	p.Avatar = avatar

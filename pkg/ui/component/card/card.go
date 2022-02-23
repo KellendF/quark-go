@@ -33,6 +33,13 @@ func (p *Component) Init() *Component {
 	return p
 }
 
+// Set style.
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
+	p.Style = style
+
+	return p
+}
+
 // 设置标题文字
 func (p *Component) SetTitle(title string) *Component {
 	p.Title = title

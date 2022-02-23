@@ -137,7 +137,7 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 
 	for key, v := range menus {
 		menus[key].Key = uuid.New()
-		menus[key].Locale = strings.Replace(v.Path, "/", ".", -1)
+		menus[key].Locale = "menu" + strings.Replace(v.Path, "/", ".", -1)
 
 		if v.Show == 1 {
 			menus[key].HideInMenu = false

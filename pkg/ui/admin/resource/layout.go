@@ -16,6 +16,10 @@ func PageComponentRender(c *fiber.Ctx, resource ResourceInterface, content inter
 	layoutComponent := LayoutComponentRender(c, resource, content)
 
 	return (&page.Component{}).
+		Init().
+		SetStyle(map[string]interface{}{
+			"height": "100vh",
+		}).
 		SetBody(layoutComponent).
 		JsonSerialize()
 }
@@ -59,8 +63,7 @@ func LayoutComponentRender(c *fiber.Ctx, resource ResourceInterface, content int
 
 // 渲染页面容器组件
 func PageContainerComponentRender(content interface{}, resource ResourceInterface) interface{} {
-	component := &pagecontainer.Component{}
-	return component.SetBody(content).JsonSerialize()
+	return (&pagecontainer.Component{}).Init().SetBody(content).JsonSerialize()
 }
 
 // 渲染列表页组件

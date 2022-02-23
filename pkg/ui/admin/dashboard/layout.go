@@ -16,6 +16,10 @@ func PageComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content int
 	layoutComponent := LayoutComponentRender(c, dashboard, content)
 
 	return (&page.Component{}).
+		Init().
+		SetStyle(map[string]interface{}{
+			"height": "100vh",
+		}).
 		SetBody(layoutComponent).
 		JsonSerialize()
 }
@@ -60,7 +64,7 @@ func PageContainerComponentRender(content interface{}, dashboard DashboardInterf
 
 	header := (&pagecontainer.PageHeader{}).Init().SetTitle(dashboard.GetTitle()).SetSubTitle(dashboard.GetSubTitle())
 
-	return (&pagecontainer.Component{}).SetHeader(header).SetBody(content).JsonSerialize()
+	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(content).JsonSerialize()
 }
 
 // 渲染列表页组件

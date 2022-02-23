@@ -4,6 +4,7 @@ import "github.com/quarkcms/quark-go/pkg/ui/component"
 
 type Component struct {
 	component.Element
+	ComponentKey  string                   `json:"componentKey"`
 	Cache         bool                     `json:"cache"`
 	Title         string                   `json:"title"`
 	Logo          interface{}              `json:"logo"`
@@ -29,8 +30,17 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "layout"
+	p.Cache = true
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.ComponentKey = p.Key
+
+	return p
+}
+
+// Set style.
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
+	p.Style = style
 
 	return p
 }

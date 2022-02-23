@@ -28,6 +28,13 @@ func (p *Component) Init() *Component {
 	return p
 }
 
+// Set style.
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
+	p.Style = style
+
+	return p
+}
+
 // 内容区
 func (p *Component) SetContent(content interface{}) *Component {
 	p.Content = content

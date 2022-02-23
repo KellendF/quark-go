@@ -17,6 +17,13 @@ func (p *Component) Init() *Component {
 	return p
 }
 
+// Set style.
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
+	p.Style = style
+
+	return p
+}
+
 // 版权信息
 func (p *Component) SetCopyright(copyright string) *Component {
 	p.Copyright = copyright

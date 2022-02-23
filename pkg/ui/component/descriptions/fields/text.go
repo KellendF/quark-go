@@ -23,6 +23,13 @@ func (p *Text) Init() *Text {
 	return p
 }
 
+// Set style.
+func (p *Text) SetStyle(style map[string]interface{}) *Text {
+	p.Style = style
+
+	return p
+}
+
 // 内容的描述
 func (p *Text) SetLabel(label string) *Text {
 	p.Label = label

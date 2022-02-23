@@ -23,6 +23,13 @@ func (p *Component) Init() *Component {
 	return p
 }
 
+// Set style.
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
+	p.Style = style
+
+	return p
+}
+
 // 登录接口
 func (p *Component) SetApi(api string) *Component {
 	p.Api = api
