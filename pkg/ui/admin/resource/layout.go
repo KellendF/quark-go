@@ -63,7 +63,9 @@ func LayoutComponentRender(c *fiber.Ctx, resource ResourceInterface, content int
 
 // 渲染页面容器组件
 func PageContainerComponentRender(content interface{}, resource ResourceInterface) interface{} {
-	return (&pagecontainer.Component{}).Init().SetBody(content).JsonSerialize()
+	header := (&pagecontainer.PageHeader{}).Init().SetTitle(resource.GetTitle()).SetSubTitle(resource.GetSubTitle())
+
+	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(content).JsonSerialize()
 }
 
 // 渲染列表页组件

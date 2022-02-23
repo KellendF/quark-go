@@ -74,3 +74,9 @@ func (p *Login) Login(c *fiber.Ctx) error {
 
 	return msg.Success("登录成功", msg.DEFAULT_URL, data)
 }
+
+// 用户退出方法
+func (p *Login) Logout(c *fiber.Ctx) error {
+
+	return msg.Success("已退出", msg.DEFAULT_URL, msg.DEFAULT_DATA)
+}

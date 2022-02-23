@@ -4,7 +4,8 @@ import "github.com/gofiber/fiber/v2"
 
 // 资源结构体
 type Resource struct {
-	Title string
+	Title    string
+	SubTitle string
 }
 
 // 资源接口
@@ -13,6 +14,8 @@ type ResourceInterface interface {
 	HandleInit(resource ResourceInterface)
 	SetTitle(title string)
 	GetTitle() string
+	SetSubTitle(subTitle string)
+	GetSubTitle() string
 	Fields() interface{}
 	Actions() interface{}
 	Render(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{}
@@ -35,4 +38,14 @@ func (p *Resource) SetTitle(title string) {
 // 获取标题
 func (p *Resource) GetTitle() string {
 	return p.Title
+}
+
+// 设置子标题
+func (p *Resource) SetSubTitle(subTitle string) {
+	p.SubTitle = subTitle
+}
+
+// 获取子标题
+func (p *Resource) GetSubTitle() string {
+	return p.SubTitle
 }

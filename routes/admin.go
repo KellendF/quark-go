@@ -27,6 +27,7 @@ func (p *Admin) Route(app *fiber.App) {
 	ag := app.Group("/api/admin")
 	ag.Get("/login", (&controllers.Login{}).Show)
 	ag.Post("/login", (&controllers.Login{}).Login)
+	ag.Get("/logout", (&controllers.Login{}).Logout)
 	ag.Get("/captcha", (&controllers.Captcha{}).Make)
 
 	registerService(app)
