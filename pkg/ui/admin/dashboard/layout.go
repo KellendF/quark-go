@@ -35,7 +35,7 @@ func LayoutComponentRender(c *fiber.Ctx, dashboard DashboardInterface, content i
 		SetCopyright(config.Get("admin.copyright").(string)).
 		SetLinks(config.Get("admin.links").([]map[string]interface{}))
 
-	return (&layout.Component{}).SetTitle(config.Get("admin.name").(string)).
+	return (&layout.Component{}).Init().SetTitle(config.Get("admin.name").(string)).
 		SetLogo(config.Get("admin.layout.logo")).
 		SetHeaderActions(config.Get("admin.layout.header_actions").([]map[string]interface{})).
 		SetLayout(config.Get("admin.layout.layout").(string)).

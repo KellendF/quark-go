@@ -4,7 +4,6 @@ import "github.com/quarkcms/quark-go/pkg/ui/component"
 
 type Component struct {
 	component.Element
-	Component  string      `json:"component"`
 	Title      string      `json:"title"`
 	Tooltip    string      `json:"tooltip"`
 	Bordered   bool        `json:"bordered"`
@@ -26,6 +25,8 @@ func (p *Component) Init() *Component {
 	p.Layout = "horizontal"
 	p.Colon = true
 	p.Size = "default"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

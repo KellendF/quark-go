@@ -1,6 +1,9 @@
 package login
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
+	component.Element
 	Component   string                   `json:"component"`
 	Api         string                   `json:"api"`
 	Redirect    string                   `json:"redirect"`
@@ -9,6 +12,15 @@ type Component struct {
 	CaptchaUrl  string                   `json:"captchaUrl"`
 	Copyright   string                   `json:"copyright"`
 	Links       []map[string]interface{} `json:"links"`
+}
+
+// 初始化
+func (p *Component) Init() *Component {
+	p.Component = "login"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+
+	return p
 }
 
 // 登录接口

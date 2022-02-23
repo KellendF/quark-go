@@ -1,7 +1,9 @@
 package layout
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
-	Component     string                   `json:"component"`
+	component.Element
 	Cache         bool                     `json:"cache"`
 	Title         string                   `json:"title"`
 	Logo          interface{}              `json:"logo"`
@@ -22,6 +24,15 @@ type Component struct {
 	Menu          interface{}              `json:"menu"`
 	Footer        interface{}              `json:"footer"`
 	Body          interface{}              `json:"body"`
+}
+
+// 初始化
+func (p *Component) Init() *Component {
+	p.Component = "layout"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+
+	return p
 }
 
 // 是否缓存layout

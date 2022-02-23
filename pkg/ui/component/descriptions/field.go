@@ -1,14 +1,19 @@
 package descriptions
 
-import "github.com/quarkcms/quark-go/pkg/ui/component/descriptions/fields"
+import (
+	"github.com/quarkcms/quark-go/pkg/ui/component"
+	"github.com/quarkcms/quark-go/pkg/ui/component/descriptions/fields"
+)
 
 type Field struct {
-	Component string `json:"component"`
+	component.Element
 }
 
 // 初始化
 func (p *Field) Init() *Field {
 	p.Component = "descriptionField"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

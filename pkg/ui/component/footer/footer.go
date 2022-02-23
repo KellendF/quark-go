@@ -1,7 +1,9 @@
 package footer
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
-	Component string                   `json:"component"`
+	component.Element
 	Copyright string                   `json:"copyright"`
 	Links     []map[string]interface{} `json:"links"`
 }
@@ -9,6 +11,8 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "footer"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

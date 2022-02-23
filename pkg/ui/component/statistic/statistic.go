@@ -1,7 +1,9 @@
 package statistic
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
-	Component        string            `json:"component"`
+	component.Element
 	DecimalSeparator string            `json:"decimalSeparator"`
 	GroupSeparator   string            `json:"groupSeparator"`
 	Precision        int               `json:"precision"`
@@ -17,6 +19,8 @@ func (p *Component) Init() *Component {
 	p.Component = "statistic"
 	p.DecimalSeparator = "."
 	p.GroupSeparator = ","
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

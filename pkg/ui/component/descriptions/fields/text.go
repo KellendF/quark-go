@@ -1,7 +1,9 @@
 package fields
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Text struct {
-	Component string `json:"component"`
+	component.Element
 	Label     string `json:"label"`
 	Tooltip   string `json:"tooltip"`
 	Span      string `json:"span"`
@@ -15,6 +17,8 @@ type Text struct {
 func (p *Text) Init() *Text {
 	p.Component = "text"
 	p.ValueType = "text"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

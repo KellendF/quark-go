@@ -1,7 +1,9 @@
 package pagecontainer
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
-	Component          string              `json:"component"`
+	component.Element
 	Content            interface{}         `json:"content"`
 	ExtraContent       interface{}         `json:"extraContent"`
 	TabList            []map[string]string `json:"tabList"`
@@ -15,6 +17,15 @@ type Component struct {
 	Body               interface{}         `json:"body"`
 	WaterMarkProps     interface{}         `json:"waterMarkProps"`
 	TabProps           interface{}         `json:"tabProps"`
+}
+
+// 初始化
+func (p *Component) Init() *Component {
+	p.Component = "pageContainer"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+
+	return p
 }
 
 // 内容区

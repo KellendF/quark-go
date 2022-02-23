@@ -1,8 +1,18 @@
 package action
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
-	Component string `json:"component"`
-	Title     string `json:"title"`
+	component.Element
+	Title string `json:"title"`
+}
+
+// 初始化
+func (p *Component) Init() *Component {
+	p.Component = "layout"
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+
+	return p
 }
 
 // layout 的左上角 的 title

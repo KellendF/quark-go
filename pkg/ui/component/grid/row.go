@@ -16,6 +16,8 @@ type Row struct {
 func (p *Row) Init() *Row {
 	p.Component = "row"
 
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+
 	return p
 }
 

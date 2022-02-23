@@ -1,9 +1,20 @@
 package page
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
-	Component string      `json:"component"`
-	Title     string      `json:"title"`
-	Body      interface{} `json:"body"`
+	component.Element
+	Title string      `json:"title"`
+	Body  interface{} `json:"body"`
+}
+
+// 初始化
+func (p *Component) Init() *Component {
+	p.Component = "page"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+
+	return p
 }
 
 // 标题

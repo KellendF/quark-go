@@ -1,7 +1,9 @@
 package pagecontainer
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type PageHeader struct {
-	Component        string      `json:"component"`
+	component.Element
 	Avatar           interface{} `json:"avatar"`
 	BackIcon         interface{} `json:"backIcon"`
 	Breadcrumb       interface{} `json:"breadcrumb"`
@@ -17,6 +19,8 @@ type PageHeader struct {
 // 初始化
 func (p *PageHeader) Init() *PageHeader {
 	p.Component = "pageHeader"
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

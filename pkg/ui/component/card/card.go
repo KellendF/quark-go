@@ -1,7 +1,9 @@
 package card
 
+import "github.com/quarkcms/quark-go/pkg/ui/component"
+
 type Component struct {
-	Component        string      `json:"component"`
+	component.Element
 	Title            string      `json:"title"`
 	SubTitle         string      `json:"subTitle"`
 	Tip              string      `json:"tip"`
@@ -25,6 +27,8 @@ func (p *Component) Init() *Component {
 	p.Layout = "default"
 	p.ColSpan = 24
 	p.Gutter = 0
+
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
 }

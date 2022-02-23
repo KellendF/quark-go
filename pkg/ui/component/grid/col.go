@@ -27,6 +27,8 @@ func (p *Col) Init() *Col {
 	p.Pull = 0
 	p.Push = 0
 
+	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+
 	return p
 }
 
