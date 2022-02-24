@@ -19,7 +19,8 @@ var dashboardService = map[string]dashboard.DashboardInterface{
 
 // 资源
 var resourceService = map[string]resource.ResourceInterface{
-	"admin": &resources.Admin{},
+	"admin":            &resources.Admin{},
+	"merchantCategory": &resources.MerchantCategory{},
 }
 
 // 路由
