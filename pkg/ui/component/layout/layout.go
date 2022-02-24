@@ -32,7 +32,7 @@ func (p *Component) Init() *Component {
 	p.Component = "layout"
 	p.Cache = true
 
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.SetKey("layout", component.DEFAULT_CRYPT)
 	p.ComponentKey = p.Key
 
 	return p

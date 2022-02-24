@@ -16,6 +16,9 @@ func (p *Kernel) Run() {
 		AppName: config.Get("app.name").(string),
 	})
 
+	// 静态资源
+	app.Static("/", "./public")
+
 	// 中间件
 	app.Use((&middleware.AppServiceInit{}).Handle)
 

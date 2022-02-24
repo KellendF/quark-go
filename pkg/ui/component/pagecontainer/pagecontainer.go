@@ -23,7 +23,7 @@ type Component struct {
 func (p *Component) Init() *Component {
 	p.Component = "pageContainer"
 
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.SetKey("pageContainer", component.DEFAULT_CRYPT)
 
 	return p
 }

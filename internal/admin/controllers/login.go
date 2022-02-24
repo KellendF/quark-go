@@ -29,7 +29,7 @@ func (p *Login) Show(c *fiber.Ctx) error {
 		SetRedirect("/index?api=admin/dashboard/index").
 		SetTitle(config.Get("admin.name").(string)).
 		SetDescription(config.Get("admin.description").(string)).
-		SetCaptchaUrl("api/admin/captcha").
+		SetCaptchaUrl("/api/admin/captcha").
 		SetCopyright(config.Get("admin.copyright").(string)).
 		SetLinks(config.Get("admin.links").([]map[string]interface{})).
 		JsonSerialize()
