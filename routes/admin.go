@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/internal/admin/controllers"
 	"github.com/quarkcms/quark-go/internal/admin/dashboards"
-	"github.com/quarkcms/quark-go/internal/admin/middleware"
 	"github.com/quarkcms/quark-go/internal/admin/resources"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/http/controllers"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/http/middleware"
 )
 
 type Admin struct{}
