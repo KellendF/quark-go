@@ -10,6 +10,6 @@ type Resource struct {
 }
 
 // 列表页组件渲染
-func (p *Resource) IndexComponentRender(c *fiber.Ctx, componentInterface interface{}) interface{} {
+func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 	return "xxxx"
 }

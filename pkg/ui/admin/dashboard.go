@@ -16,8 +16,8 @@ type Dashboard struct {
 	SubTitle string
 }
 
-// 获取卡片列表
-func (p *Dashboard) GetCards(c *fiber.Ctx, dashboard interface{}) interface{} {
+// 解析卡片组件
+func (p *Dashboard) CardComponentRender(c *fiber.Ctx, dashboard interface{}) interface{} {
 	cards := dashboard.(interface{ Cards(*fiber.Ctx) []any }).Cards(c)
 	var cols []interface{}
 	var rows []interface{}
@@ -74,9 +74,9 @@ func (p *Dashboard) GetCards(c *fiber.Ctx, dashboard interface{}) interface{} {
 }
 
 // 仪表盘组件渲染
-func (p *Dashboard) DashboardComponentRender(c *fiber.Ctx, componentInterface interface{}) interface{} {
+func (p *Dashboard) DashboardComponentRender(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 
-	return componentInterface.(interface {
-		GetCards(*fiber.Ctx, interface{}) interface{}
-	}).GetCards(c, componentInterface)
+	return resourceInstance.(interface {
+		CardComponentRender(*fiber.Ctx, interface{}) interface{}
+	}).CardComponentRender(c, resourceInstance)
 }

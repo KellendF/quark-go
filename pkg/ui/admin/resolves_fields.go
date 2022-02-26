@@ -1,6 +1,6 @@
 package admin
 
 // 列表行为
-func (p *Resource) IndexFields(resource interface{}) interface{} {
-	return resource.(interface{ Fields() interface{} }).Fields()
+func (p *Resource) IndexFields(resourceInstance interface{}) interface{} {
+	return resourceInstance.(interface{ Fields() interface{} }).Fields()
 }

@@ -15,8 +15,10 @@ import (
 type Layout struct{}
 
 // 页面组件渲染
-func (p *Layout) PageComponentRender(c *fiber.Ctx, componentInterface interface{}, content interface{}) interface{} {
-	layoutComponent := p.LayoutComponentRender(c, componentInterface, content)
+func (p *Layout) PageComponentRender(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{} {
+	layoutComponent := resourceInstance.(interface {
+		LayoutComponentRender(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{}
+	}).LayoutComponentRender(c, resourceInstance, content)
 
 	return (&page.Component{}).
 		Init().
@@ -28,7 +30,7 @@ func (p *Layout) PageComponentRender(c *fiber.Ctx, componentInterface interface{
 }
 
 // 页面布局组件渲染
-func (p *Layout) LayoutComponentRender(c *fiber.Ctx, componentInterface interface{}, content interface{}) interface{} {
+func (p *Layout) LayoutComponentRender(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{} {
 
 	// 获取登录管理员信息
 	adminId := utils.Admin(c, "id")
@@ -59,19 +61,21 @@ func (p *Layout) LayoutComponentRender(c *fiber.Ctx, componentInterface interfac
 		SetLocale(config.Get("admin.layout.locale").(string)).
 		SetSiderWidth(config.Get("admin.layout.sider_width").(int)).
 		SetMenu(getMenus).
-		SetBody(p.PageContainerComponentRender(content, componentInterface)).
+		SetBody(resourceInstance.(interface {
+			PageContainerComponentRender(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{}
+		}).PageContainerComponentRender(c, resourceInstance, content)).
 		SetFooter(footer)
 }
 
 // 页面容器组件渲染
-func (p *Layout) PageContainerComponentRender(content interface{}, componentInterface interface{}) interface{} {
-	component := componentInterface.(interface{ Init() interface{} }).Init()
+func (p *Layout) PageContainerComponentRender(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{} {
+	resource := resourceInstance.(interface{ Init() interface{} }).Init()
 
 	// struct转换map
-	componentMap := utils.StructToMap(component)
+	resourceMap := utils.StructToMap(resource)
 
-	title := componentMap.(map[string]interface{})["Title"].(string)
-	subTitle := componentMap.(map[string]interface{})["SubTitle"].(string)
+	title := resourceMap.(map[string]interface{})["Title"].(string)
+	subTitle := resourceMap.(map[string]interface{})["SubTitle"].(string)
 
 	header := (&pagecontainer.PageHeader{}).Init().SetTitle(title).SetSubTitle(subTitle)
 
@@ -79,7 +83,9 @@ func (p *Layout) PageContainerComponentRender(content interface{}, componentInte
 }
 
 // 组件渲染
-func (p *Layout) Render(c *fiber.Ctx, componentInterface interface{}, content interface{}) interface{} {
+func (p *Layout) Render(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{} {
 
-	return p.PageComponentRender(c, componentInterface, content)
+	return resourceInstance.(interface {
+		PageComponentRender(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{}
+	}).PageComponentRender(c, resourceInstance, content)
 }
