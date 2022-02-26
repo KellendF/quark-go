@@ -12,7 +12,6 @@ type Index struct {
 
 // 初始化
 func (p *Index) Init() interface{} {
-
 	p.Title = "仪表盘"
 
 	return p

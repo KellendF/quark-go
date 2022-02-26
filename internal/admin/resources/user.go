@@ -12,7 +12,6 @@ type User struct {
 
 // 初始化
 func (p *User) Init() interface{} {
-
 	p.Title = "测试的标题"
 
 	return p
@@ -20,7 +19,6 @@ func (p *User) Init() interface{} {
 
 // 字段
 func (p *User) Fields() interface{} {
-
 	field := &field.Component{}
 
 	return []interface{}{
@@ -31,7 +29,6 @@ func (p *User) Fields() interface{} {
 
 // 资源行为
 func (p *User) Actions() interface{} {
-
 	action := &action.Component{}
 
 	return []interface{}{

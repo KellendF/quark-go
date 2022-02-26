@@ -12,7 +12,6 @@ type MerchantCategory struct {
 
 // 初始化
 func (p *MerchantCategory) Init() interface{} {
-
 	p.Title = "测试的标题"
 
 	return p
@@ -20,7 +19,6 @@ func (p *MerchantCategory) Init() interface{} {
 
 // 字段
 func (p *MerchantCategory) Fields() interface{} {
-
 	field := &field.Component{}
 
 	return []interface{}{
@@ -31,7 +29,6 @@ func (p *MerchantCategory) Fields() interface{} {
 
 // 资源行为
 func (p *MerchantCategory) Actions() interface{} {
-
 	action := &action.Component{}
 
 	return []interface{}{

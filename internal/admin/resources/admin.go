@@ -19,7 +19,6 @@ func (p *Admin) Init() interface{} {
 
 // 字段
 func (p *Admin) Fields() interface{} {
-
 	field := &field.Component{}
 
 	return []interface{}{
@@ -30,7 +29,6 @@ func (p *Admin) Fields() interface{} {
 
 // 资源行为
 func (p *Admin) Actions() interface{} {
-
 	action := &action.Component{}
 
 	return []interface{}{
