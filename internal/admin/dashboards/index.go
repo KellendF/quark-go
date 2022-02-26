@@ -11,13 +11,15 @@ type Index struct {
 }
 
 // 初始化
-func (dashboard *Index) Init() {
+func (p *Index) Init() interface{} {
 
-	dashboard.Title = "仪表盘"
+	p.Title = "仪表盘"
+
+	return p
 }
 
 // 内容
-func (dashboard *Index) Cards(c *fiber.Ctx) []any {
+func (p *Index) Cards(c *fiber.Ctx) []any {
 	return []any{
 		&metrics.TotalAdmin{},
 		&metrics.TotalLog{},

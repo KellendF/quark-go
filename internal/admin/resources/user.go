@@ -10,6 +10,14 @@ type User struct {
 	admin.Resource
 }
 
+// 初始化
+func (p *User) Init() interface{} {
+
+	p.Title = "测试的标题"
+
+	return p
+}
+
 // 字段
 func (p *User) Fields() interface{} {
 

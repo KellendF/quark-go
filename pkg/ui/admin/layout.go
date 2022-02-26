@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/config"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"github.com/quarkcms/quark-go/pkg/ui/component/footer"
 	"github.com/quarkcms/quark-go/pkg/ui/component/layout"
 	"github.com/quarkcms/quark-go/pkg/ui/component/page"
@@ -30,10 +31,10 @@ func (p *Layout) PageComponentRender(c *fiber.Ctx, componentInterface interface{
 func (p *Layout) LayoutComponentRender(c *fiber.Ctx, componentInterface interface{}, content interface{}) interface{} {
 
 	// 获取登录管理员信息
-	// adminId := utils.Admin(c, "id")
+	adminId := utils.Admin(c, "id")
 
 	// 获取管理员菜单
-	getMenus := (&models.Admin{}).GetMenus(1)
+	getMenus := (&models.Admin{}).GetMenus(adminId.(float64))
 
 	// 页脚
 	footer := (&footer.Component{}).
@@ -64,21 +65,13 @@ func (p *Layout) LayoutComponentRender(c *fiber.Ctx, componentInterface interfac
 
 // 页面容器组件渲染
 func (p *Layout) PageContainerComponentRender(content interface{}, componentInterface interface{}) interface{} {
-	var title string = ""
-	var subTitle string = ""
-	dashboardComponent, ok := componentInterface.(*Dashboard)
+	component := componentInterface.(interface{ Init() interface{} }).Init()
 
-	if ok {
-		title = dashboardComponent.Title
-		subTitle = dashboardComponent.SubTitle
-	} else {
-		resourceComponent, ok := componentInterface.(*Resource)
+	// struct转换map
+	componentMap := utils.StructToMap(component)
 
-		if ok {
-			title = resourceComponent.Title
-			subTitle = resourceComponent.SubTitle
-		}
-	}
+	title := componentMap.(map[string]interface{})["Title"].(string)
+	subTitle := componentMap.(map[string]interface{})["SubTitle"].(string)
 
 	header := (&pagecontainer.PageHeader{}).Init().SetTitle(title).SetSubTitle(subTitle)
 
@@ -87,11 +80,6 @@ func (p *Layout) PageContainerComponentRender(content interface{}, componentInte
 
 // 组件渲染
 func (p *Layout) Render(c *fiber.Ctx, componentInterface interface{}, content interface{}) interface{} {
-
-	// 初始化资源
-	componentInterface.(interface {
-		Init()
-	}).Init()
 
 	return p.PageComponentRender(c, componentInterface, content)
 }

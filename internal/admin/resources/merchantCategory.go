@@ -11,9 +11,11 @@ type MerchantCategory struct {
 }
 
 // 初始化
-func (p *MerchantCategory) Init() {
+func (p *MerchantCategory) Init() interface{} {
 
 	p.Title = "测试的标题"
+
+	return p
 }
 
 // 字段

@@ -11,9 +11,10 @@ type Admin struct {
 }
 
 // 初始化
-func (p *Admin) Init() {
-
+func (p *Admin) Init() interface{} {
 	p.Title = "测试的标题"
+
+	return p
 }
 
 // 字段
