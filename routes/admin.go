@@ -1,26 +1,23 @@
 package routes
 
 import (
+	"reflect"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/controllers"
 	"github.com/quarkcms/quark-go/internal/admin/dashboards"
 	"github.com/quarkcms/quark-go/internal/admin/middleware"
 	"github.com/quarkcms/quark-go/internal/admin/resources"
-	"github.com/quarkcms/quark-go/pkg/ui/admin/dashboard"
-	"github.com/quarkcms/quark-go/pkg/ui/admin/resource"
 )
 
 type Admin struct{}
 
-// 仪表盘
-var dashboardService = map[string]dashboard.DashboardInterface{
-	"index": &dashboards.Index{},
-}
-
-// 资源
-var resourceService = map[string]resource.ResourceInterface{
-	"admin":            &resources.Admin{},
-	"merchantCategory": &resources.MerchantCategory{},
+// providers
+var providers = []interface{}{
+	&dashboards.Index{},
+	&resources.Admin{},
+	&resources.MerchantCategory{},
 }
 
 // 路由
@@ -41,24 +38,57 @@ func registerService(app *fiber.App) {
 	// 仪表盘
 	amg.Get("/dashboard/:dashboard", func(c *fiber.Ctx) error {
 		var component interface{}
-		providers := dashboardService
-		for key, provider := range providers {
-			if key == c.Params("dashboard") {
-				component = provider.Render(c, provider, provider.DashboardComponentRender(c, provider))
+		for _, provider := range providers {
+
+			providerName := reflect.TypeOf(provider).String()
+
+			// 包含字符串
+			if find := strings.Contains(providerName, "*dashboards."); find {
+				structName := strings.Replace(providerName, "*dashboards.", "", -1)
+
+				if strings.ToLower(structName) == strings.ToLower(c.Params("dashboard")) {
+
+					// 断言DashboardComponentRender方法
+					dashboardComponent := provider.(interface {
+						DashboardComponentRender(*fiber.Ctx, interface{}) interface{}
+					}).DashboardComponentRender(c, provider)
+
+					// 断言Render方法
+					component = provider.(interface {
+						Render(*fiber.Ctx, interface{}, interface{}) interface{}
+					}).Render(c, provider, dashboardComponent)
+				}
 			}
 		}
+
 		return c.JSON(component)
 	})
 
 	// 资源
 	amg.Get("/:resource/index", func(c *fiber.Ctx) error {
 		var component interface{}
-		providers := resourceService
-		for key, provider := range providers {
-			if key == c.Params("resource") {
-				component = provider.Render(c, provider, provider.IndexComponentRender())
+		for _, provider := range providers {
+			providerName := reflect.TypeOf(provider).String()
+
+			// 包含字符串
+			if find := strings.Contains(providerName, "*resources."); find {
+				structName := strings.Replace(providerName, "*resources.", "", -1)
+
+				if strings.ToLower(structName) == strings.ToLower(c.Params("resource")) {
+
+					// 断言IndexComponentRender方法
+					indexComponent := provider.(interface {
+						IndexComponentRender(*fiber.Ctx, interface{}) interface{}
+					}).IndexComponentRender(c, provider)
+
+					// 断言Render方法
+					component = provider.(interface {
+						Render(*fiber.Ctx, interface{}, interface{}) interface{}
+					}).Render(c, provider, indexComponent)
+				}
 			}
 		}
+
 		return c.JSON(component)
 	})
 }

@@ -1,13 +1,13 @@
 package resources
 
 import (
-	"github.com/quarkcms/quark-go/pkg/ui/admin/resource"
+	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
 	"github.com/quarkcms/quark-go/pkg/ui/component/field"
 )
 
 type Admin struct {
-	resource.Resource
+	admin.Resource
 }
 
 // 初始化

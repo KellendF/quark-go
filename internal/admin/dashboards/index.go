@@ -3,11 +3,11 @@ package dashboards
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/metrics"
-	"github.com/quarkcms/quark-go/pkg/ui/admin/dashboard"
+	"github.com/quarkcms/quark-go/pkg/ui/admin"
 )
 
 type Index struct {
-	dashboard.Dashboard
+	admin.Dashboard
 }
 
 // 初始化

@@ -1,19 +1,21 @@
-package resource
+package admin
 
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/config"
-	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"github.com/quarkcms/quark-go/pkg/ui/component/footer"
 	"github.com/quarkcms/quark-go/pkg/ui/component/layout"
 	"github.com/quarkcms/quark-go/pkg/ui/component/page"
 	"github.com/quarkcms/quark-go/pkg/ui/component/pagecontainer"
 )
 
-// 渲染页面组件
-func PageComponentRender(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
-	layoutComponent := LayoutComponentRender(c, resource, content)
+// 结构体
+type Layout struct{}
+
+// 页面组件渲染
+func (p *Layout) PageComponentRender(c *fiber.Ctx, componentInterface interface{}, content interface{}) interface{} {
+	layoutComponent := p.LayoutComponentRender(c, componentInterface, content)
 
 	return (&page.Component{}).
 		Init().
@@ -24,14 +26,14 @@ func PageComponentRender(c *fiber.Ctx, resource ResourceInterface, content inter
 		JsonSerialize()
 }
 
-// 渲染页面布局组件
-func LayoutComponentRender(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
+// 页面布局组件渲染
+func (p *Layout) LayoutComponentRender(c *fiber.Ctx, componentInterface interface{}, content interface{}) interface{} {
 
 	// 获取登录管理员信息
-	adminId := utils.Admin(c, "id")
+	// adminId := utils.Admin(c, "id")
 
 	// 获取管理员菜单
-	getMenus := (&models.Admin{}).GetMenus(adminId.(float64))
+	getMenus := (&models.Admin{}).GetMenus(1)
 
 	// 页脚
 	footer := (&footer.Component{}).
@@ -56,28 +58,40 @@ func LayoutComponentRender(c *fiber.Ctx, resource ResourceInterface, content int
 		SetLocale(config.Get("admin.layout.locale").(string)).
 		SetSiderWidth(config.Get("admin.layout.sider_width").(int)).
 		SetMenu(getMenus).
-		SetBody(PageContainerComponentRender(content, resource)).
-		SetFooter(footer).
-		JsonSerialize()
+		SetBody(p.PageContainerComponentRender(content, componentInterface)).
+		SetFooter(footer)
 }
 
-// 渲染页面容器组件
-func PageContainerComponentRender(content interface{}, resource ResourceInterface) interface{} {
-	header := (&pagecontainer.PageHeader{}).Init().SetTitle(resource.GetTitle()).SetSubTitle(resource.GetSubTitle())
+// 页面容器组件渲染
+func (p *Layout) PageContainerComponentRender(content interface{}, componentInterface interface{}) interface{} {
+	var title string = ""
+	var subTitle string = ""
+	dashboardComponent, ok := componentInterface.(*Dashboard)
 
-	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(content).JsonSerialize()
+	if ok {
+		title = dashboardComponent.Title
+		subTitle = dashboardComponent.SubTitle
+	} else {
+		resourceComponent, ok := componentInterface.(*Resource)
+
+		if ok {
+			title = resourceComponent.Title
+			subTitle = resourceComponent.SubTitle
+		}
+	}
+
+	header := (&pagecontainer.PageHeader{}).Init().SetTitle(title).SetSubTitle(subTitle)
+
+	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(content)
 }
 
-// 渲染列表页组件
-func (p *Resource) IndexComponentRender() interface{} {
-	return "xxxx"
-}
-
-// 渲染列表页组件
-func (p *Resource) Render(c *fiber.Ctx, resource ResourceInterface, content interface{}) interface{} {
+// 组件渲染
+func (p *Layout) Render(c *fiber.Ctx, componentInterface interface{}, content interface{}) interface{} {
 
 	// 初始化资源
-	resource.HandleInit(resource)
+	componentInterface.(interface {
+		Init()
+	}).Init()
 
-	return PageComponentRender(c, resource, content)
+	return p.PageComponentRender(c, componentInterface, content)
 }
