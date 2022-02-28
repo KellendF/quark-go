@@ -1,8 +1,13 @@
 package main
 
 import (
+	"embed"
+
 	"github.com/quarkcms/quark-go/internal/http"
 )
+
+//go:embed assets/*
+var assets embed.FS
 
 func main() {
 
@@ -10,5 +15,5 @@ func main() {
 	kernel := &http.Kernel{}
 
 	// 启动服务
-	kernel.Run()
+	kernel.Run(assets)
 }
