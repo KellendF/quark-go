@@ -10,6 +10,7 @@ type Resource struct {
 	Layout
 	Title    string
 	SubTitle string
+	PerPage  int
 	Model    *gorm.DB
 }
 

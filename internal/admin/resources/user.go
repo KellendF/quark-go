@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
 	"github.com/quarkcms/quark-go/pkg/ui/component/field"
@@ -18,7 +19,7 @@ func (p *User) Init() interface{} {
 }
 
 // 字段
-func (p *User) Fields() interface{} {
+func (p *User) Fields(c *fiber.Ctx) interface{} {
 	field := &field.Component{}
 
 	return []interface{}{
@@ -28,7 +29,7 @@ func (p *User) Fields() interface{} {
 }
 
 // 资源行为
-func (p *User) Actions() interface{} {
+func (p *User) Actions(c *fiber.Ctx) interface{} {
 	action := &action.Component{}
 
 	return []interface{}{

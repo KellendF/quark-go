@@ -9,5 +9,4 @@ import (
 var Providers = []interface{}{
 	&dashboards.Index{},
 	&resources.Admin{},
-	&resources.MerchantCategory{},
 }

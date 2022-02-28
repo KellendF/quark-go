@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
@@ -14,14 +15,21 @@ type Admin struct {
 
 // 初始化
 func (p *Admin) Init() interface{} {
+
+	// 标题
 	p.Title = "管理员"
+
+	// 模型
 	p.Model = (&db.Model{}).Model(&models.Admin{})
+
+	// 分页
+	p.PerPage = 10
 
 	return p
 }
 
 // 字段
-func (p *Admin) Fields() interface{} {
+func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 	field := &field.Component{}
 
 	return []interface{}{
@@ -31,7 +39,7 @@ func (p *Admin) Fields() interface{} {
 }
 
 // 资源行为
-func (p *Admin) Actions() interface{} {
+func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 	action := &action.Component{}
 
 	return []interface{}{
