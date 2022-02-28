@@ -1,6 +1,8 @@
 package admin
 
 import (
+	"reflect"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/config"
@@ -71,11 +73,9 @@ func (p *Layout) LayoutComponentRender(c *fiber.Ctx, resourceInstance interface{
 func (p *Layout) PageContainerComponentRender(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{} {
 	resource := resourceInstance.(interface{ Init() interface{} }).Init()
 
-	// struct转换map
-	resourceMap := utils.StructToMap(resource)
-
-	title := resourceMap.(map[string]interface{})["Title"].(string)
-	subTitle := resourceMap.(map[string]interface{})["SubTitle"].(string)
+	value := reflect.ValueOf(resource).Elem()
+	title := value.FieldByName("Title").String()
+	subTitle := value.FieldByName("SubTitle").String()
 
 	header := (&pagecontainer.PageHeader{}).Init().SetTitle(title).SetSubTitle(subTitle)
 

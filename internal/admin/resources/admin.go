@@ -1,6 +1,8 @@
 package resources
 
 import (
+	"github.com/quarkcms/quark-go/internal/models"
+	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
 	"github.com/quarkcms/quark-go/pkg/ui/component/field"
@@ -12,7 +14,8 @@ type Admin struct {
 
 // 初始化
 func (p *Admin) Init() interface{} {
-	p.Title = "测试的标题"
+	p.Title = "管理员"
+	p.Model = (&db.Model{}).Model(&models.Admin{})
 
 	return p
 }

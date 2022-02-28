@@ -12,7 +12,7 @@ type MerchantCategory struct {
 
 // 初始化
 func (p *MerchantCategory) Init() interface{} {
-	p.Title = "测试的标题"
+	p.Title = "商家分类"
 
 	return p
 }

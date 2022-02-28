@@ -1,12 +1,21 @@
 package admin
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
+)
 
-// 资源结构体
+// 结构体
 type Resource struct {
 	Layout
 	Title    string
 	SubTitle string
+	Model    *gorm.DB
+}
+
+// 获取模型
+func (p *Resource) NewModel(c *fiber.Ctx, resourceInstance interface{}) *gorm.DB {
+	return resourceInstance.(*Resource).Model
 }
 
 // 列表页组件渲染
