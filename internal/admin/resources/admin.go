@@ -6,7 +6,6 @@ import (
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
-	"github.com/quarkcms/quark-go/pkg/ui/component/field"
 )
 
 type Admin struct {
@@ -30,11 +29,11 @@ func (p *Admin) Init() interface{} {
 
 // 字段
 func (p *Admin) Fields(c *fiber.Ctx) interface{} {
-	field := &field.Component{}
+	field := &admin.Field{}
 
 	return []interface{}{
-		field.SetTitle("1").JsonSerialize(),
-		field.SetTitle("2").JsonSerialize(),
+		field.Text("username", "用户名"),
+		field.Text("nickname", "昵称"),
 	}
 }
 

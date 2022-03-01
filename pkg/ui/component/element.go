@@ -17,7 +17,7 @@ const DEFAULT_KEY = ""
 const DEFAULT_CRYPT = true
 
 // 设置Key
-func (p *Element) SetKey(key string, crypt bool) {
+func (p *Element) SetKey(key string, crypt bool) *Element {
 
 	if key == "" {
 		key = uuid.New()
@@ -30,4 +30,6 @@ func (p *Element) SetKey(key string, crypt bool) {
 	}
 
 	p.Key = key
+
+	return p
 }

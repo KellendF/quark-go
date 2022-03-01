@@ -1,4 +1,4 @@
-package field
+package form
 
 import "github.com/quarkcms/quark-go/pkg/ui/component"
 
@@ -9,7 +9,7 @@ type Component struct {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "field"
+	p.Component = "from"
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
@@ -31,7 +31,7 @@ func (p *Component) SetTitle(title string) *Component {
 
 // 组件json序列化
 func (p *Component) JsonSerialize() *Component {
-	p.Component = "field"
+	p.Component = "from"
 
 	return p
 }
