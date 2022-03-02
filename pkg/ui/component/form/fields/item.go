@@ -1,6 +1,9 @@
 package fields
 
-import "github.com/quarkcms/quark-go/pkg/ui/component"
+import (
+	"github.com/quarkcms/quark-go/pkg/ui/component"
+	"github.com/quarkcms/quark-go/pkg/ui/component/table"
+)
 
 type Item struct {
 	component.Element
@@ -710,14 +713,25 @@ func (p *Item) SetColumn(column interface{}) *Item {
  * @return void
  */
 func (p *Item) TransformToColumn() interface{} {
+	column := (&table.Column{}).
+		Init().
+		SetTitle(p.Label).
+		SetAttribute(p.Name)
+
 	switch p.Component {
 	case "textField":
+		column = column.SetValueType("text")
 	case "selectField":
+		column = column.SetValueType("select")
 	case "radioField":
+		column = column.SetValueType("radio")
 	case "switchField":
+		column = column.SetValueType("select")
 	case "imageField":
+		column = column.SetValueType("image")
 	default:
+		column = column.SetValueType(p.Component)
 	}
 
-	return ""
+	return column
 }

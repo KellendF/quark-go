@@ -29,6 +29,9 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "table"
+	p.RowKey = "id"
+	p.Api = ""
+	p.ApiType = "GET"
 
 	p.SetKey("table", false)
 
@@ -292,7 +295,7 @@ func (p *Component) SetPagination(current int, pageSize int, total int, defaultC
  * @param  null|number  polling
  * @return p
  */
-func (p *Component) polling(polling int) *Component {
+func (p *Component) SetPolling(polling int) *Component {
 	p.Polling = polling
 
 	return p

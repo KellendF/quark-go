@@ -35,7 +35,11 @@ func (p *Resource) IndexColumns(c *fiber.Ctx, resourceInstance interface{}) inte
 		}).IsShownOnIndex()
 
 		if isShownOnIndex {
-			columns = append(columns, v)
+			column := v.(interface {
+				TransformToColumn() interface{}
+			}).TransformToColumn()
+
+			columns = append(columns, column)
 		}
 	}
 

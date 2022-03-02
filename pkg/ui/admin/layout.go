@@ -71,13 +71,15 @@ func (p *Layout) LayoutComponentRender(c *fiber.Ctx, resourceInstance interface{
 
 // 页面容器组件渲染
 func (p *Layout) PageContainerComponentRender(c *fiber.Ctx, resourceInstance interface{}, content interface{}) interface{} {
-	resource := resourceInstance.(interface{ Init() interface{} }).Init()
 
-	value := reflect.ValueOf(resource).Elem()
+	value := reflect.ValueOf(resourceInstance).Elem()
 	title := value.FieldByName("Title").String()
 	subTitle := value.FieldByName("SubTitle").String()
 
-	header := (&pagecontainer.PageHeader{}).Init().SetTitle(title).SetSubTitle(subTitle)
+	header := (&pagecontainer.PageHeader{}).
+		Init().
+		SetTitle(title).
+		SetSubTitle(subTitle)
 
 	return (&pagecontainer.Component{}).Init().SetHeader(header).SetBody(content)
 }

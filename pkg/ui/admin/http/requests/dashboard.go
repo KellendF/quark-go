@@ -22,15 +22,18 @@ func (p *Dashboard) Resource(c *fiber.Ctx) error {
 
 			if strings.ToLower(structName) == strings.ToLower(c.Params("dashboard")) {
 
+				// 初始化实例
+				dashboardInstance := provider.(interface{ Init() interface{} }).Init()
+
 				// 断言DashboardComponentRender方法
 				dashboardComponent := provider.(interface {
 					DashboardComponentRender(*fiber.Ctx, interface{}) interface{}
-				}).DashboardComponentRender(c, provider)
+				}).DashboardComponentRender(c, dashboardInstance)
 
 				// 断言Render方法
 				component = provider.(interface {
 					Render(*fiber.Ctx, interface{}, interface{}) interface{}
-				}).Render(c, provider, dashboardComponent)
+				}).Render(c, dashboardInstance, dashboardComponent)
 			}
 		}
 	}

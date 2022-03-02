@@ -4,6 +4,7 @@ import "github.com/quarkcms/quark-go/pkg/ui/component"
 
 type Column struct {
 	component.Element
+	ComponentKey  string      `json:"componentKey"`
 	Title         string      `json:"title"`
 	Attribute     string      `json:"attribute"`
 	Align         string      `json:"align"`
@@ -29,6 +30,10 @@ type Column struct {
 // 初始化
 func (p *Column) Init() *Column {
 	p.Component = "column"
+	p.Align = "left"
+	p.Editable = false
+	p.Actions = false
+	p.Filters = false
 
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
@@ -60,8 +65,11 @@ func (p *Column) SetTitle(title string) *Column {
  * @return p
  */
 func (p *Column) SetAttribute(attribute string) *Column {
+	p.SetKey(attribute, false)
+	p.ComponentKey = attribute
 	p.DataIndex = attribute
 	p.Attribute = attribute
+
 	return p
 }
 
