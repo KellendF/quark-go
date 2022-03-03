@@ -50,7 +50,6 @@ func (p *Resource) IndexToolBar(c *fiber.Ctx, resourceInstance interface{}) inte
 
 // 列表页组件渲染
 func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface{}, data interface{}) interface{} {
-
 	var component interface{}
 
 	// 列表标题
@@ -82,14 +81,14 @@ func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface
 		Elem().
 		FieldByName("PerPage").Interface()
 
-	// 不分页，直接返回lists
+	// 不分页，直接返回数据
 	if reflect.TypeOf(perPage).String() != "int" {
 		component = table.SetDatasource(data)
 	} else {
-		items := data.(map[string]interface{})["items"]
 		current := data.(map[string]interface{})["currentPage"]
 		perPage := data.(map[string]interface{})["perPage"]
 		total := data.(map[string]interface{})["total"]
+		items := data.(map[string]interface{})["items"]
 
 		component = table.SetPagination(current.(int), perPage.(int), int(total.(int64)), 1).SetDatasource(items)
 	}
