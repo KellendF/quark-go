@@ -277,14 +277,12 @@ func (p *Component) SetDatasource(datasource interface{}) *Component {
  * @return p
  */
 func (p *Component) SetPagination(current int, pageSize int, total int, defaultCurrent int) *Component {
-	var pagination map[string]int
-
-	pagination["defaultCurrent"] = defaultCurrent
-	pagination["current"] = current
-	pagination["pageSize"] = pageSize
-	pagination["total"] = total
-
-	p.Pagination = pagination
+	p.Pagination = map[string]int{
+		"current":        current,
+		"pageSize":       pageSize,
+		"total":          total,
+		"defaultCurrent": defaultCurrent,
+	}
 
 	return p
 }
