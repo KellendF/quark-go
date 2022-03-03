@@ -733,5 +733,7 @@ func (p *Item) TransformToColumn() interface{} {
 		column = column.SetValueType(p.Component)
 	}
 
+	// todo
+
 	return column
 }

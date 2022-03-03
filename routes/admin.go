@@ -4,7 +4,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/http/controllers"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/http/middleware"
-	"github.com/quarkcms/quark-go/pkg/ui/admin/http/requests"
 )
 
 type Admin struct{}
@@ -18,6 +17,6 @@ func (p *Admin) Route(app *fiber.App) {
 	ag.Get("/captcha", (&controllers.Captcha{}).Make)
 
 	amg := app.Group("/api/admin", (&middleware.AdminMiddleware{}).Handle)
-	amg.Get("/dashboard/:dashboard", (&requests.Dashboard{}).Resource) // 仪表盘
-	amg.Get("/:resource/index", (&requests.ResourceIndex{}).Resource)  // 资源
+	amg.Get("/dashboard/:dashboard", (&controllers.Dashboard{}).Handle) // 仪表盘
+	amg.Get("/:resource/index", (&controllers.ResourceIndex{}).Handle)  // 资源
 }
