@@ -37,7 +37,13 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 	}
 }
 
-// 资源行为
+// 搜索
+func (p *Admin) Searches(c *fiber.Ctx) interface{} {
+
+	return ""
+}
+
+// 行为
 func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 	action := &action.Component{}
 
