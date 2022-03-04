@@ -45,7 +45,7 @@ func (p *Resource) IndexExtraRender(c *fiber.Ctx, resourceInstance interface{}) 
 
 // 列表页工具栏
 func (p *Resource) IndexToolBar(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	return (&table.ToolBar{}).Init().SetTitle(p.IndexTitle(c, resourceInstance))
+	return (&table.ToolBar{}).Init().SetTitle(p.IndexTitle(c, resourceInstance)).SetActions(p.IndexActions(c, resourceInstance))
 }
 
 // 列表页组件渲染

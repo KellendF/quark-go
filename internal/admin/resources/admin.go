@@ -2,10 +2,10 @@ package resources
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
-	"github.com/quarkcms/quark-go/pkg/ui/component/action"
 )
 
 type Admin struct {
@@ -45,10 +45,7 @@ func (p *Admin) Searches(c *fiber.Ctx) interface{} {
 
 // 行为
 func (p *Admin) Actions(c *fiber.Ctx) interface{} {
-	action := &action.Component{}
-
 	return []interface{}{
-		action.SetTitle("1").JsonSerialize(),
-		action.SetTitle("2").JsonSerialize(),
+		(&actions.CreateLink{}).Init().SetOnlyOnIndex(true),
 	}
 }

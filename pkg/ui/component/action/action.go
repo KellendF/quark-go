@@ -30,6 +30,9 @@ type Component struct {
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "action"
+	p.Size = "default"
+	p.Type = "default"
+
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 
 	return p
@@ -38,6 +41,18 @@ func (p *Component) Init() *Component {
 // Set style.
 func (p *Component) SetStyle(style map[string]interface{}) *Component {
 	p.Style = style
+
+	return p
+}
+
+/**
+ * 设置按钮文字
+ *
+ * @param  string  block
+ * @return p
+ */
+func (p *Component) SetLabel(label string) *Component {
+	p.Label = label
 
 	return p
 }
