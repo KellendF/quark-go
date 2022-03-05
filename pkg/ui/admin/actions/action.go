@@ -2,10 +2,10 @@ package actions
 
 type Action struct {
 	Name                  string      `json:"name"`
-	Reload                interface{} `json:"reload"`
+	Reload                string      `json:"reload"`
 	ActionType            string      `json:"actionType"`
 	SubmitForm            string      `json:"submitForm"`
-	Icon                  interface{} `json:"icon"`
+	Icon                  string      `json:"icon"`
 	Type                  string      `json:"type"`
 	Size                  string      `json:"size"`
 	WithLoading           bool        `json:"withLoading"`
@@ -49,7 +49,7 @@ func (p *Action) GetName() string {
  *
  * @return string
  */
-func (p *Action) GetReload() interface{} {
+func (p *Action) GetReload() string {
 	return p.Reload
 }
 
@@ -123,7 +123,7 @@ func (p *Action) GetWithLoading() bool {
  *
  * @return string
  */
-func (p *Action) GetIcon() interface{} {
+func (p *Action) GetIcon() string {
 	return p.Icon
 }
 
@@ -134,6 +134,33 @@ func (p *Action) GetIcon() interface{} {
  */
 func (p *Action) GetFields() interface{} {
 	return p.Fields
+}
+
+/**
+ * 确认标题
+ *
+ * @return mixed
+ */
+func (p *Action) GetConfirmTitle() string {
+	return p.ConfirmTitle
+}
+
+/**
+ * 确认文字
+ *
+ * @return mixed
+ */
+func (p *Action) GetConfirmText() string {
+	return p.ConfirmText
+}
+
+/**
+ * 确认类型
+ *
+ * @return mixed
+ */
+func (p *Action) GetConfirmType() string {
+	return p.ConfirmType
 }
 
 /**

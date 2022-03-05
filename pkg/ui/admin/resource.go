@@ -16,6 +16,7 @@ type Resource struct {
 	PerPage      interface{}
 	IndexPolling int
 	Model        *gorm.DB
+	WithExport   bool
 }
 
 // 获取模型
@@ -65,15 +66,24 @@ func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface
 	// 列表页工具栏
 	indexToolBar := p.IndexToolBar(c, resourceInstance)
 
+	// 列表页表格列
+	indexColumns := p.IndexColumns(c, resourceInstance)
+
+	// 列表页批量操作
+	indexTableAlertActions := p.IndexTableAlertActions(c, resourceInstance)
+
+	// 列表页搜索栏
+	indexSearches := p.IndexSearches(c, resourceInstance)
+
 	table := (&table.Component{}).
 		Init().
 		SetPolling(int(indexPolling)).
 		SetTitle(title).
 		SetTableExtraRender(indexExtraRender).
 		SetToolBar(indexToolBar).
-		SetColumns(p.IndexColumns(c, resourceInstance)).
-		SetBatchActions("").
-		SetSearches("")
+		SetColumns(indexColumns).
+		SetBatchActions(indexTableAlertActions).
+		SetSearches(indexSearches)
 
 	// 获取分页
 	perPage := reflect.

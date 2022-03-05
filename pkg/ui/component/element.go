@@ -8,7 +8,9 @@ import (
 )
 
 type Element struct {
-	Key       string                 `json:"key"`
+	Key          string `json:"key"`
+	ComponentKey string `json:"componentKey"`
+
 	Component string                 `json:"component"`
 	Style     map[string]interface{} `json:"style"`
 }
@@ -30,6 +32,7 @@ func (p *Element) SetKey(key string, crypt bool) *Element {
 	}
 
 	p.Key = key
+	p.ComponentKey = key
 
 	return p
 }

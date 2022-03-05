@@ -8,7 +8,7 @@ type Link struct {
 }
 
 // 初始化
-func (p *Link) ActionInit() interface{} {
+func (p *Link) ParentInit() interface{} {
 	p.ActionType = "link"
 	p.Target = "_self"
 

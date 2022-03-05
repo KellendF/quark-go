@@ -3,6 +3,7 @@ package resources
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
+	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
@@ -39,8 +40,9 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 
 // 搜索
 func (p *Admin) Searches(c *fiber.Ctx) interface{} {
-
-	return ""
+	return []interface{}{
+		(&searches.Input{}).Init("username", "用户名"),
+	}
 }
 
 // 行为

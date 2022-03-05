@@ -11,8 +11,8 @@ type CreateLink struct {
 
 // 初始化
 func (p *CreateLink) Init() *CreateLink {
-	// 初始化行为
-	p.ActionInit()
+	// 初始化父结构体
+	p.ParentInit()
 	p.Name = "创建"
 
 	return p
