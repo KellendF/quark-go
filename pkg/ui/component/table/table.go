@@ -4,26 +4,26 @@ import "github.com/quarkcms/quark-go/pkg/ui/component"
 
 type Component struct {
 	component.Element
-	RowKey              string            `json:"rowKey"`
-	Api                 string            `json:"api"`
-	ApiType             string            `json:"apiType"`
-	TableLayout         string            `json:"tableLayout"`
-	HeaderTitle         string            `json:"headerTitle"`
-	Columns             interface{}       `json:"columns"`
-	RowSelection        interface{}       `json:"rowSelection"`
-	Options             []map[string]bool `json:"options"`
-	AutoBuildSearchFrom bool              `json:"autoBuildSearchFrom"`
-	Search              interface{}       `json:"search"`
-	BatchActions        interface{}       `json:"batchActions"`
-	DateFormatter       string            `json:"dateFormatter"`
-	ColumnEmptyText     string            `json:"columnEmptyText"`
-	ToolBar             interface{}       `json:"toolBar"`
-	TableExtraRender    interface{}       `json:"tableExtraRender"`
-	Scroll              interface{}       `json:"scroll"`
-	Striped             bool              `json:"striped"`
-	Datasource          interface{}       `json:"datasource"`
-	Pagination          interface{}       `json:"pagination"`
-	Polling             int               `json:"polling"`
+	RowKey              string          `json:"rowKey"`
+	Api                 string          `json:"api"`
+	ApiType             string          `json:"apiType"`
+	TableLayout         string          `json:"tableLayout"`
+	HeaderTitle         string          `json:"headerTitle"`
+	Columns             interface{}     `json:"columns"`
+	RowSelection        interface{}     `json:"rowSelection"`
+	Options             map[string]bool `json:"options"`
+	AutoBuildSearchFrom bool            `json:"autoBuildSearchFrom"`
+	Search              interface{}     `json:"search"`
+	BatchActions        interface{}     `json:"batchActions"`
+	DateFormatter       string          `json:"dateFormatter"`
+	ColumnEmptyText     string          `json:"columnEmptyText"`
+	ToolBar             interface{}     `json:"toolBar"`
+	TableExtraRender    interface{}     `json:"tableExtraRender"`
+	Scroll              interface{}     `json:"scroll"`
+	Striped             bool            `json:"striped"`
+	Datasource          interface{}     `json:"datasource"`
+	Pagination          interface{}     `json:"pagination"`
+	Polling             int             `json:"polling"`
 }
 
 // 初始化
@@ -32,6 +32,9 @@ func (p *Component) Init() *Component {
 	p.RowKey = "id"
 	p.Api = ""
 	p.ApiType = "GET"
+	p.Options = map[string]bool{
+		"fullScreen": true, "reload": true, "setting": true,
+	}
 
 	p.SetKey("table", false)
 
@@ -165,7 +168,7 @@ func (p *Component) SetRowSelection(rowSelection interface{}) *Component {
  * @param  array|bool  options
  * @return p
  */
-func (p *Component) SetOptions(options []map[string]bool) *Component {
+func (p *Component) SetOptions(options map[string]bool) *Component {
 	p.Options = options
 
 	return p
