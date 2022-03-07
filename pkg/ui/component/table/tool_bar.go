@@ -9,7 +9,6 @@ type ToolBar struct {
 	Description  string      `json:"description"`
 	Search       interface{} `json:"search"`
 	Actions      interface{} `json:"actions"`
-	Settings     interface{} `json:"settings"`
 	Filter       interface{} `json:"filter"`
 	MultipleLine bool        `json:"multipleLine"`
 	Menu         interface{} `json:"menu"`
@@ -88,18 +87,6 @@ func (p *ToolBar) SetAction(callback interface{}) *ToolBar {
  */
 func (p *ToolBar) SetActions(actions interface{}) *ToolBar {
 	p.Actions = actions
-
-	return p
-}
-
-/**
- * 设置区
- *
- * @param  array  settings
- * @return p
- */
-func (p *ToolBar) SetSettings(settings interface{}) *ToolBar {
-	p.Settings = settings
 
 	return p
 }

@@ -38,7 +38,6 @@ func (p *Component) Init() *Component {
 		"fullScreen": true, "reload": true, "setting": true,
 	}
 	p.RowSelection = []interface{}{}
-
 	p.SetKey("table", false)
 
 	return p

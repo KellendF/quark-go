@@ -8,11 +8,10 @@ import (
 )
 
 type Element struct {
-	Key          string `json:"key"`
-	ComponentKey string `json:"componentKey"`
-
-	Component string                 `json:"component"`
-	Style     map[string]interface{} `json:"style"`
+	Key          string                 `json:"key"`
+	ComponentKey string                 `json:"componentKey"`
+	Component    string                 `json:"component"`
+	Style        map[string]interface{} `json:"style"`
 }
 
 const DEFAULT_KEY = ""
