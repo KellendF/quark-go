@@ -8,7 +8,6 @@ type ToolBar struct {
 	SubTitle     string      `json:"subTitle"`
 	Description  string      `json:"description"`
 	Search       interface{} `json:"search"`
-	Action       interface{} `json:"action"`
 	Actions      interface{} `json:"actions"`
 	Settings     interface{} `json:"settings"`
 	Filter       interface{} `json:"filter"`

@@ -1,10 +1,11 @@
 package actions
 
+import "github.com/gofiber/fiber/v2"
+
 type Link struct {
 	Action
-	ActionType string `json:"actionType"`
-	Href       string `json:"href"`
-	Target     string `json:"target"`
+	Href   string `json:"href"`
+	Target string `json:"target"`
 }
 
 // 初始化
@@ -20,7 +21,7 @@ func (p *Link) ParentInit() interface{} {
  *
  * @return string
  */
-func (p *Link) GetHref() string {
+func (p *Link) GetHref(c *fiber.Ctx) string {
 	return p.Href
 }
 
@@ -29,6 +30,6 @@ func (p *Link) GetHref() string {
  *
  * @return string
  */
-func (p *Link) GetTarget() string {
+func (p *Link) GetTarget(c *fiber.Ctx) string {
 	return p.Target
 }

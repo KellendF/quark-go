@@ -40,6 +40,7 @@ func (p *SearchItem) SetStyle(style map[string]interface{}) *SearchItem {
  */
 func (p *SearchItem) SetLabel(label string) *SearchItem {
 	p.Label = label
+	p.Placeholder = "请输入" + p.Label
 
 	return p
 }

@@ -3,6 +3,7 @@ package admin
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
+	"github.com/quarkcms/quark-go/pkg/ui/component/space"
 )
 
 // 列表行为
@@ -16,12 +17,12 @@ func (p *Resource) IndexActions(c *fiber.Ctx, resourceInstance interface{}) inte
 		}).ShownOnIndex()
 
 		if shownOnIndex {
-			getAction := p.buildAction(v)
+			getAction := p.buildAction(c, v)
 			items = append(items, getAction)
 		}
 	}
 
-	return items
+	return (&space.Component{}).Init().SetBody(items)
 }
 
 //表格行内行为
@@ -35,7 +36,7 @@ func (p *Resource) IndexTableRowActions(c *fiber.Ctx, resourceInstance interface
 		}).ShownOnIndexTableRow()
 
 		if shownOnIndexTableRow {
-			getAction := p.buildAction(v)
+			getAction := p.buildAction(c, v)
 			items = append(items, getAction)
 		}
 	}
@@ -54,7 +55,7 @@ func (p *Resource) IndexTableAlertActions(c *fiber.Ctx, resourceInstance interfa
 		}).ShownOnIndexTableAlert()
 
 		if shownOnIndexTableAlert {
-			getAction := p.buildAction(v)
+			getAction := p.buildAction(c, v)
 			items = append(items, getAction)
 		}
 	}
@@ -73,7 +74,7 @@ func (p *Resource) FormActions(c *fiber.Ctx, resourceInstance interface{}) inter
 		}).ShownOnForm()
 
 		if shownOnForm {
-			getAction := p.buildAction(v)
+			getAction := p.buildAction(c, v)
 			items = append(items, getAction)
 		}
 	}
@@ -92,7 +93,7 @@ func (p *Resource) FormExtraActions(c *fiber.Ctx, resourceInstance interface{}) 
 		}).ShownOnFormExtra()
 
 		if shownOnFormExtra {
-			getAction := p.buildAction(v)
+			getAction := p.buildAction(c, v)
 			items = append(items, getAction)
 		}
 	}
@@ -111,7 +112,7 @@ func (p *Resource) DetailActions(c *fiber.Ctx, resourceInstance interface{}) int
 		}).ShownOnDetail()
 
 		if shownOnDetail {
-			getAction := p.buildAction(v)
+			getAction := p.buildAction(c, v)
 			items = append(items, getAction)
 		}
 	}
@@ -130,7 +131,7 @@ func (p *Resource) DetailExtraActions(c *fiber.Ctx, resourceInstance interface{}
 		}).ShownOnDetailExtra()
 
 		if shownOnDetailExtra {
-			getAction := p.buildAction(v)
+			getAction := p.buildAction(c, v)
 			items = append(items, getAction)
 		}
 	}
@@ -139,7 +140,7 @@ func (p *Resource) DetailExtraActions(c *fiber.Ctx, resourceInstance interface{}
 }
 
 //创建行为组件
-func (p *Resource) buildAction(item interface{}) interface{} {
+func (p *Resource) buildAction(c *fiber.Ctx, item interface{}) interface{} {
 	name := item.(interface{ GetName() string }).GetName()
 	withLoading := item.(interface{ GetWithLoading() bool }).GetWithLoading()
 	reload := item.(interface{ GetReload() string }).GetReload()
@@ -156,7 +157,8 @@ func (p *Resource) buildAction(item interface{}) interface{} {
 		Init().
 		SetLabel(name).
 		SetWithLoading(withLoading).
-		SetReload(reload).SetApi(api).
+		SetReload(reload).
+		SetApi(api).
 		SetActionType(actionType).
 		SetType(buttonType, false).
 		SetSize(size)
@@ -168,8 +170,8 @@ func (p *Resource) buildAction(item interface{}) interface{} {
 
 	switch actionType {
 	case "link":
-		href := item.(interface{ GetHref() string }).GetHref()
-		target := item.(interface{ GetTarget() string }).GetTarget()
+		href := item.(interface{ GetHref(c *fiber.Ctx) string }).GetHref(c)
+		target := item.(interface{ GetTarget(c *fiber.Ctx) string }).GetTarget(c)
 
 		action = action.
 			SetLink(href, target)

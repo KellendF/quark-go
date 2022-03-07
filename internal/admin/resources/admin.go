@@ -48,6 +48,6 @@ func (p *Admin) Searches(c *fiber.Ctx) interface{} {
 // 行为
 func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 	return []interface{}{
-		(&actions.CreateLink{}).Init().SetOnlyOnIndex(true),
+		(&actions.CreateLink{}).Init(p.Title),
 	}
 }

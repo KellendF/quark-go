@@ -10,7 +10,7 @@ type Component struct {
 	TableLayout         string          `json:"tableLayout"`
 	HeaderTitle         string          `json:"headerTitle"`
 	Columns             interface{}     `json:"columns"`
-	RowSelection        interface{}     `json:"rowSelection"`
+	RowSelection        []interface{}   `json:"rowSelection"`
 	Options             map[string]bool `json:"options"`
 	AutoBuildSearchFrom bool            `json:"autoBuildSearchFrom"`
 	Search              interface{}     `json:"search"`
@@ -32,9 +32,12 @@ func (p *Component) Init() *Component {
 	p.RowKey = "id"
 	p.Api = ""
 	p.ApiType = "GET"
+	p.ColumnEmptyText = "-"
+	p.DateFormatter = "string"
 	p.Options = map[string]bool{
 		"fullScreen": true, "reload": true, "setting": true,
 	}
+	p.RowSelection = []interface{}{}
 
 	p.SetKey("table", false)
 
@@ -156,7 +159,7 @@ func (p *Component) SetColumns(columns interface{}) *Component {
  * @param array rowSelection
  * @return p
  */
-func (p *Component) SetRowSelection(rowSelection interface{}) *Component {
+func (p *Component) SetRowSelection(rowSelection []interface{}) *Component {
 	p.RowSelection = rowSelection
 
 	return p
