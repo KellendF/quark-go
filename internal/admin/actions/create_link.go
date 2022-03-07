@@ -33,5 +33,5 @@ func (p *CreateLink) Init(name string) *CreateLink {
 
 // 字段
 func (p *CreateLink) GetHref(c *fiber.Ctx) string {
-	return strings.Replace(strings.Replace(c.Path(), "api/", "", -1), "/index", "/create", -1)
+	return "#/index?api=" + strings.Replace(strings.Replace(c.Path(), "api/", "", -1), "/index", "/create", -1)
 }
