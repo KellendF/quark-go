@@ -18,9 +18,19 @@ func (p *ResourceIndex) IndexQuery(c *fiber.Ctx) interface{} {
 	resourceInstance := p.Resource(c)
 	model := p.NewModel(resourceInstance)
 
+	// 搜索项
+	searches := resourceInstance.(interface {
+		Searches(c *fiber.Ctx) []interface{}
+	}).Searches(c)
+
+	// 过滤项，预留
+	filters := resourceInstance.(interface {
+		Filters(c *fiber.Ctx) []interface{}
+	}).Filters(c)
+
 	query := resourceInstance.(interface {
-		BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search interface{}, filters interface{}, columnFilters interface{}, orderings interface{}) *gorm.DB
-	}).BuildIndexQuery(c, resourceInstance, model, "", "", "", "")
+		BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters interface{}, orderings interface{}) *gorm.DB
+	}).BuildIndexQuery(c, resourceInstance, model, searches, filters, p.columnFilters(c), p.orderings(c))
 
 	// 获取分页
 	perPage := reflect.
@@ -35,8 +45,8 @@ func (p *ResourceIndex) IndexQuery(c *fiber.Ctx) interface{} {
 	}
 
 	var total int64
-	page := c.Params("page", "1")
-	pageSize := c.Params("pageSize")
+	page := c.Query("page", "1")
+	pageSize := c.Query("pageSize")
 
 	if pageSize != "" {
 		perPage, _ = strconv.Atoi(pageSize)
@@ -50,5 +60,35 @@ func (p *ResourceIndex) IndexQuery(c *fiber.Ctx) interface{} {
 		"perPage":     perPage,
 		"total":       total,
 		"items":       lists,
+	}
+}
+
+/**
+ * Get the column filters for the request.
+ *
+ * @return array
+ */
+func (p *ResourceIndex) columnFilters(c *fiber.Ctx) interface{} {
+	filter := c.Params("filter")
+
+	if filter != "" {
+		return filter
+	} else {
+		return nil
+	}
+}
+
+/**
+ * Get the orderings for the request.
+ *
+ * @return array
+ */
+func (p *ResourceIndex) orderings(c *fiber.Ctx) interface{} {
+	sorter := c.Params("sorter")
+
+	if sorter != "" {
+		return sorter
+	} else {
+		return nil
 	}
 }

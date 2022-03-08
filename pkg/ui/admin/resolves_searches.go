@@ -9,7 +9,9 @@ import (
 
 // 列表页搜索表单
 func (p *Resource) IndexSearches(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	searches := resourceInstance.(interface{ Searches(*fiber.Ctx) interface{} }).Searches(c)
+	searches := resourceInstance.(interface {
+		Searches(*fiber.Ctx) []interface{}
+	}).Searches(c)
 	search := (&table.Search{}).Init()
 	SearchItem := (&table.SearchItem{}).Init()
 
@@ -22,7 +24,7 @@ func (p *Resource) IndexSearches(c *fiber.Ctx, resourceInstance interface{}) int
 		search = search.SetShowExportButton(true).SetExportApi("admin/" + c.Params("resource") + "/export")
 	}
 
-	for _, v := range searches.([]interface{}) {
+	for _, v := range searches {
 		component := v.(interface{ GetComponent() string }).GetComponent() // 获取组件名称
 		name := v.(interface{ GetName() string }).GetName()                // label 标签的文本
 		column := v.(interface{ GetColumn() string }).GetColumn()          // 字段名，支持数组

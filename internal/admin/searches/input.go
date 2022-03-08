@@ -20,6 +20,6 @@ func (p *Input) Init(column string, name string) *Input {
 }
 
 // 执行查询
-func (p *Input) Apply(c *fiber.Ctx, query *gorm.DB, value string) *gorm.DB {
-	return query.Where(p.Column+" LIKE ?", "%"+value+"%")
+func (p *Input) Apply(c *fiber.Ctx, query *gorm.DB, value interface{}) *gorm.DB {
+	return query.Where(p.Column+" LIKE ?", "%"+value.(string)+"%")
 }

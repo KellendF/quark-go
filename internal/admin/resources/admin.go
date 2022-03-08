@@ -39,7 +39,7 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 }
 
 // 搜索
-func (p *Admin) Searches(c *fiber.Ctx) interface{} {
+func (p *Admin) Searches(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		(&searches.Input{}).Init("username", "用户名"),
 	}

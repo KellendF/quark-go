@@ -95,16 +95,3 @@ func (p *Search) Apply(c *fiber.Ctx, query *gorm.DB, value interface{}) *gorm.DB
 func (p *Search) Options(c *fiber.Ctx) interface{} {
 	return nil
 }
-
-/**
- * 魔术方法
- *
- * @param  Request  request
- * @param  Builder  query
- * @return array
- */
-func (p *Search) Handle(c *fiber.Ctx, query *gorm.DB) *gorm.DB {
-	//todo
-
-	return query
-}
