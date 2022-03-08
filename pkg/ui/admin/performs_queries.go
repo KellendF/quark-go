@@ -35,12 +35,41 @@ func (p *Resource) BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, q
 
 // 创建详情页查询
 func (p *Resource) BuildDetailQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search interface{}, filters interface{}, columnFilters interface{}, orderings interface{}) interface{} {
-	return "todo"
+	// 初始化查询
+	query = p.initializeQuery(c, resourceInstance, query)
+
+	// 执行列表查询，这里使用的是透传的实例
+	query = resourceInstance.(interface {
+		DetailQuery(*fiber.Ctx, *gorm.DB) *gorm.DB
+	}).DetailQuery(c, query)
+
+	return query
 }
 
 // 创建导出查询
-func (p *Resource) BuildExportQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search interface{}, filters interface{}, columnFilters interface{}, orderings interface{}) interface{} {
-	return "todo"
+func (p *Resource) BuildExportQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters interface{}, orderings interface{}) interface{} {
+
+	// 初始化查询
+	query = p.initializeQuery(c, resourceInstance, query)
+
+	// 执行列表查询，这里使用的是透传的实例
+	query = resourceInstance.(interface {
+		ExportQuery(*fiber.Ctx, *gorm.DB) *gorm.DB
+	}).ExportQuery(c, query)
+
+	// 执行搜索查询
+	query = p.applySearch(c, query, search)
+
+	// 执行过滤器查询
+	query = p.applyFilters(query, filters)
+
+	// 执行表格列上过滤器查询
+	query = p.applyColumnFilters(query, filters)
+
+	// 执行排序查询
+	query = p.applyOrderings(query, filters)
+
+	return query
 }
 
 // 初始化查询
@@ -74,13 +103,13 @@ func (p *Resource) applySearch(c *fiber.Ctx, query *gorm.DB, search []interface{
 
 // 执行表格列上过滤器查询
 func (p *Resource) applyColumnFilters(query *gorm.DB, filters interface{}) *gorm.DB {
-
+	// todo
 	return query
 }
 
 // 执行过滤器查询
 func (p *Resource) applyFilters(query *gorm.DB, filters []interface{}) *gorm.DB {
-
+	// todo
 	return query
 }
 
