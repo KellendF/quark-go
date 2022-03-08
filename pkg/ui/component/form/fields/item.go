@@ -2,7 +2,6 @@ package fields
 
 import (
 	"github.com/quarkcms/quark-go/pkg/ui/component"
-	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
 
 type Item struct {
@@ -41,6 +40,7 @@ type Item struct {
 	ShowOnImport         bool        `json:"showOnImport"`
 	Editable             bool        `json:"editable"`
 	Column               interface{} `json:"column"`
+	Options              interface{} `json:"options"`
 }
 
 // 初始化
@@ -689,7 +689,7 @@ func (p *Item) IsShownOnImport() bool {
  * @param  bool  editable
  * @return p
  */
-func (p *Item) SetEditable(editable bool) *Item {
+func (p *Item) SetEditable(editable bool) interface{} {
 	p.Editable = editable
 
 	return p
@@ -705,35 +705,4 @@ func (p *Item) SetColumn(column interface{}) *Item {
 	p.Column = column
 
 	return p
-}
-
-/**
- * 表单属性转换为表格列的属性
- *
- * @return void
- */
-func (p *Item) TransformToColumn() interface{} {
-	column := (&table.Column{}).
-		Init().
-		SetTitle(p.Label).
-		SetAttribute(p.Name)
-
-	switch p.Component {
-	case "textField":
-		column = column.SetValueType("text")
-	case "selectField":
-		column = column.SetValueType("select")
-	case "radioField":
-		column = column.SetValueType("radio")
-	case "switchField":
-		column = column.SetValueType("select")
-	case "imageField":
-		column = column.SetValueType("image")
-	default:
-		column = column.SetValueType(p.Component)
-	}
-
-	// todo
-
-	return column
 }

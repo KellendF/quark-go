@@ -224,7 +224,23 @@ func (p *Column) SetWidth(width int) *Column {
  * @param  string  action
  * @return p
  */
-func (p *Column) SetEditable(name string, options bool, action string) *Column {
+func (p *Column) SetEditable(name string, options interface{}, action string) *Column {
+	getOptions := []map[string]interface{}{}
+	if name == "select" {
+		for k, v := range options.([]interface{}) {
+			item := map[string]interface{}{
+				"label": v,
+				"value": k,
+			}
+			getOptions = append(getOptions, item)
+		}
+	}
+
+	p.Editable = map[string]interface{}{
+		"name":    name,
+		"options": getOptions,
+		"action":  action,
+	}
 
 	return p
 }

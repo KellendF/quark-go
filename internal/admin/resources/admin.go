@@ -34,7 +34,8 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 
 	return []interface{}{
 		field.Text("username", "用户名"),
-		field.Text("nickname", "昵称"),
+		field.Text("nickname", "昵称").SetEditable(true),
+		field.Text("email", "邮箱"),
 	}
 }
 
