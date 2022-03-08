@@ -62,7 +62,7 @@ func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 		Elem().
 		FieldByName("Name").String()
 
-	// label
+	// 文字
 	label := reflect.
 		ValueOf(field).
 		Elem().
