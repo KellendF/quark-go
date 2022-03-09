@@ -1,9 +1,8 @@
 package requests
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/utils"
 )
 
 type ResourceEditable struct {
@@ -14,9 +13,23 @@ type ResourceEditable struct {
 func (p *ResourceEditable) HandleEditable(c *fiber.Ctx) interface{} {
 	resourceInstance := p.Resource(c)
 	model := p.NewModel(resourceInstance)
+	data := map[string]interface{}{}
 
-	// todo
-	fmt.Println(c.GetReqHeaders())
+	c.Context().QueryArgs().VisitAll(func(key, val []byte) {
+		var v interface{}
+		k := utils.UnsafeString(key)
+		v = utils.UnsafeString(val)
 
-	return model
+		if v == "true" {
+			v = true
+		}
+
+		if v == "false" {
+			v = false
+		}
+
+		data[k] = v
+	})
+
+	return model.Where("id = ?", data["id"]).Updates(data)
 }
