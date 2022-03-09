@@ -89,11 +89,20 @@ func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 	case "textField":
 		column = column.SetValueType("text")
 	case "selectField":
-		column = column.SetValueType("select")
+		valueEnum := field.(interface {
+			GetValueEnum() map[string]interface{}
+		}).GetValueEnum()
+		column = column.SetValueType("select").SetValueEnum(valueEnum)
 	case "radioField":
-		column = column.SetValueType("radio")
+		valueEnum := field.(interface {
+			GetValueEnum() map[string]interface{}
+		}).GetValueEnum()
+		column = column.SetValueType("radio").SetValueEnum(valueEnum)
 	case "switchField":
-		column = column.SetValueType("select")
+		valueEnum := field.(interface {
+			GetValueEnum() map[string]interface{}
+		}).GetValueEnum()
+		column = column.SetValueType("select").SetValueEnum(valueEnum)
 	case "imageField":
 		column = column.SetValueType("image")
 	default:

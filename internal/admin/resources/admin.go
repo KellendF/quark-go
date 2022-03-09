@@ -37,6 +37,11 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 		field.Text("nickname", "昵称").SetEditable(true),
 		field.Text("email", "邮箱"),
 		field.Text("phone", "手机号"),
+		field.Radio("sex", "性别").
+			SetOptions(map[string]interface{}{
+				"1": "男",
+				"2": "女",
+			}),
 	}
 }
 

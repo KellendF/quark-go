@@ -80,7 +80,7 @@ func (p *Text) SetAllowClear(allowClear bool) *Text {
 
 // 组件json序列化
 func (p *Text) JsonSerialize() *Text {
-	p.Component = "text"
+	p.Component = "textField"
 
 	return p
 }
