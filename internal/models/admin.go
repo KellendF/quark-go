@@ -14,6 +14,8 @@ type Admin struct {
 	Id       int    `json:"id"`
 	Username string `json:"username"`
 	Nickname string `json:"nickname"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
 	Password string `json:"password"`
 	Avatar   string `json:"avatar"`
 }
