@@ -44,6 +44,7 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/smartystreets/goconvey v1.7.2 // indirect
 	github.com/spf13/viper v1.10.1
+	github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.33.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
