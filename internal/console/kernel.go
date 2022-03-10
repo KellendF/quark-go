@@ -19,28 +19,30 @@ var Commands = []interface{}{
 func (p *Kernel) Run(assets fs.FS) {
 
 	var command string
-	fmt.Scanln(&command)
 
-	for _, v := range Commands {
+	for {
+		fmt.Scanln(&command)
+		for _, v := range Commands {
 
-		// 命令标识
-		signature := reflect.
-			ValueOf(v).
-			Elem().
-			FieldByName("Signature").String()
+			// 命令标识
+			signature := reflect.
+				ValueOf(v).
+				Elem().
+				FieldByName("Signature").String()
 
-		// 命令描述
-		description := reflect.
-			ValueOf(v).
-			Elem().
-			FieldByName("Description").String()
+			// 命令描述
+			description := reflect.
+				ValueOf(v).
+				Elem().
+				FieldByName("Description").String()
 
-		if signature == command && signature != "" {
-			if description != "" {
-				fmt.Println(description)
+			if signature == command && signature != "" {
+				v.(interface{ Handle() }).Handle()
+
+				if description != "" {
+					fmt.Println(description)
+				}
 			}
-
-			v.(interface{ Handle() }).Handle()
 		}
 	}
 }
