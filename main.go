@@ -12,6 +12,7 @@ var assets embed.FS
 
 // 网站服务
 func httpService() {
+
 	// 服务实例
 	kernel := &http.Kernel{}
 
@@ -31,8 +32,8 @@ func consoleService() {
 func main() {
 
 	// 网站应用
-	// httpService()
+	httpService()
 
 	// 控制台应用
-	consoleService()
+	// consoleService()
 }
