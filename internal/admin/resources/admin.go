@@ -41,7 +41,8 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 			SetOptions(map[string]interface{}{
 				"1": "男",
 				"2": "女",
-			}),
+			}).SetDefault("1"),
+		field.Datetime("last_login_time", "最后登录时间"),
 	}
 }
 

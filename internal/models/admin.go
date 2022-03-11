@@ -11,13 +11,14 @@ import (
 // 字段
 type Admin struct {
 	db.Model
-	Id       int    `json:"id"`
-	Username string `json:"username"`
-	Nickname string `json:"nickname"`
-	Email    string `json:"email"`
-	Phone    string `json:"phone"`
-	Password string `json:"password"`
-	Avatar   string `json:"avatar"`
+	Id            int    `json:"id"`
+	Username      string `json:"username"`
+	Nickname      string `json:"nickname"`
+	Email         string `json:"email"`
+	Phone         string `json:"phone"`
+	Password      string `json:"password"`
+	Avatar        string `json:"avatar"`
+	LastLoginTime Time   `json:"last_login_time"`
 }
 
 // 通过用户名获取管理员信息
