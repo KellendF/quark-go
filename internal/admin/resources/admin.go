@@ -64,5 +64,6 @@ func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 		(&actions.CreateLink{}).Init(p.Title),
 		(&actions.ChangeStatus{}).Init(),
 		(&actions.EditLink{}).Init("编辑"),
+		(&actions.Delete{}).Init("删除"),
 	}
 }
