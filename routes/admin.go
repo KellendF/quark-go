@@ -17,7 +17,8 @@ func (p *Admin) Route(app *fiber.App) {
 	ag.Get("/captcha", (&controllers.Captcha{}).Make)
 
 	amg := app.Group("/api/admin", (&middleware.AdminMiddleware{}).Handle)
-	amg.Get("/dashboard/:dashboard", (&controllers.Dashboard{}).Handle)      // 仪表盘
-	amg.Get("/:resource/index", (&controllers.ResourceIndex{}).Handle)       // 资源
-	amg.Get("/:resource/editable", (&controllers.ResourceEditable{}).Handle) // 表格行内编辑
+	amg.Get("/dashboard/:dashboard", (&controllers.Dashboard{}).Handle)          // 仪表盘
+	amg.Get("/:resource/index", (&controllers.ResourceIndex{}).Handle)           // 资源
+	amg.Get("/:resource/editable", (&controllers.ResourceEditable{}).Handle)     // 表格行内编辑
+	amg.Get("/:resource/action/:uriKey", (&controllers.ResourceAction{}).Handle) // 执行行为
 }

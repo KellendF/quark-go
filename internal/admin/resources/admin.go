@@ -62,5 +62,7 @@ func (p *Admin) Searches(c *fiber.Ctx) []interface{} {
 func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 	return []interface{}{
 		(&actions.CreateLink{}).Init(p.Title),
+		(&actions.ChangeStatus{}).Init(),
+		(&actions.EditLink{}).Init("编辑"),
 	}
 }

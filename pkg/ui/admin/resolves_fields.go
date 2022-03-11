@@ -43,6 +43,23 @@ func (p *Resource) IndexColumns(c *fiber.Ctx, resourceInstance interface{}) inte
 		}
 	}
 
+	// 行内行为
+	indexTableRowActions := resourceInstance.(interface {
+		IndexTableRowActions(c *fiber.Ctx, resourceInstance interface{}) interface{}
+	}).IndexTableRowActions(c, resourceInstance)
+
+	if len(indexTableRowActions.([]interface{})) > 0 {
+		column := (&table.Column{}).
+			Init().
+			SetTitle("操作").
+			SetAttribute("action").
+			SetValueType("option").
+			SetActions(indexTableRowActions).
+			SetFixed("right")
+
+		columns = append(columns, column)
+	}
+
 	return columns
 }
 
@@ -53,7 +70,7 @@ func (p *Resource) getFields(c *fiber.Ctx, resourceInstance interface{}) interfa
 	}).Fields(c)
 }
 
-// 表单项转换为表格列
+// 将表单项转换为表格列
 func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 
 	// 字段

@@ -10,7 +10,7 @@ type ResourceEditable struct {
 }
 
 // 执行行为
-func (p *ResourceEditable) HandleEditable(c *fiber.Ctx) interface{} {
+func (p *ResourceEditable) HandleEditable(c *fiber.Ctx) error {
 	resourceInstance := p.Resource(c)
 	model := p.NewModel(resourceInstance)
 	data := map[string]interface{}{}
@@ -31,5 +31,5 @@ func (p *ResourceEditable) HandleEditable(c *fiber.Ctx) interface{} {
 		data[k] = v
 	})
 
-	return model.Where("id = ?", data["id"]).Updates(data)
+	return model.Where("id = ?", data["id"]).Updates(data).Error
 }

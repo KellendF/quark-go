@@ -1,5 +1,13 @@
 package actions
 
+import (
+	"reflect"
+	"strings"
+
+	"github.com/gobeam/stringy"
+	"github.com/gofiber/fiber/v2"
+)
+
 type Action struct {
 	Name                  string      `json:"name"`
 	Reload                string      `json:"reload"`
@@ -25,14 +33,24 @@ type Action struct {
 	ShowOnDetailExtra     bool        `json:"showOnDetailExtra"`
 }
 
+// 初始化
+func (p *Action) ParentInit() interface{} {
+	p.ActionType = "ajax"
+
+	return p
+}
+
 /**
  * 行为key
  *
  * @return string
  */
-func (p *Action) GetUriKey() string {
-	// todo
-	return ""
+func (p *Action) GetUriKey(action interface{}) string {
+	uriKey := reflect.TypeOf(action).String()
+	uriKey = strings.Replace(uriKey, "*actions.", "", -1)
+	uriKey = stringy.New(uriKey).KebabCase("?", "").ToLower()
+
+	return uriKey
 }
 
 /**
@@ -58,8 +76,8 @@ func (p *Action) GetReload() string {
  *
  * @return array
  */
-func (p *Action) GetApiParams() interface{} {
-	return ""
+func (p *Action) GetApiParams() []string {
+	return []string{}
 }
 
 /**
@@ -67,8 +85,7 @@ func (p *Action) GetApiParams() interface{} {
  *
  * @return string
  */
-func (p *Action) GetApi() string {
-	// todo
+func (p *Action) GetApi(c *fiber.Ctx) string {
 
 	return ""
 }
@@ -161,18 +178,6 @@ func (p *Action) GetConfirmText() string {
  */
 func (p *Action) GetConfirmType() string {
 	return p.ConfirmType
-}
-
-/**
- * 执行行为句柄
- *
- * @param  Fields  fields
- * @param  Collection  model
- * @return mixed
- */
-func (p *Action) Handle(fields interface{}, model interface{}) interface{} {
-	// todo
-	return ""
 }
 
 /**

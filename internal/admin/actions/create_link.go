@@ -26,12 +26,12 @@ func (p *CreateLink) Init(name string) *CreateLink {
 	p.Name = "创建" + name
 
 	// 仅在列表展示
-	p.OnlyOnIndex = true
+	p.SetOnlyOnIndex(true)
 
 	return p
 }
 
-// 字段
+// 跳转链接
 func (p *CreateLink) GetHref(c *fiber.Ctx) string {
 	return "#/index?api=" + strings.Replace(strings.Replace(c.Path(), "api/", "", -1), "/index", "/create", -1)
 }

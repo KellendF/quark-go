@@ -1,6 +1,8 @@
 package admin
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
 	"github.com/quarkcms/quark-go/pkg/ui/component/space"
@@ -144,7 +146,26 @@ func (p *Resource) buildAction(c *fiber.Ctx, item interface{}) interface{} {
 	name := item.(interface{ GetName() string }).GetName()
 	withLoading := item.(interface{ GetWithLoading() bool }).GetWithLoading()
 	reload := item.(interface{ GetReload() string }).GetReload()
-	api := item.(interface{ GetApi() string }).GetApi()
+
+	// uri唯一标识
+	uriKey := item.(interface {
+		GetUriKey(interface{}) string
+	}).GetUriKey(item)
+
+	// 获取api
+	api := item.(interface {
+		GetApi(*fiber.Ctx) string
+	}).GetApi(c)
+
+	// 获取api替换参数
+	params := item.(interface {
+		GetApiParams() []string
+	}).GetApiParams()
+
+	if api == "" {
+		api = p.buildActionApi(c, params, uriKey)
+	}
+
 	actionType := item.(interface{ GetActionType() string }).GetActionType()
 	buttonType := item.(interface{ GetType() string }).GetType()
 	size := item.(interface{ GetSize() string }).GetSize()
@@ -187,4 +208,20 @@ func (p *Resource) buildAction(c *fiber.Ctx, item interface{}) interface{} {
 	}
 
 	return action
+}
+
+//创建行为接口
+func (p *Resource) buildActionApi(c *fiber.Ctx, params []string, uriKey string) string {
+	paramsUri := ""
+
+	for _, v := range params {
+		paramsUri = paramsUri + v + "=${" + v + "}&"
+	}
+
+	api := strings.Replace(strings.Replace(c.Path(), "/api/", "", -1), "/index", "/action/"+uriKey, -1)
+	if paramsUri != "" {
+		api = api + "?" + paramsUri
+	}
+
+	return api
 }
