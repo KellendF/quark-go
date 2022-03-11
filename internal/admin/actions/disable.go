@@ -7,12 +7,12 @@ import (
 	"gorm.io/gorm"
 )
 
-type Delete struct {
+type Disable struct {
 	actions.Action
 }
 
 // 初始化
-func (p *Delete) Init(name string) *Delete {
+func (p *Disable) Init(name string) *Disable {
 	// 初始化父结构
 	p.ParentInit()
 
@@ -28,8 +28,11 @@ func (p *Delete) Init(name string) *Delete {
 	//  执行成功后刷新的组件
 	p.Reload = "table"
 
+	// 批量操作
+	p.SetOnlyOnIndexTableAlert(true)
+
 	// 当行为在表格行展示时，支持js表达式
-	p.WithConfirm("确定要删除吗？", "删除后数据将无法恢复，请谨慎操作！", "modal")
+	p.WithConfirm("确定要禁用吗？", "禁用后数据将无法使用，请谨慎操作！", "modal")
 
 	return p
 }
@@ -39,16 +42,16 @@ func (p *Delete) Init(name string) *Delete {
  *
  * @return array
  */
-func (p *Delete) GetApiParams() []string {
+func (p *Disable) GetApiParams() []string {
 	return []string{
 		"id",
 	}
 }
 
 // 执行行为句柄
-func (p *Delete) Handle(c *fiber.Ctx, model *gorm.DB) error {
+func (p *Disable) Handle(c *fiber.Ctx, model *gorm.DB) error {
 
-	result := model.Delete("").Error
+	result := model.Update("status", 0).Error
 
 	if result == nil {
 		return msg.Success("操作成功！", "", "")
