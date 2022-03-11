@@ -225,15 +225,18 @@ func (p *Column) SetWidth(width int) *Column {
  * @return p
  */
 func (p *Column) SetEditable(name string, options interface{}, action string) *Column {
-	getOptions := []map[string]interface{}{}
+	var getOptions interface{}
+
 	if name == "select" {
 		for k, v := range options.([]interface{}) {
 			item := map[string]interface{}{
 				"label": v,
 				"value": k,
 			}
-			getOptions = append(getOptions, item)
+			getOptions = append(getOptions.([]map[string]interface{}), item)
 		}
+	} else {
+		getOptions = options
 	}
 
 	p.Editable = map[string]interface{}{

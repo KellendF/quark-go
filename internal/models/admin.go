@@ -19,6 +19,7 @@ type Admin struct {
 	Password      string `json:"password"`
 	Avatar        string `json:"avatar"`
 	LastLoginTime Time   `json:"last_login_time"`
+	Status        int    `json:"status"`
 }
 
 // 通过用户名获取管理员信息

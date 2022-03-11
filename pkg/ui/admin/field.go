@@ -42,3 +42,16 @@ func (p *Field) Datetime(params ...string) *fields.Datetime {
 
 	return field
 }
+
+// 开关组件
+func (p *Field) Switch(params ...string) *fields.Switch {
+	field := &fields.Switch{}
+
+	if len(params) == 2 {
+		field.Init().SetName(params[0]).SetLabel(params[1])
+	} else {
+		field.Init().SetName(params[0]).SetLabel(params[0])
+	}
+
+	return field
+}

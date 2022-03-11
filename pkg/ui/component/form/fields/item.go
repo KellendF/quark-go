@@ -1,48 +1,46 @@
 package fields
 
 import (
-	"fmt"
-
 	"github.com/quarkcms/quark-go/pkg/ui/component"
 )
 
 type Item struct {
 	component.Element
-	Tooltip              string                   `json:"tooltip"`
-	Width                int                      `json:"width"`
-	Colon                bool                     `json:"colon"`
-	Value                interface{}              `json:"value"`
-	DefaultValue         interface{}              `json:"defaultValue"`
-	Extra                string                   `json:"extra"`
-	HasFeedback          bool                     `json:"hasFeedback"`
-	Help                 string                   `json:"help"`
-	NoStyle              bool                     `json:"noStyle"`
-	Label                string                   `json:"label"`
-	LabelAlign           string                   `json:"labelAlign"`
-	LabelCol             interface{}              `json:"labelCol"`
-	Name                 string                   `json:"name"`
-	Required             bool                     `json:"required"`
-	Disabled             bool                     `json:"disabled"`
-	Ignore               bool                     `json:"ignore"`
-	Rules                interface{}              `json:"rules"`
-	RuleMessages         interface{}              `json:"ruleMessages"`
-	CreationRules        interface{}              `json:"creationRules"`
-	CreationRuleMessages interface{}              `json:"creationRuleMessages"`
-	UpdateRules          interface{}              `json:"updateRules"`
-	UpdateRuleMessages   interface{}              `json:"updateRuleMessages"`
-	FrontendRules        interface{}              `json:"frontendRules"`
-	ValuePropName        string                   `json:"valuePropName"`
-	WrapperCol           interface{}              `json:"wrapperCol"`
-	When                 interface{}              `json:"when"`
-	ShowOnIndex          bool                     `json:"showOnIndex"`
-	ShowOnDetail         bool                     `json:"showOnDetail"`
-	ShowOnCreation       bool                     `json:"showOnCreation"`
-	ShowOnUpdate         bool                     `json:"showOnUpdate"`
-	ShowOnExport         bool                     `json:"showOnExport"`
-	ShowOnImport         bool                     `json:"showOnImport"`
-	Editable             bool                     `json:"editable"`
-	Column               interface{}              `json:"column"`
-	Options              []map[string]interface{} `json:"options"`
+	Tooltip              string      `json:"tooltip"`
+	Width                int         `json:"width"`
+	Colon                bool        `json:"colon"`
+	Value                interface{} `json:"value"`
+	DefaultValue         interface{} `json:"defaultValue"`
+	Extra                string      `json:"extra"`
+	HasFeedback          bool        `json:"hasFeedback"`
+	Help                 string      `json:"help"`
+	NoStyle              bool        `json:"noStyle"`
+	Label                string      `json:"label"`
+	LabelAlign           string      `json:"labelAlign"`
+	LabelCol             interface{} `json:"labelCol"`
+	Name                 string      `json:"name"`
+	Required             bool        `json:"required"`
+	Disabled             bool        `json:"disabled"`
+	Ignore               bool        `json:"ignore"`
+	Rules                interface{} `json:"rules"`
+	RuleMessages         interface{} `json:"ruleMessages"`
+	CreationRules        interface{} `json:"creationRules"`
+	CreationRuleMessages interface{} `json:"creationRuleMessages"`
+	UpdateRules          interface{} `json:"updateRules"`
+	UpdateRuleMessages   interface{} `json:"updateRuleMessages"`
+	FrontendRules        interface{} `json:"frontendRules"`
+	ValuePropName        string      `json:"valuePropName"`
+	WrapperCol           interface{} `json:"wrapperCol"`
+	When                 interface{} `json:"when"`
+	ShowOnIndex          bool        `json:"showOnIndex"`
+	ShowOnDetail         bool        `json:"showOnDetail"`
+	ShowOnCreation       bool        `json:"showOnCreation"`
+	ShowOnUpdate         bool        `json:"showOnUpdate"`
+	ShowOnExport         bool        `json:"showOnExport"`
+	ShowOnImport         bool        `json:"showOnImport"`
+	Editable             bool        `json:"editable"`
+	Column               interface{} `json:"column"`
+	Options              interface{} `json:"options"`
 }
 
 // 初始化
@@ -691,7 +689,7 @@ func (p *Item) IsShownOnImport() bool {
  * @param  bool  editable
  * @return p
  */
-func (p *Item) SetEditable(editable bool) interface{} {
+func (p *Item) SetEditable(editable bool) *Item {
 	p.Editable = editable
 
 	return p
@@ -712,11 +710,26 @@ func (p *Item) SetColumn(column interface{}) *Item {
 // 当前列值的枚举 valueEnum
 func (p *Item) GetValueEnum() map[string]interface{} {
 	data := map[string]interface{}{}
-	for _, v := range p.Options {
+	for _, v := range p.Options.([]map[string]interface{}) {
 
 		data[v["value"].(string)] = v["label"]
 	}
 
-	fmt.Println(data)
+	return data
+}
+
+// Switch组件值的枚举 valueEnum
+func (p *Item) GetSwitchValueEnum() map[int]interface{} {
+	data := map[int]interface{}{}
+	for k, v := range p.Options.(map[string]interface{}) {
+		var key int
+		if k == "on" {
+			key = 1
+		} else {
+			key = 0
+		}
+		data[key] = v
+	}
+
 	return data
 }
