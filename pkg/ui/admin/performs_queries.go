@@ -5,10 +5,11 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // 创建列表查询
-func (p *Resource) BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters interface{}, orderings interface{}) *gorm.DB {
+func (p *Resource) BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
 
 	// 初始化查询
 	query = p.initializeQuery(c, resourceInstance, query)
@@ -25,16 +26,26 @@ func (p *Resource) BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, q
 	query = p.applyFilters(query, filters)
 
 	// 执行表格列上过滤器查询
-	query = p.applyColumnFilters(query, filters)
+	query = p.applyColumnFilters(query, columnFilters)
+
+	// 获取默认排序
+	defaultOrder := reflect.
+		ValueOf(resourceInstance).
+		Elem().
+		FieldByName("IndexOrder").String()
+
+	if defaultOrder == "" {
+		defaultOrder = "id desc"
+	}
 
 	// 执行排序查询
-	query = p.applyOrderings(query, filters)
+	query = p.applyOrderings(query, orderings, defaultOrder)
 
 	return query
 }
 
 // 创建详情页查询
-func (p *Resource) BuildDetailQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search interface{}, filters interface{}, columnFilters interface{}, orderings interface{}) interface{} {
+func (p *Resource) BuildDetailQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB) interface{} {
 	// 初始化查询
 	query = p.initializeQuery(c, resourceInstance, query)
 
@@ -47,7 +58,7 @@ func (p *Resource) BuildDetailQuery(c *fiber.Ctx, resourceInstance interface{}, 
 }
 
 // 创建导出查询
-func (p *Resource) BuildExportQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters interface{}, orderings interface{}) interface{} {
+func (p *Resource) BuildExportQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) interface{} {
 
 	// 初始化查询
 	query = p.initializeQuery(c, resourceInstance, query)
@@ -64,10 +75,20 @@ func (p *Resource) BuildExportQuery(c *fiber.Ctx, resourceInstance interface{}, 
 	query = p.applyFilters(query, filters)
 
 	// 执行表格列上过滤器查询
-	query = p.applyColumnFilters(query, filters)
+	query = p.applyColumnFilters(query, columnFilters)
+
+	// 获取默认排序
+	defaultOrder := reflect.
+		ValueOf(resourceInstance).
+		Elem().
+		FieldByName("IndexOrder").String()
+
+	if defaultOrder == "" {
+		defaultOrder = "id desc"
+	}
 
 	// 执行排序查询
-	query = p.applyOrderings(query, filters)
+	query = p.applyOrderings(query, orderings, defaultOrder)
 
 	return query
 }
@@ -102,8 +123,24 @@ func (p *Resource) applySearch(c *fiber.Ctx, query *gorm.DB, search []interface{
 }
 
 // 执行表格列上过滤器查询
-func (p *Resource) applyColumnFilters(query *gorm.DB, filters interface{}) *gorm.DB {
-	// todo
+func (p *Resource) applyColumnFilters(query *gorm.DB, filters map[string]interface{}) *gorm.DB {
+
+	if len(filters) == 0 {
+		return query
+	}
+
+	for k, v := range filters {
+		if v != "" {
+
+			values := []string{}
+			for _, subValue := range v.(map[string]interface{}) {
+				values = append(values, subValue.(string))
+			}
+
+			query = query.Where(k+" IN ?", values)
+		}
+	}
+
 	return query
 }
 
@@ -114,7 +151,24 @@ func (p *Resource) applyFilters(query *gorm.DB, filters []interface{}) *gorm.DB 
 }
 
 // 执行排序查询
-func (p *Resource) applyOrderings(query *gorm.DB, orderings interface{}) *gorm.DB {
+func (p *Resource) applyOrderings(query *gorm.DB, orderings map[string]interface{}, defaultOrder string) *gorm.DB {
+
+	if len(orderings) == 0 {
+		return query.Order(defaultOrder)
+	}
+
+	var order clause.OrderByColumn
+
+	for key, v := range orderings {
+
+		if v == "descend" {
+			order = clause.OrderByColumn{Column: clause.Column{Name: key}, Desc: true}
+		} else {
+			order = clause.OrderByColumn{Column: clause.Column{Name: key}, Desc: false}
+		}
+
+		query = query.Order(order)
+	}
 
 	return query
 }

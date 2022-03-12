@@ -15,6 +15,7 @@ type Resource struct {
 	SubTitle     string
 	PerPage      interface{}
 	IndexPolling int
+	IndexOrder   string
 	Model        *gorm.DB
 	WithExport   bool
 }

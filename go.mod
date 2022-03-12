@@ -39,6 +39,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/derekstavis/go-qs v0.0.0-20180720192143-9eef69e6c4e7
 	github.com/fatih/color v1.13.0
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/gobeam/stringy v0.0.5

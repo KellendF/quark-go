@@ -97,8 +97,13 @@ func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 		Elem().
 		FieldByName("Editable").Bool()
 
-	column := (&table.Column{}).
-		Init().
+	// 是否可编辑
+	getColumn := reflect.
+		ValueOf(field).
+		Elem().
+		FieldByName("Column").Interface()
+
+	column := getColumn.(*table.Column).
 		SetTitle(label).
 		SetAttribute(name)
 

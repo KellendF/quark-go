@@ -7,6 +7,7 @@ import (
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
+	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
 
 type Admin struct {
@@ -41,7 +42,11 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 			SetOptions(map[string]interface{}{
 				"1": "男",
 				"2": "女",
-			}).SetDefault("1"),
+			}).SetDefault("1").
+			SetColumn(func(column *table.Column) *table.Column {
+				// return column.SetSorter(true)
+				return column.SetFilters(true)
+			}),
 		field.Datetime("last_login_time", "最后登录时间"),
 		field.Switch("status", "状态").
 			SetTrueValue("正常").

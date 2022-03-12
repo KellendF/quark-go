@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"strconv"
 
+	"github.com/derekstavis/go-qs"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -29,7 +30,7 @@ func (p *ResourceIndex) IndexQuery(c *fiber.Ctx) interface{} {
 	}).Filters(c)
 
 	query := resourceInstance.(interface {
-		BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters interface{}, orderings interface{}) *gorm.DB
+		BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
 	}).BuildIndexQuery(c, resourceInstance, model, searches, filters, p.columnFilters(c), p.orderings(c))
 
 	// 获取分页
@@ -68,14 +69,20 @@ func (p *ResourceIndex) IndexQuery(c *fiber.Ctx) interface{} {
  *
  * @return array
  */
-func (p *ResourceIndex) columnFilters(c *fiber.Ctx) interface{} {
-	filter := c.Params("filter")
+func (p *ResourceIndex) columnFilters(c *fiber.Ctx) map[string]interface{} {
+	data, error := qs.Unmarshal(c.OriginalURL())
 
-	if filter != "" {
-		return filter
-	} else {
-		return nil
+	if error != nil {
+		return map[string]interface{}{}
 	}
+
+	result, ok := data["filter"].(map[string]interface{})
+
+	if ok == false {
+		return map[string]interface{}{}
+	}
+
+	return result
 }
 
 /**
@@ -83,12 +90,18 @@ func (p *ResourceIndex) columnFilters(c *fiber.Ctx) interface{} {
  *
  * @return array
  */
-func (p *ResourceIndex) orderings(c *fiber.Ctx) interface{} {
-	sorter := c.Params("sorter")
+func (p *ResourceIndex) orderings(c *fiber.Ctx) map[string]interface{} {
+	data, error := qs.Unmarshal(c.OriginalURL())
 
-	if sorter != "" {
-		return sorter
-	} else {
-		return nil
+	if error != nil {
+		return map[string]interface{}{}
 	}
+
+	result, ok := data["sorter"].(map[string]interface{})
+
+	if ok == false {
+		return map[string]interface{}{}
+	}
+
+	return result
 }

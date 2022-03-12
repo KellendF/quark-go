@@ -2,6 +2,7 @@ package fields
 
 import (
 	"github.com/quarkcms/quark-go/pkg/ui/component"
+	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
 
 type Item struct {
@@ -39,8 +40,8 @@ type Item struct {
 	ShowOnExport         bool        `json:"showOnExport"`
 	ShowOnImport         bool        `json:"showOnImport"`
 	Editable             bool        `json:"editable"`
-	Column               interface{} `json:"column"`
 	Options              interface{} `json:"options"`
+	Column               *table.Column
 }
 
 // 初始化
@@ -53,6 +54,7 @@ func (p *Item) InitItem() *Item {
 	p.ShowOnUpdate = true
 	p.ShowOnExport = true
 	p.ShowOnImport = true
+	p.Column = (&table.Column{}).Init()
 
 	return p
 }
@@ -468,9 +470,9 @@ func (p *Item) SetEditable(editable bool) *Item {
 	return p
 }
 
-//透传表格列的属性
-func (p *Item) SetColumn(column interface{}) *Item {
-	p.Column = column
+//闭包，透传表格列的属性
+func (p *Item) SetColumn(f func(column *table.Column) *table.Column) *Item {
+	p.Column = f(p.Column)
 
 	return p
 }

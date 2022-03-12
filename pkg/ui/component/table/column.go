@@ -179,7 +179,21 @@ func (p *Column) SetHideInTable(hideInTable bool) *Column {
  * @return p
  */
 func (p *Column) SetFilters(filters interface{}) *Column {
-	p.Filters = filters
+	getFilters, ok := filters.(map[string]string)
+
+	if ok {
+		tmpFilters := []map[string]string{}
+		for k, v := range getFilters {
+			tmpFilters = append(tmpFilters, map[string]string{
+				"text":  v,
+				"value": k,
+			})
+		}
+		p.Filters = tmpFilters
+	} else {
+		p.Filters = filters
+	}
+
 	return p
 }
 
