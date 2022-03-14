@@ -1,17 +1,27 @@
 package admin
 
-import "github.com/quarkcms/quark-go/pkg/ui/component/form/fields"
+import (
+	"github.com/quarkcms/quark-go/pkg/ui/component/form/fields"
+)
 
 type Field struct{}
 
 // 输入框组件
-func (p *Field) Text(params ...string) *fields.Text {
+func (p *Field) Text(params ...interface{}) *fields.Text {
 	field := &fields.Text{}
 
-	if len(params) == 2 {
-		field.Init().SetName(params[0]).SetLabel(params[1])
+	if len(params) >= 2 {
+		field.Init().SetName(params[0].(string)).SetLabel(params[1].(string))
+		if len(params) == 3 {
+
+			// 判断是否为闭包函数
+			closure, ok := params[2].(func() interface{})
+			if ok {
+				field.SetCallback(closure)
+			}
+		}
 	} else {
-		field.Init().SetName(params[0]).SetLabel(params[0])
+		field.Init().SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
 	return field

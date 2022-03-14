@@ -17,6 +17,7 @@ type Resource struct {
 	IndexPolling int
 	IndexOrder   string
 	Model        *gorm.DB
+	Field        map[string]interface{}
 	WithExport   bool
 }
 
@@ -105,4 +106,11 @@ func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface
 	}
 
 	return component
+}
+
+// 设置单列字段
+func (p *Resource) SetField(fieldData map[string]interface{}) interface{} {
+	p.Field = fieldData
+
+	return p
 }

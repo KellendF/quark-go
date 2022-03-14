@@ -1,6 +1,8 @@
 package resources
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
@@ -34,7 +36,13 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 	field := &admin.Field{}
 
 	return []interface{}{
-		field.Text("username", "用户名"),
+		field.Text("id", "ID"),
+		field.Text("username", "用户名", func() interface{} {
+			id := strconv.Itoa(p.Field["id"].(int))
+			username := p.Field["username"].(string)
+
+			return "<a href='#/index?api=admin/admin/edit&id=" + id + "'>" + username + "</a>"
+		}),
 		field.Text("nickname", "昵称").SetEditable(true),
 		field.Text("email", "邮箱"),
 		field.Text("phone", "手机号"),

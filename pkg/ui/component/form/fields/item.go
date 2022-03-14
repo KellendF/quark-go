@@ -7,41 +7,42 @@ import (
 
 type Item struct {
 	component.Element
-	Tooltip              string      `json:"tooltip"`
-	Width                int         `json:"width"`
-	Colon                bool        `json:"colon"`
-	Value                interface{} `json:"value"`
-	DefaultValue         interface{} `json:"defaultValue"`
-	Extra                string      `json:"extra"`
-	HasFeedback          bool        `json:"hasFeedback"`
-	Help                 string      `json:"help"`
-	NoStyle              bool        `json:"noStyle"`
-	Label                string      `json:"label"`
-	LabelAlign           string      `json:"labelAlign"`
-	LabelCol             interface{} `json:"labelCol"`
-	Name                 string      `json:"name"`
-	Required             bool        `json:"required"`
-	Disabled             bool        `json:"disabled"`
-	Ignore               bool        `json:"ignore"`
-	Rules                interface{} `json:"rules"`
-	RuleMessages         interface{} `json:"ruleMessages"`
-	CreationRules        interface{} `json:"creationRules"`
-	CreationRuleMessages interface{} `json:"creationRuleMessages"`
-	UpdateRules          interface{} `json:"updateRules"`
-	UpdateRuleMessages   interface{} `json:"updateRuleMessages"`
-	FrontendRules        interface{} `json:"frontendRules"`
-	ValuePropName        string      `json:"valuePropName"`
-	WrapperCol           interface{} `json:"wrapperCol"`
-	When                 interface{} `json:"when"`
-	ShowOnIndex          bool        `json:"showOnIndex"`
-	ShowOnDetail         bool        `json:"showOnDetail"`
-	ShowOnCreation       bool        `json:"showOnCreation"`
-	ShowOnUpdate         bool        `json:"showOnUpdate"`
-	ShowOnExport         bool        `json:"showOnExport"`
-	ShowOnImport         bool        `json:"showOnImport"`
-	Editable             bool        `json:"editable"`
-	Options              interface{} `json:"options"`
-	Column               *table.Column
+	Tooltip              string        `json:"tooltip"`
+	Width                int           `json:"width"`
+	Colon                bool          `json:"colon"`
+	Value                interface{}   `json:"value"`
+	DefaultValue         interface{}   `json:"defaultValue"`
+	Extra                string        `json:"extra"`
+	HasFeedback          bool          `json:"hasFeedback"`
+	Help                 string        `json:"help"`
+	NoStyle              bool          `json:"noStyle"`
+	Label                string        `json:"label"`
+	LabelAlign           string        `json:"labelAlign"`
+	LabelCol             interface{}   `json:"labelCol"`
+	Name                 string        `json:"name"`
+	Required             bool          `json:"required"`
+	Disabled             bool          `json:"disabled"`
+	Ignore               bool          `json:"ignore"`
+	Rules                interface{}   `json:"rules"`
+	RuleMessages         interface{}   `json:"ruleMessages"`
+	CreationRules        interface{}   `json:"creationRules"`
+	CreationRuleMessages interface{}   `json:"creationRuleMessages"`
+	UpdateRules          interface{}   `json:"updateRules"`
+	UpdateRuleMessages   interface{}   `json:"updateRuleMessages"`
+	FrontendRules        interface{}   `json:"frontendRules"`
+	ValuePropName        string        `json:"valuePropName"`
+	WrapperCol           interface{}   `json:"wrapperCol"`
+	When                 interface{}   `json:"when"`
+	ShowOnIndex          bool          `json:"showOnIndex"`
+	ShowOnDetail         bool          `json:"showOnDetail"`
+	ShowOnCreation       bool          `json:"showOnCreation"`
+	ShowOnUpdate         bool          `json:"showOnUpdate"`
+	ShowOnExport         bool          `json:"showOnExport"`
+	ShowOnImport         bool          `json:"showOnImport"`
+	Editable             bool          `json:"editable"`
+	Options              interface{}   `json:"options"`
+	Column               *table.Column `json:"-"`
+	Callback             interface{}   `json:"-"`
 }
 
 // 初始化
@@ -502,4 +503,18 @@ func (p *Item) GetSwitchValueEnum() map[int]interface{} {
 	}
 
 	return data
+}
+
+// 设置回调函数
+func (p *Item) SetCallback(closure func() interface{}) *Item {
+	if closure != nil {
+		p.Callback = closure
+	}
+
+	return p
+}
+
+// 获取回调函数
+func (p *Item) GetCallback() interface{} {
+	return p.Callback
 }

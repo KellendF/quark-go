@@ -56,6 +56,44 @@ func (p *ResourceIndex) IndexQuery(c *fiber.Ctx) interface{} {
 	getPage, _ := strconv.Atoi(page)
 	query.Limit(perPage.(int)).Offset((getPage - 1) * perPage.(int)).Find(&lists).Count(&total)
 
+	// 获取列表字段
+	indexFields := resourceInstance.(interface {
+		IndexFields(c *fiber.Ctx, resourceInstance interface{}) interface{}
+	}).IndexFields(c, resourceInstance)
+
+	// 解析字段回调函数
+	for k, v := range lists {
+
+		// 给实例的Field属性赋值
+		resourceInstance.(interface {
+			SetField(fieldData map[string]interface{}) interface{}
+		}).SetField(v)
+
+		fields := make(map[string]interface{})
+		for _, field := range indexFields.([]interface{}) {
+
+			// 字段名
+			name := reflect.
+				ValueOf(field).
+				Elem().
+				FieldByName("Name").String()
+
+			// 获取实例的回调函数
+			callback := field.(interface{ GetCallback() interface{} }).GetCallback()
+
+			if callback != nil {
+				getCallback := callback.(func() interface{})
+				fields[name] = getCallback()
+			} else {
+				if v[name] != nil {
+					fields[name] = v[name]
+				}
+			}
+		}
+
+		lists[k] = fields
+	}
+
 	return map[string]interface{}{
 		"currentPage": getPage,
 		"perPage":     perPage,
