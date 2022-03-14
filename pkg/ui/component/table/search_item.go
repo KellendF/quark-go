@@ -171,7 +171,7 @@ func (p *SearchItem) SetLoad(field string, api string) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) Input(options interface{}) *SearchItem {
+func (p *SearchItem) Input(options map[string]string) *SearchItem {
 	p.Component = "input"
 	p.Options = options
 
@@ -184,7 +184,7 @@ func (p *SearchItem) Input(options interface{}) *SearchItem {
  * @param array options
  * @return object
  */
-func (p *SearchItem) Select(options []interface{}) *SearchItem {
+func (p *SearchItem) Select(options map[string]string) *SearchItem {
 	p.Component = "select"
 
 	var data []interface{}
@@ -214,7 +214,7 @@ func (p *SearchItem) Select(options []interface{}) *SearchItem {
  * @param array options
  * @return object
  */
-func (p *SearchItem) MultipleSelect(options []interface{}) *SearchItem {
+func (p *SearchItem) MultipleSelect(options map[string]string) *SearchItem {
 	p.Component = "multipleSelect"
 
 	var data []interface{}
@@ -239,7 +239,7 @@ func (p *SearchItem) MultipleSelect(options []interface{}) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) Datetime(options interface{}) *SearchItem {
+func (p *SearchItem) Datetime(options map[string]string) *SearchItem {
 	p.Component = "datetime"
 	p.Options = options
 
@@ -252,7 +252,7 @@ func (p *SearchItem) Datetime(options interface{}) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) Date(options interface{}) *SearchItem {
+func (p *SearchItem) Date(options map[string]string) *SearchItem {
 	p.Component = "date"
 	p.Options = options
 
@@ -265,7 +265,7 @@ func (p *SearchItem) Date(options interface{}) *SearchItem {
  * @param array options
  * @return object
  */
-func (p *SearchItem) Cascader(options []interface{}) *SearchItem {
+func (p *SearchItem) Cascader(options map[string]string) *SearchItem {
 	p.Component = "cascader"
 
 	var data []interface{}

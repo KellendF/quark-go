@@ -3,6 +3,7 @@ package admin
 import (
 	"reflect"
 
+	"github.com/derekstavis/go-qs"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -104,19 +105,32 @@ func (p *Resource) initializeQuery(c *fiber.Ctx, resourceInstance interface{}, q
 // 执行搜索表单查询
 func (p *Resource) applySearch(c *fiber.Ctx, query *gorm.DB, search []interface{}) *gorm.DB {
 
+	data, error := qs.Unmarshal(c.OriginalURL())
+
+	if error != nil {
+		return query
+	}
+
+	result, ok := data["search"].(map[string]interface{})
+
+	if ok == false {
+		return query
+	}
+
 	for _, v := range search {
 
 		// 获取字段
-		column := reflect.
-			ValueOf(v).
-			Elem().
-			FieldByName("Column").String()
+		column := v.(interface {
+			GetColumn(search interface{}) string
+		}).GetColumn(v) // 字段名，支持数组
 
-		value := c.Query("search[" + column + "]")
+		value := result[column]
 
-		query = v.(interface {
-			Apply(*fiber.Ctx, *gorm.DB, interface{}) *gorm.DB
-		}).Apply(c, query, value)
+		if value != nil {
+			query = v.(interface {
+				Apply(*fiber.Ctx, *gorm.DB, interface{}) *gorm.DB
+			}).Apply(c, query, value)
+		}
 	}
 
 	return query

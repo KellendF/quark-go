@@ -13,7 +13,6 @@ func (p *Resource) IndexSearches(c *fiber.Ctx, resourceInstance interface{}) int
 		Searches(*fiber.Ctx) []interface{}
 	}).Searches(c)
 	search := (&table.Search{}).Init()
-	SearchItem := (&table.SearchItem{}).Init()
 
 	withExport := reflect.
 		ValueOf(resourceInstance).
@@ -27,32 +26,39 @@ func (p *Resource) IndexSearches(c *fiber.Ctx, resourceInstance interface{}) int
 	for _, v := range searches {
 		component := v.(interface{ GetComponent() string }).GetComponent() // 获取组件名称
 		name := v.(interface{ GetName() string }).GetName()                // label 标签的文本
-		column := v.(interface{ GetColumn() string }).GetColumn()          // 字段名，支持数组
-		operator := v.(interface{ GetOperator() string }).GetOperator()    // 获取操作符
-		api := v.(interface{ GetApi() string }).GetApi()                   // 获取接口
+		column := v.(interface {
+			GetColumn(search interface{}) string
+		}).GetColumn(v) // 字段名，支持数组
+		operator := v.(interface{ GetOperator() string }).GetOperator() // 获取操作符
+		api := v.(interface{ GetApi() string }).GetApi()                // 获取接口
 		options := v.(interface {
-			Options(c *fiber.Ctx) interface{}
+			Options(c *fiber.Ctx) map[string]string
 		}).Options(c) // 获取属性
 
 		// 搜索栏表单项
-		SearchItem = SearchItem.SetName(column).SetLabel(name).SetOperator(operator).SetApi(api)
+		item := (&table.SearchItem{}).
+			Init().
+			SetName(column).
+			SetLabel(name).
+			SetOperator(operator).
+			SetApi(api)
 
 		switch component {
 		case "input":
-			SearchItem = SearchItem.Input(options)
+			item = item.Input(options)
 		case "select":
-			SearchItem = SearchItem.Select(options.([]interface{}))
+			item = item.Select(options)
 		case "multipleSelect":
-			SearchItem = SearchItem.MultipleSelect(options.([]interface{}))
+			item = item.MultipleSelect(options)
 		case "datetime":
-			SearchItem = SearchItem.Datetime(options)
+			item = item.Datetime(options)
 		case "date":
-			SearchItem = SearchItem.Date(options)
+			item = item.Date(options)
 		case "cascader":
-			SearchItem = SearchItem.Cascader(options.([]interface{}))
+			item = item.Cascader(options)
 		}
 
-		search = search.SetItems(SearchItem)
+		search = search.SetItems(item)
 	}
 
 	return search

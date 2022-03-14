@@ -1,6 +1,10 @@
 package searches
 
 import (
+	"reflect"
+	"strings"
+
+	"github.com/gobeam/stringy"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -25,7 +29,14 @@ func (p *Search) ParentInit() interface{} {
  *
  * @return string
  */
-func (p *Search) GetColumn() string {
+func (p *Search) GetColumn(search interface{}) string {
+
+	if p.Column == "" {
+		column := reflect.TypeOf(search).String()
+		column = strings.Replace(column, "*searches.", "", -1)
+		return stringy.New(column).ToLower()
+	}
+
 	return p.Column
 }
 
@@ -92,6 +103,6 @@ func (p *Search) Apply(c *fiber.Ctx, query *gorm.DB, value interface{}) *gorm.DB
  * @param  Request  request
  * @return array
  */
-func (p *Search) Options(c *fiber.Ctx) interface{} {
+func (p *Search) Options(c *fiber.Ctx) map[string]string {
 	return nil
 }

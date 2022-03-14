@@ -60,6 +60,9 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 func (p *Admin) Searches(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		(&searches.Input{}).Init("username", "用户名"),
+		(&searches.Input{}).Init("nickname", "昵称"),
+		(&searches.Status{}).Init(),
+		(&searches.DateTimeRange{}).Init("last_login_time", "登录时间"),
 	}
 }
 
