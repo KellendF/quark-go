@@ -94,6 +94,11 @@ func (p *ResourceIndex) IndexQuery(c *fiber.Ctx) interface{} {
 		lists[k] = fields
 	}
 
+	// 回调处理列表字段值
+	lists = resourceInstance.(interface {
+		BeforeIndexShowing(c *fiber.Ctx, lists []map[string]interface{}) []map[string]interface{}
+	}).BeforeIndexShowing(c, lists)
+
 	return map[string]interface{}{
 		"currentPage": getPage,
 		"perPage":     perPage,

@@ -51,6 +51,50 @@ func (p *Resource) IndexToolBar(c *fiber.Ctx, resourceInstance interface{}) inte
 	return (&table.ToolBar{}).Init().SetTitle(p.IndexTitle(c, resourceInstance)).SetActions(p.IndexActions(c, resourceInstance))
 }
 
+// 判断当前页面是否为列表页面 todo
+func (p *Resource) IsIndex(c *fiber.Ctx) bool {
+	//  uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+	//  return in_array(end($uri), ['index']);
+	return true
+}
+
+//判断当前页面是否为创建页面
+func (p *Resource) IsCreating(c *fiber.Ctx) bool {
+	//  uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+	//  return in_array(end($uri), ['create', 'store']);
+	return true
+}
+
+// 判断当前页面是否为编辑页面
+func (p *Resource) IsEditing(c *fiber.Ctx) bool {
+	//  $uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+	//  return in_array(end($uri), ['edit', 'update']);
+	return true
+}
+
+// 判断当前页面是否为详情页面
+func (p *Resource) IsDetail() bool {
+	//  $uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+	//  return in_array(end($uri), ['detail']);
+	return true
+}
+
+/**
+ * 判断当前页面是否为导出页面
+ *
+ * @return bool
+ */
+func (p *Resource) isExport() bool {
+	//  $uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+	//  return in_array(end($uri), ['export']);
+	return true
+}
+
 // 列表页组件渲染
 func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface{}, data interface{}) interface{} {
 	var component interface{}
@@ -108,9 +152,133 @@ func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface
 	return component
 }
 
+// 渲染创建页组件
+func (p *Resource) CreationComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
+	var component interface{}
+
+	return component
+}
+
+// 渲染编辑页组件
+func (p *Resource) UpdateComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
+	return p.FormComponentRender(
+		c,
+		p.FormTitle(c),
+		p.FormExtraActions(c),
+		p.UpdateApi(c),
+		p.UpdateFieldsWithinComponents(c),
+		p.FormActions(c),
+		data,
+	)
+}
+
+// 渲染表单组件
+func (p *Resource) FormComponentRender(
+	c *fiber.Ctx,
+	resourceInstance interface{},
+	title string,
+	extra interface{},
+	api string,
+	fields []map[string]interface{},
+	actions []map[string]interface{},
+	data map[string]interface{}) interface{} {
+
+	if fields[0]["component"] == "tabPane" {
+		return p.FormWithinTabs(c, resourceInstance, title, extra, api, fields, actions, data)
+	} else {
+		return p.FormWithinCard(c, resourceInstance, title, extra, api, fields, actions, data)
+	}
+}
+
+// 在卡片内的From组件
+func (p *Resource) FormWithinCard(
+	c *fiber.Ctx,
+	resourceInstance interface{},
+	title string,
+	extra interface{},
+	api string,
+	fields []map[string]interface{},
+	actions []map[string]interface{},
+	data map[string]interface{}) interface{} {
+	//  $form = Form::api($api)
+	//  ->style(['padding' => '24px'])
+	//  ->actions($actions)
+	//  ->body($fields)
+	//  ->initialValues($data);
+
+	//  return Card::title($title)
+	//  ->headerBordered()
+	//  ->extra($extra)
+	//  ->body($form);
+
+	return ""
+}
+
+// 在标签页内的From组件
+func (p *Resource) FormWithinTabs(
+	c *fiber.Ctx,
+	resourceInstance interface{},
+	title string,
+	extra interface{},
+	api string,
+	fields []map[string]interface{},
+	actions []map[string]interface{},
+	data map[string]interface{}) interface{} {
+	//  return Form::api($api)
+	//  ->actions($actions)
+	//  ->style([
+	// 	 'backgroundColor' => '#fff',
+	// 	 'paddingBottom' => '20px'
+	//  ])
+	//  ->body(Tabs::tabPanes($fields)->tabBarExtraContent($extra))
+	//  ->initialValues($data);
+
+	return ""
+}
+
 // 设置单列字段
 func (p *Resource) SetField(fieldData map[string]interface{}) interface{} {
 	p.Field = fieldData
 
 	return p
+}
+
+// 列表页面显示前回调
+func (p *Resource) BeforeIndexShowing(c *fiber.Ctx, list []map[string]interface{}) []map[string]interface{} {
+	return list
+}
+
+// 详情页页面显示前回调
+func (p *Resource) BeforeDetailShowing(c *fiber.Ctx, data map[string]interface{}) map[string]interface{} {
+	return data
+}
+
+// 创建页面显示前回调
+func (p *Resource) BeforeCreating(c *fiber.Ctx) map[string]interface{} {
+	return nil
+}
+
+// 编辑页面显示前回调
+func (p *Resource) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[string]interface{} {
+	return data
+}
+
+// 保存数据前回调
+func (p *Resource) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) map[string]interface{} {
+	return submitData
+}
+
+// 保存数据后回调
+func (p *Resource) AfterSaved(c *fiber.Ctx, model *gorm.DB) *gorm.DB {
+	return model
+}
+
+// 数据导出前回调
+func (p *Resource) BeforeExporting(c *fiber.Ctx, list []map[string]interface{}) []map[string]interface{} {
+	return list
+}
+
+// 数据导入前回调
+func (p *Resource) BeforeImporting(c *fiber.Ctx, list []map[string]interface{}) []map[string]interface{} {
+	return list
 }
