@@ -2,7 +2,9 @@ package admin
 
 import (
 	"reflect"
+	"strings"
 
+	"github.com/gobeam/stringy"
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 	"gorm.io/gorm"
@@ -32,15 +34,6 @@ func (p *Resource) NewModel(resourceInstance interface{}) *gorm.DB {
 	return model.(*gorm.DB)
 }
 
-// 列表标题
-func (p *Resource) IndexTitle(c *fiber.Ctx, resourceInstance interface{}) string {
-	return reflect.
-		ValueOf(resourceInstance).
-		Elem().
-		FieldByName("Title").
-		String() + "列表"
-}
-
 // 列表页表格主体
 func (p *Resource) IndexExtraRender(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 	return nil
@@ -53,46 +46,128 @@ func (p *Resource) IndexToolBar(c *fiber.Ctx, resourceInstance interface{}) inte
 
 // 判断当前页面是否为列表页面 todo
 func (p *Resource) IsIndex(c *fiber.Ctx) bool {
-	//  uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
-	//  return in_array(end($uri), ['index']);
-	return true
+	uri := strings.Split(c.Path(), "/")
+
+	return (uri[len(uri)-1] == "index")
 }
 
 //判断当前页面是否为创建页面
 func (p *Resource) IsCreating(c *fiber.Ctx) bool {
-	//  uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
-	//  return in_array(end($uri), ['create', 'store']);
-	return true
+	uri := strings.Split(c.Path(), "/")
+
+	return (uri[len(uri)-1] == "create") || (uri[len(uri)-1] == "store")
 }
 
 // 判断当前页面是否为编辑页面
 func (p *Resource) IsEditing(c *fiber.Ctx) bool {
-	//  $uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
-	//  return in_array(end($uri), ['edit', 'update']);
-	return true
+	uri := strings.Split(c.Path(), "/")
+
+	return (uri[len(uri)-1] == "edit") || (uri[len(uri)-1] == "update")
 }
 
 // 判断当前页面是否为详情页面
-func (p *Resource) IsDetail() bool {
-	//  $uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+func (p *Resource) IsDetail(c *fiber.Ctx) bool {
 
-	//  return in_array(end($uri), ['detail']);
-	return true
+	uri := strings.Split(c.Path(), "/")
+
+	return (uri[len(uri)-1] == "detail")
 }
 
-/**
- * 判断当前页面是否为导出页面
- *
- * @return bool
- */
-func (p *Resource) isExport() bool {
-	//  $uri = explode('/', parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+// 判断当前页面是否为导出页面
 
-	//  return in_array(end($uri), ['export']);
-	return true
+func (p *Resource) isExport(c *fiber.Ctx) bool {
+
+	uri := strings.Split(c.Path(), "/")
+
+	return (uri[len(uri)-1] == "export")
+}
+
+// 列表标题
+func (p *Resource) IndexTitle(c *fiber.Ctx, resourceInstance interface{}) string {
+	return reflect.
+		ValueOf(resourceInstance).
+		Elem().
+		FieldByName("Title").
+		String() + "列表"
+}
+
+// 表单接口
+func (p *Resource) FormApi(c *fiber.Ctx) string {
+	return ""
+}
+
+// 创建表单的接口
+func (p *Resource) CreationApi(c *fiber.Ctx) string {
+	if p.FormApi(c) != "" {
+		return p.FormApi(c)
+	}
+
+	uri := strings.Split(c.Path(), "/")
+
+	if uri[len(uri)-1] == "index" {
+
+		return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/index", "/store")
+	}
+
+	return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/create", "/store")
+}
+
+//更新表单的接口
+func (p *Resource) UpdateApi(c *fiber.Ctx) string {
+
+	if p.FormApi(c) != "" {
+		return p.FormApi(c)
+	}
+
+	uri := strings.Split(c.Path(), "/")
+
+	if uri[len(uri)-1] == "index" {
+
+		return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/index", "/save")
+	}
+
+	return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/edit", "/save")
+}
+
+// 编辑页面获取表单数据接口
+func (p *Resource) EditValueApi(c *fiber.Ctx) string {
+
+	uri := strings.Split(c.Path(), "/")
+
+	if uri[len(uri)-1] == "index" {
+
+		return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/index", "/edit/values?id=${id}")
+	}
+
+	return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/edit", "/edit/values?id=${id}")
+}
+
+// 表单标题
+func (p *Resource) FormTitle(c *fiber.Ctx, resourceInstance interface{}) string {
+	value := reflect.ValueOf(resourceInstance).Elem()
+	title := value.FieldByName("Title").String()
+
+	if p.IsCreating(c) {
+		return "创建" + title
+	} else {
+		if p.IsEditing(c) {
+			return "编辑" + title
+		}
+	}
+
+	return title
+}
+
+// 详情页标题
+
+func (p *Resource) DetailTitle(c *fiber.Ctx, resourceInstance interface{}) string {
+	value := reflect.ValueOf(resourceInstance).Elem()
+	title := value.FieldByName("Title").String()
+
+	return title + "详情"
 }
 
 // 列表页组件渲染
@@ -154,22 +229,31 @@ func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface
 
 // 渲染创建页组件
 func (p *Resource) CreationComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
-	var component interface{}
-
-	return component
+	return p.FormComponentRender(
+		c,
+		resourceInstance,
+		p.FormTitle(c, resourceInstance),
+		p.FormExtraActions(c, resourceInstance),
+		p.CreationApi(c),
+		p.CreationFieldsWithinComponents(c, resourceInstance),
+		p.FormActions(c, resourceInstance),
+		data,
+	)
 }
 
 // 渲染编辑页组件
 func (p *Resource) UpdateComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
-	return p.FormComponentRender(
-		c,
-		p.FormTitle(c),
-		p.FormExtraActions(c),
-		p.UpdateApi(c),
-		p.UpdateFieldsWithinComponents(c),
-		p.FormActions(c),
-		data,
-	)
+	// return p.FormComponentRender(
+	// 	c,
+	// 	p.FormTitle(c),
+	// 	p.FormExtraActions(c),
+	// 	p.UpdateApi(c),
+	// 	p.UpdateFieldsWithinComponents(c),
+	// 	p.FormActions(c),
+	// 	data,
+	// )
+
+	return ""
 }
 
 // 渲染表单组件
@@ -179,12 +263,22 @@ func (p *Resource) FormComponentRender(
 	title string,
 	extra interface{},
 	api string,
-	fields []map[string]interface{},
-	actions []map[string]interface{},
+	fields interface{},
+	actions []interface{},
 	data map[string]interface{}) interface{} {
 
-	if fields[0]["component"] == "tabPane" {
-		return p.FormWithinTabs(c, resourceInstance, title, extra, api, fields, actions, data)
+	fields, ok := fields.([]map[string]interface{})
+
+	if ok {
+		component := reflect.
+			ValueOf(fields.([]map[string]interface{})[0]).
+			Elem().
+			FieldByName("Component").String()
+		if component == "tabPane" {
+			return p.FormWithinTabs(c, resourceInstance, title, extra, api, fields, actions, data)
+		} else {
+			return p.FormWithinCard(c, resourceInstance, title, extra, api, fields, actions, data)
+		}
 	} else {
 		return p.FormWithinCard(c, resourceInstance, title, extra, api, fields, actions, data)
 	}
@@ -197,8 +291,8 @@ func (p *Resource) FormWithinCard(
 	title string,
 	extra interface{},
 	api string,
-	fields []map[string]interface{},
-	actions []map[string]interface{},
+	fields interface{},
+	actions []interface{},
 	data map[string]interface{}) interface{} {
 	//  $form = Form::api($api)
 	//  ->style(['padding' => '24px'])
@@ -221,8 +315,8 @@ func (p *Resource) FormWithinTabs(
 	title string,
 	extra interface{},
 	api string,
-	fields []map[string]interface{},
-	actions []map[string]interface{},
+	fields interface{},
+	actions []interface{},
 	data map[string]interface{}) interface{} {
 	//  return Form::api($api)
 	//  ->actions($actions)

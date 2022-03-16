@@ -66,7 +66,7 @@ func (p *Resource) IndexTableAlertActions(c *fiber.Ctx, resourceInstance interfa
 }
 
 //表单页行为
-func (p *Resource) FormActions(c *fiber.Ctx, resourceInstance interface{}) interface{} {
+func (p *Resource) FormActions(c *fiber.Ctx, resourceInstance interface{}) []interface{} {
 	actions := resourceInstance.(interface{ Actions(*fiber.Ctx) interface{} }).Actions(c)
 
 	var items []interface{}
