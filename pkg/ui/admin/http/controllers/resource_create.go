@@ -14,6 +14,10 @@ func (p *ResourceCreate) Handle(c *fiber.Ctx) error {
 	// 资源实例
 	resourceInstance := resourceCreate.Resource(c)
 
+	if resourceInstance == nil {
+		return c.SendStatus(404)
+	}
+
 	// 断言BeforeCreating方法，获取初始数据
 	data := resourceInstance.(interface {
 		BeforeCreating(*fiber.Ctx) map[string]interface{}
@@ -21,7 +25,7 @@ func (p *ResourceCreate) Handle(c *fiber.Ctx) error {
 
 	// 断言CreationComponentRender方法
 	creationComponent := resourceInstance.(interface {
-		CreationComponentRender(*fiber.Ctx, interface{}, interface{}) interface{}
+		CreationComponentRender(*fiber.Ctx, interface{}, map[string]interface{}) interface{}
 	}).CreationComponentRender(c, resourceInstance, data)
 
 	// 断言Render方法

@@ -7,7 +7,7 @@ type Component struct {
 	Title            string      `json:"title"`
 	SubTitle         string      `json:"subTitle"`
 	Tip              string      `json:"tip"`
-	Extra            string      `json:"extra"`
+	Extra            interface{} `json:"extra"`
 	Layout           string      `json:"layout"`
 	Loading          bool        `json:"loading"`
 	ColSpan          interface{} `json:"colSpan"`
@@ -62,7 +62,7 @@ func (p *Component) SetTip(tip string) *Component {
 }
 
 // 右上角自定义区域
-func (p *Component) SetExtra(extra string) *Component {
+func (p *Component) SetExtra(extra interface{}) *Component {
 	p.Extra = extra
 
 	return p

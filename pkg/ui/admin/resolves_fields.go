@@ -545,26 +545,12 @@ func (p *Resource) getWhenFields(item interface{}) []interface{} {
 
 	var items []interface{}
 
-	hasWhen := reflect.
-		ValueOf(item).
-		Elem().
-		FieldByName("When").IsZero()
-
-	if !hasWhen {
-		return items
-	}
-
 	when := reflect.
 		ValueOf(item).
 		Elem().
 		FieldByName("When").Interface()
 
-	haswhenItems := reflect.
-		ValueOf(when).
-		Elem().
-		FieldByName("whenItems").IsZero()
-
-	if !haswhenItems {
+	if when == nil {
 		return items
 	}
 
@@ -572,6 +558,10 @@ func (p *Resource) getWhenFields(item interface{}) []interface{} {
 		ValueOf(when).
 		Elem().
 		FieldByName("Items").Interface()
+
+	if whenItems == nil {
+		return items
+	}
 
 	whenItems, ok := whenItems.([]interface{})
 

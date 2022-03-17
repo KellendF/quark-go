@@ -6,6 +6,8 @@ import (
 
 	"github.com/gobeam/stringy"
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/ui/component/card"
+	"github.com/quarkcms/quark-go/pkg/ui/component/form"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 	"gorm.io/gorm"
 )
@@ -229,31 +231,42 @@ func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface
 
 // 渲染创建页组件
 func (p *Resource) CreationComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
+	title := p.FormTitle(c, resourceInstance)
+	formExtraActions := p.FormExtraActions(c, resourceInstance)
+	api := p.CreationApi(c)
+	fields := p.CreationFieldsWithinComponents(c, resourceInstance)
+	formActions := p.FormActions(c, resourceInstance)
+
 	return p.FormComponentRender(
 		c,
 		resourceInstance,
-		p.FormTitle(c, resourceInstance),
-		p.FormExtraActions(c, resourceInstance),
-		p.CreationApi(c),
-		p.CreationFieldsWithinComponents(c, resourceInstance),
-		p.FormActions(c, resourceInstance),
+		title,
+		formExtraActions,
+		api,
+		fields,
+		formActions,
 		data,
 	)
 }
 
 // 渲染编辑页组件
 func (p *Resource) UpdateComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
-	// return p.FormComponentRender(
-	// 	c,
-	// 	p.FormTitle(c),
-	// 	p.FormExtraActions(c),
-	// 	p.UpdateApi(c),
-	// 	p.UpdateFieldsWithinComponents(c),
-	// 	p.FormActions(c),
-	// 	data,
-	// )
+	title := p.FormTitle(c, resourceInstance)
+	formExtraActions := p.FormExtraActions(c, resourceInstance)
+	api := p.UpdateApi(c)
+	fields := p.UpdateFieldsWithinComponents(c, resourceInstance)
+	formActions := p.FormActions(c, resourceInstance)
 
-	return ""
+	return p.FormComponentRender(
+		c,
+		resourceInstance,
+		title,
+		formExtraActions,
+		api,
+		fields,
+		formActions,
+		data,
+	)
 }
 
 // 渲染表单组件
@@ -267,7 +280,7 @@ func (p *Resource) FormComponentRender(
 	actions []interface{},
 	data map[string]interface{}) interface{} {
 
-	fields, ok := fields.([]map[string]interface{})
+	getFields, ok := fields.([]map[string]interface{})
 
 	if ok {
 		component := reflect.
@@ -275,7 +288,7 @@ func (p *Resource) FormComponentRender(
 			Elem().
 			FieldByName("Component").String()
 		if component == "tabPane" {
-			return p.FormWithinTabs(c, resourceInstance, title, extra, api, fields, actions, data)
+			return p.FormWithinTabs(c, resourceInstance, title, extra, api, getFields, actions, data)
 		} else {
 			return p.FormWithinCard(c, resourceInstance, title, extra, api, fields, actions, data)
 		}
@@ -294,18 +307,22 @@ func (p *Resource) FormWithinCard(
 	fields interface{},
 	actions []interface{},
 	data map[string]interface{}) interface{} {
-	//  $form = Form::api($api)
-	//  ->style(['padding' => '24px'])
-	//  ->actions($actions)
-	//  ->body($fields)
-	//  ->initialValues($data);
 
-	//  return Card::title($title)
-	//  ->headerBordered()
-	//  ->extra($extra)
-	//  ->body($form);
+	formComponent := (&form.Component{}).
+		Init().
+		SetStyle(map[string]interface{}{
+			"padding": "24px",
+		}).
+		SetActions(actions).
+		SetBody(fields).
+		SetInitialValues(data)
 
-	return ""
+	return (&card.Component{}).
+		Init().
+		SetTitle(title).
+		SetHeaderBordered(true).
+		SetExtra(extra).
+		SetBody(formComponent)
 }
 
 // 在标签页内的From组件

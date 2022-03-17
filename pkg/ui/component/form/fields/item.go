@@ -1,49 +1,58 @@
 package fields
 
 import (
-	"github.com/quarkcms/quark-go/pkg/ui/component"
+	"crypto/md5"
+	"encoding/hex"
+
+	"github.com/go-basic/uuid"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
 
 type Item struct {
-	component.Element
-	Tooltip              string        `json:"tooltip"`
-	Width                int           `json:"width"`
-	Colon                bool          `json:"colon"`
-	Value                interface{}   `json:"value"`
-	DefaultValue         interface{}   `json:"defaultValue"`
-	Extra                string        `json:"extra"`
-	HasFeedback          bool          `json:"hasFeedback"`
-	Help                 string        `json:"help"`
-	NoStyle              bool          `json:"noStyle"`
-	Label                string        `json:"label"`
-	LabelAlign           string        `json:"labelAlign"`
-	LabelCol             interface{}   `json:"labelCol"`
-	Name                 string        `json:"name"`
-	Required             bool          `json:"required"`
-	Disabled             bool          `json:"disabled"`
-	Ignore               bool          `json:"ignore"`
-	Rules                interface{}   `json:"rules"`
-	RuleMessages         interface{}   `json:"ruleMessages"`
-	CreationRules        interface{}   `json:"creationRules"`
-	CreationRuleMessages interface{}   `json:"creationRuleMessages"`
-	UpdateRules          interface{}   `json:"updateRules"`
-	UpdateRuleMessages   interface{}   `json:"updateRuleMessages"`
-	FrontendRules        interface{}   `json:"frontendRules"`
-	ValuePropName        string        `json:"valuePropName"`
-	WrapperCol           interface{}   `json:"wrapperCol"`
-	When                 interface{}   `json:"when"`
-	ShowOnIndex          bool          `json:"showOnIndex"`
-	ShowOnDetail         bool          `json:"showOnDetail"`
-	ShowOnCreation       bool          `json:"showOnCreation"`
-	ShowOnUpdate         bool          `json:"showOnUpdate"`
-	ShowOnExport         bool          `json:"showOnExport"`
-	ShowOnImport         bool          `json:"showOnImport"`
-	Editable             bool          `json:"editable"`
-	Options              interface{}   `json:"options"`
-	Column               *table.Column `json:"-"`
-	Callback             interface{}   `json:"-"`
+	Key                  string                 `json:"-"`
+	ComponentKey         string                 `json:"componentKey"`
+	Component            string                 `json:"component"`
+	Style                map[string]interface{} `json:"style"`
+	Tooltip              string                 `json:"tooltip"`
+	Width                int                    `json:"width"`
+	Colon                bool                   `json:"colon"`
+	Value                interface{}            `json:"value"`
+	DefaultValue         interface{}            `json:"defaultValue"`
+	Extra                string                 `json:"extra"`
+	HasFeedback          bool                   `json:"hasFeedback"`
+	Help                 string                 `json:"help"`
+	NoStyle              bool                   `json:"noStyle"`
+	Label                string                 `json:"label"`
+	LabelAlign           string                 `json:"labelAlign"`
+	LabelCol             interface{}            `json:"labelCol"`
+	Name                 string                 `json:"name"`
+	Required             bool                   `json:"required"`
+	Disabled             bool                   `json:"disabled"`
+	Ignore               bool                   `json:"ignore"`
+	Rules                interface{}            `json:"-"`
+	RuleMessages         interface{}            `json:"-"`
+	CreationRules        interface{}            `json:"-"`
+	CreationRuleMessages interface{}            `json:"-"`
+	UpdateRules          interface{}            `json:"-"`
+	UpdateRuleMessages   interface{}            `json:"-"`
+	FrontendRules        interface{}            `json:"frontendRules"`
+	ValuePropName        string                 `json:"valuePropName"`
+	WrapperCol           interface{}            `json:"wrapperCol"`
+	When                 interface{}            `json:"when"`
+	ShowOnIndex          bool                   `json:"-"`
+	ShowOnDetail         bool                   `json:"-"`
+	ShowOnCreation       bool                   `json:"-"`
+	ShowOnUpdate         bool                   `json:"-"`
+	ShowOnExport         bool                   `json:"-"`
+	ShowOnImport         bool                   `json:"-"`
+	Editable             bool                   `json:"-"`
+	Options              interface{}            `json:"options"`
+	Column               *table.Column          `json:"-"`
+	Callback             interface{}            `json:"-"`
 }
+
+const DEFAULT_KEY = ""
+const DEFAULT_CRYPT = true
 
 // 初始化
 func (p *Item) InitItem() *Item {
@@ -56,6 +65,25 @@ func (p *Item) InitItem() *Item {
 	p.ShowOnExport = true
 	p.ShowOnImport = true
 	p.Column = (&table.Column{}).Init()
+
+	return p
+}
+
+// 设置Key
+func (p *Item) SetKey(key string, crypt bool) *Item {
+
+	if key == "" {
+		key = uuid.New()
+	}
+
+	if crypt {
+		h := md5.New()
+		h.Write([]byte(key))
+		key = hex.EncodeToString(h.Sum(nil))
+	}
+
+	p.Key = key
+	p.ComponentKey = key
 
 	return p
 }

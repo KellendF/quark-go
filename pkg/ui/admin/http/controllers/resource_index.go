@@ -15,6 +15,10 @@ func (p *ResourceIndex) Handle(c *fiber.Ctx) error {
 	// 资源实例
 	resourceInstance := resourceIndex.Resource(c)
 
+	if resourceInstance == nil {
+		return c.SendStatus(404)
+	}
+
 	// 查询数据
 	data := resourceIndex.IndexQuery(c)
 
