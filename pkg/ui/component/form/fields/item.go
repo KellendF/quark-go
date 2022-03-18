@@ -48,6 +48,7 @@ type Item struct {
 	Options              interface{}            `json:"options"`
 	Column               *table.Column          `json:"-"`
 	Callback             interface{}            `json:"-"`
+	Placeholder          string                 `json:"placeholder"`
 }
 
 const DEFAULT_KEY = ""
@@ -543,4 +544,11 @@ func (p *Item) SetCallback(closure func() interface{}) *Item {
 // 获取回调函数
 func (p *Item) GetCallback() interface{} {
 	return p.Callback
+}
+
+// 控件占位符
+func (p *Item) SetPlaceholder(placeholder string) *Item {
+	p.Placeholder = placeholder
+
+	return p
 }

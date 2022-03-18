@@ -1,17 +1,20 @@
 package admin
 
 import (
+	"reflect"
+
 	"github.com/quarkcms/quark-go/pkg/ui/component/form/fields"
 )
 
 type Field struct{}
 
-// 输入框组件
-func (p *Field) Text(params ...interface{}) *fields.Text {
-	field := &fields.Text{}
+// Hidden组件
+func (p *Field) Hidden(params ...interface{}) *fields.Hidden {
+	field := (&fields.Hidden{}).Init()
 
 	if len(params) >= 2 {
-		field.Init().SetName(params[0].(string)).SetLabel(params[1].(string))
+
+		field.SetName(params[0].(string)).SetLabel(params[1].(string))
 		if len(params) == 3 {
 
 			// 判断是否为闭包函数
@@ -21,7 +24,42 @@ func (p *Field) Text(params ...interface{}) *fields.Text {
 			}
 		}
 	} else {
-		field.Init().SetName(params[0].(string)).SetLabel(params[0].(string))
+		field.SetName(params[0].(string)).SetLabel(params[0].(string))
+	}
+
+	return field
+}
+
+// 输入框组件
+func (p *Field) Text(params ...interface{}) *fields.Text {
+	field := (&fields.Text{}).Init()
+
+	placeholder := reflect.
+		ValueOf(field).
+		Elem().
+		FieldByName("Placeholder").String()
+
+	if len(params) >= 2 {
+
+		if placeholder == "" {
+			field.SetPlaceholder("请输入" + params[1].(string))
+		}
+
+		field.SetName(params[0].(string)).SetLabel(params[1].(string))
+		if len(params) == 3 {
+
+			// 判断是否为闭包函数
+			closure, ok := params[2].(func() interface{})
+			if ok {
+				field.SetCallback(closure)
+			}
+		}
+	} else {
+		if placeholder == "" {
+			field.SetPlaceholder("请输入" + params[1].(string))
+		}
+
+		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
 	return field
@@ -41,13 +79,35 @@ func (p *Field) Radio(params ...string) *fields.Radio {
 }
 
 // 日期时间组件
-func (p *Field) Datetime(params ...string) *fields.Datetime {
+func (p *Field) Datetime(params ...interface{}) *fields.Datetime {
 	field := &fields.Datetime{}
 
-	if len(params) == 2 {
-		field.Init().SetName(params[0]).SetLabel(params[1])
+	placeholder := reflect.
+		ValueOf(field).
+		Elem().
+		FieldByName("Placeholder").String()
+
+	if len(params) >= 2 {
+
+		if placeholder == "" {
+			field.Init().SetPlaceholder("请选择")
+		}
+
+		field.SetName(params[0].(string)).SetLabel(params[1].(string))
+		if len(params) == 3 {
+
+			// 判断是否为闭包函数
+			closure, ok := params[2].(func() interface{})
+			if ok {
+				field.SetCallback(closure)
+			}
+		}
 	} else {
-		field.Init().SetName(params[0]).SetLabel(params[0])
+		if placeholder == "" {
+			field.Init().SetPlaceholder("请选择")
+		}
+
+		field.SetName(params[0].(string)).SetLabel(params[0].(string))
 	}
 
 	return field

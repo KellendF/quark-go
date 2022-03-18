@@ -10,7 +10,6 @@ type Text struct {
 	Prefix      string `json:"prefix"`
 	Size        string `json:"size"`
 	Suffix      string `json:"suffix"`
-	Placeholder string `json:"placeholder"`
 	AllowClear  bool   `json:"allowClear"`
 }
 
@@ -20,13 +19,6 @@ func (p *Text) Init() *Text {
 	p.MaxLength = 200
 	p.InitItem().SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 	p.SetWidth(200)
-
-	return p
-}
-
-// 控件占位符
-func (p *Text) SetPlaceholder(placeholder string) *Text {
-	p.Placeholder = placeholder
 
 	return p
 }

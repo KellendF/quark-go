@@ -82,7 +82,7 @@ func (p *Component) SetColon(colon bool) *Component {
 }
 
 //  解析initialValue
-func (p *Component) SetParseInitialValue(item interface{}, initialValues map[string]interface{}) map[string]interface{} {
+func (p *Component) parseInitialValue(item interface{}, initialValues map[string]interface{}) map[string]interface{} {
 	//  if(isset($item->name)) {
 
 	// 	 if(isset($item->defaultValue)) {

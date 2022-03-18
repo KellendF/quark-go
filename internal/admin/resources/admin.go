@@ -36,12 +36,10 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 	field := &admin.Field{}
 
 	return []interface{}{
-		field.Text("id", "ID"),
+		field.Hidden("id", "ID"),
 		field.Text("username", "用户名", func() interface{} {
-			id := strconv.Itoa(p.Field["id"].(int))
-			username := p.Field["username"].(string)
 
-			return "<a href='#/index?api=admin/admin/edit&id=" + id + "'>" + username + "</a>"
+			return "<a href='#/index?api=admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}),
 		field.Text("nickname", "昵称").SetEditable(true),
 		field.Text("email", "邮箱"),

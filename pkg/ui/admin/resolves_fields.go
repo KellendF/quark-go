@@ -109,6 +109,8 @@ func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 		SetAttribute(name)
 
 	switch component {
+	case "hiddenField":
+		column = column.SetValueType("text")
 	case "textField":
 		column = column.SetValueType("text")
 	case "selectField":
