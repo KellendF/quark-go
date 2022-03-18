@@ -37,13 +37,20 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 
 	return []interface{}{
 		field.Hidden("id", "ID"),
+
 		field.Text("username", "用户名", func() interface{} {
 
 			return "<a href='#/index?api=admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}),
-		field.Text("nickname", "昵称").SetEditable(true),
+
+		field.Text("nickname", "昵称").
+			SetEditable(true).
+			SetRules([]string{"required"}, map[string]string{"required": "昵称必须填写"}),
+
 		field.Text("email", "邮箱"),
+
 		field.Text("phone", "手机号"),
+
 		field.Radio("sex", "性别").
 			SetOptions(map[string]interface{}{
 				"1": "男",
@@ -53,7 +60,9 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 				// return column.SetSorter(true)
 				return column.SetFilters(true)
 			}),
+
 		field.Datetime("last_login_time", "最后登录时间"),
+
 		field.Switch("status", "状态").
 			SetTrueValue("正常").
 			SetFalseValue("禁用").

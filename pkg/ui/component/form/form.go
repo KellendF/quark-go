@@ -327,7 +327,7 @@ func (p *Component) parseSubmitData(data map[string]interface{}) interface{} {
 	return data
 }
 
-// 行为
+// 设置表单行为
 func (p *Component) SetActions(actions []interface{}) *Component {
 	p.Actions = actions
 

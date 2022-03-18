@@ -64,13 +64,6 @@ func (p *Resource) IndexColumns(c *fiber.Ctx, resourceInstance interface{}) inte
 	return columns
 }
 
-// 获取字段
-// func (p *Resource) getFields(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-// 	return resourceInstance.(interface {
-// 		Fields(c *fiber.Ctx) interface{}
-// 	}).Fields(c)
-// }
-
 // 将表单项转换为表格列
 func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 
@@ -221,6 +214,10 @@ func (p *Resource) CreationFieldsWithinComponents(c *fiber.Ctx, resourceInstance
 				}).IsShownOnCreation()
 
 				if isShownOnCreation {
+					sv.(interface {
+						SetFrontendRules(c *fiber.Ctx) interface{}
+					}).SetFrontendRules(c)
+
 					subItems = append(subItems, sv)
 				}
 			}
@@ -233,6 +230,9 @@ func (p *Resource) CreationFieldsWithinComponents(c *fiber.Ctx, resourceInstance
 			}).IsShownOnCreation()
 
 			if isShownOnCreation {
+				v.(interface {
+					SetFrontendRules(c *fiber.Ctx) interface{}
+				}).SetFrontendRules(c)
 				items = append(items, v)
 			}
 		}
@@ -309,6 +309,11 @@ func (p *Resource) UpdateFieldsWithinComponents(c *fiber.Ctx, resourceInstance i
 				}).IsShownOnUpdate()
 
 				if isShownOnUpdate {
+
+					sv.(interface {
+						SetFrontendRules(c *fiber.Ctx) interface{}
+					}).SetFrontendRules(c)
+
 					subItems = append(subItems, sv)
 				}
 			}
@@ -321,6 +326,11 @@ func (p *Resource) UpdateFieldsWithinComponents(c *fiber.Ctx, resourceInstance i
 			}).IsShownOnUpdate()
 
 			if isShownOnUpdate {
+
+				v.(interface {
+					SetFrontendRules(c *fiber.Ctx) interface{}
+				}).SetFrontendRules(c)
+
 				items = append(items, v)
 			}
 		}

@@ -3,8 +3,12 @@ package fields
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
+	"strconv"
+	"strings"
 
 	"github.com/go-basic/uuid"
+	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
 
@@ -28,16 +32,17 @@ type Item struct {
 	Required             bool                   `json:"required"`
 	Disabled             bool                   `json:"disabled"`
 	Ignore               bool                   `json:"ignore"`
-	Rules                interface{}            `json:"-"`
-	RuleMessages         interface{}            `json:"-"`
-	CreationRules        interface{}            `json:"-"`
-	CreationRuleMessages interface{}            `json:"-"`
-	UpdateRules          interface{}            `json:"-"`
-	UpdateRuleMessages   interface{}            `json:"-"`
+	Rules                []string               `json:"-"`
+	RuleMessages         map[string]string      `json:"-"`
+	CreationRules        []string               `json:"-"`
+	CreationRuleMessages map[string]string      `json:"-"`
+	UpdateRules          []string               `json:"-"`
+	UpdateRuleMessages   map[string]string      `json:"-"`
 	FrontendRules        interface{}            `json:"frontendRules"`
 	ValuePropName        string                 `json:"valuePropName"`
 	WrapperCol           interface{}            `json:"wrapperCol"`
 	When                 interface{}            `json:"when"`
+	WhenItem             []interface{}          `json:"-"`
 	ShowOnIndex          bool                   `json:"-"`
 	ShowOnDetail         bool                   `json:"-"`
 	ShowOnCreation       bool                   `json:"-"`
@@ -174,46 +179,150 @@ func (p *Item) SetRequired() *Item {
 }
 
 //解析成前端验证规则
-func parseFrontendRules(rules interface{}, messages interface{}) interface{} {
-	result := false
+func (p *Item) parseFrontendRules(rules []string, messages map[string]string) []map[string]interface{} {
+	result := []map[string]interface{}{}
+	values := []string{}
+	rule := ""
+
+	for _, v := range rules {
+		if strings.Contains(v, ":") {
+			values = strings.Split(v, ":")
+			rule = values[0]
+		} else {
+			rule = v
+		}
+
+		data := map[string]interface{}{}
+
+		switch rule {
+		case "required":
+			data = map[string]interface{}{
+				"required": true,
+				"message":  messages["required"],
+			}
+		case "min":
+			min, _ := strconv.Atoi(values[1])
+
+			data = map[string]interface{}{
+				"min":     min,
+				"message": messages["min"],
+			}
+		case "max":
+			max, _ := strconv.Atoi(values[1])
+
+			data = map[string]interface{}{
+				"max":     max,
+				"message": messages["max"],
+			}
+
+		case "email":
+			data = map[string]interface{}{
+				"type":    "email",
+				"message": messages["email"],
+			}
+
+		case "numeric":
+			data = map[string]interface{}{
+				"type":    "number",
+				"message": messages["numeric"],
+			}
+
+		case "url":
+			data = map[string]interface{}{
+				"type":    "url",
+				"message": messages["url"],
+			}
+
+		case "integer":
+			data = map[string]interface{}{
+				"type":    "integer",
+				"message": messages["integer"],
+			}
+
+		case "date":
+			data = map[string]interface{}{
+				"type":    "date",
+				"message": messages["date"],
+			}
+		case "boolean":
+			data = map[string]interface{}{
+				"type":    "boolean",
+				"message": messages["boolean"],
+			}
+		}
+
+		if len(data) > 0 {
+			result = append(result, data)
+		}
+	}
 
 	return result
 }
 
 //设置前端验证规则
-func setFrontendRules() interface{} {
-	frontendRules := ""
+func (p *Item) SetFrontendRules(c *fiber.Ctx) interface{} {
+	frontendRules := []map[string]interface{}{}
 
-	return frontendRules
+	var (
+		rules         []map[string]interface{}
+		creationRules []map[string]interface{}
+		updateRules   []map[string]interface{}
+	)
+
+	uri := strings.Split(c.Path(), "/")
+	isCreating := (uri[len(uri)-1] == "create") || (uri[len(uri)-1] == "store")
+	isEditing := (uri[len(uri)-1] == "edit") || (uri[len(uri)-1] == "update")
+
+	if len(p.Rules) > 0 {
+		rules = p.parseFrontendRules(p.Rules, p.RuleMessages)
+	}
+
+	if isCreating && len(p.CreationRules) > 0 {
+		creationRules = p.parseFrontendRules(p.CreationRules, p.CreationRuleMessages)
+	}
+
+	if isEditing && len(p.UpdateRules) > 0 {
+		updateRules = p.parseFrontendRules(p.UpdateRules, p.UpdateRuleMessages)
+	}
+
+	if len(rules) > 0 {
+		frontendRules = append(frontendRules, rules...)
+	}
+
+	if len(creationRules) > 0 {
+		frontendRules = append(frontendRules, creationRules...)
+	}
+
+	if len(updateRules) > 0 {
+		frontendRules = append(frontendRules, updateRules...)
+	}
+
+	p.FrontendRules = frontendRules
+
+	return p
 }
 
 //校验规则，设置字段的校验逻辑
-func (p *Item) SetRules(rules interface{}, messages interface{}) *Item {
+func (p *Item) SetRules(rules []string, messages map[string]string) *Item {
 	p.Rules = rules
 	p.RuleMessages = messages
 
-	// 设置前端规则
-	setFrontendRules()
 	return p
 }
 
 //校验规则，只在创建表单提交时生效
-func (p *Item) SetCreationRules(rules interface{}, messages interface{}) *Item {
+func (p *Item) SetCreationRules(rules []string, messages map[string]string) *Item {
 	p.CreationRules = rules
 	p.CreationRuleMessages = messages
 
-	// 设置前端规则
-	setFrontendRules()
 	return p
 }
 
 //校验规则，只在更新表单提交时生效
-func (p *Item) SetUpdateRules(rules interface{}, messages interface{}) *Item {
+func (p *Item) SetUpdateRules(rules []string, messages map[string]string) *Item {
 	p.UpdateRules = rules
 	p.UpdateRuleMessages = messages
 
-	// 设置前端规则
-	setFrontendRules()
 	return p
 }
 
@@ -255,55 +364,67 @@ func (p *Item) SetIgnore(ignore bool) *Item {
 }
 
 //表单联动
-//  func (p *Item) SetWhen(...value interface{}) *Item {
-// 	 if(len(value) == 2) {
-// 		 operator = "="
-// 		 option = value[0]
-// 		 whenItem["body"] = value[1]()
-// 	 } elseif(len(value) == 3) {
-// 		 operator = value[0]
-// 		 option = value[1]
-// 		 whenItem["body"] = value[2]()
-// 	 }
+func (p *Item) SetWhen(value ...any) *Item {
+	whenItem := map[string]any{}
+	when := map[string]any{}
+	var operator string
+	var option any
 
-// 	 switch (operator) {
-// 		 case "=":
-// 			 whenItem["condition"] = "<%=String(" . name . ") === '" . option . "' %>"
-// 		   break
-// 		 case ">":
-// 			 whenItem["condition"] = "<%=String(" . name . ") > '" . option . "' %>"
-// 		   break
-// 		 case "<":
-// 			 whenItem["condition"] = "<%=String(" . name . ") < '" . option . "' %>"
-// 		   break
-// 		 case "<=":
-// 			 whenItem["condition"] = "<%=String(" . name . ") <= '" . option . "' %>"
-// 		   break
-// 		 case ">=":
-// 			 whenItem["condition"] = "<%=String(" . name . ") => '" . option . "' %>"
-// 		   break
-// 		 case "has":
-// 			 whenItem["condition"] = "<%=(String(" . name . ").indexOf('" . option . "') !=-1) %>"
-// 		   break
-// 		 case "in":
-// 			 whenItem["condition"] = "<%=(" . json_encode(option) . ".indexOf(" . name . ") !=-1) %>"
-// 		   break
-// 		 default:
-// 			 whenItem["condition"] = "<%=String(" . name . ") === '" . option . "' %>"
-// 		   break
-// 	 }
+	if len(value) == 2 {
+		operator = "="
+		option = value[0]
+		callback := value[1].(func() interface{})
 
-// 	 whenItem["condition_name"] = name
-// 	 whenItem["condition_operator"] = operator
-// 	 whenItem["condition_option"] = option
+		whenItem["body"] = callback()
+	}
 
-// 	 whenItem[] = whenItem
-// 	 when["component"] = "when"
-// 	 when["items"] = whenItem
+	if len(value) == 3 {
+		operator = value[0].(string)
+		option = value[1]
+		callback := value[2].(func() interface{})
 
-// 	 when = when
-// 	 return p
-//  }
+		whenItem["body"] = callback()
+	}
+
+	switch operator {
+	case "=":
+		whenItem["condition"] = "<%=String(" + p.Name + ") === '" + option.(string) + "' %>"
+		break
+	case ">":
+		whenItem["condition"] = "<%=String(" + p.Name + ") > '" + option.(string) + "' %>"
+		break
+	case "<":
+		whenItem["condition"] = "<%=String(" + p.Name + ") < '" + option.(string) + "' %>"
+		break
+	case "<=":
+		whenItem["condition"] = "<%=String(" + p.Name + ") <= '" + option.(string) + "' %>"
+		break
+	case ">=":
+		whenItem["condition"] = "<%=String(" + p.Name + ") => '" + option.(string) + "' %>"
+		break
+	case "has":
+		whenItem["condition"] = "<%=(String(" + p.Name + ").indexOf('" + option.(string) + "') !=-1) %>"
+		break
+	case "in":
+		jsonStr, _ := json.Marshal(option)
+		whenItem["condition"] = "<%=(" + string(jsonStr) + ".indexOf(" + p.Name + ") !=-1) %>"
+		break
+	default:
+		whenItem["condition"] = "<%=String(" + p.Name + ") === '" + option.(string) + "' %>"
+		break
+	}
+
+	whenItem["condition_name"] = p.Name
+	whenItem["condition_operator"] = operator
+	whenItem["condition_option"] = option
+	p.WhenItem = append(p.WhenItem, whenItem)
+
+	when["component"] = "when"
+	when["items"] = whenItem
+	p.When = when
+
+	return p
+}
 
 //Specify that the element should be hidden from the index view.
 func (p *Item) HideFromIndex(callback bool) *Item {
