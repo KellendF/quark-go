@@ -1,6 +1,13 @@
 package form
 
-import "github.com/quarkcms/quark-go/pkg/ui/component"
+import (
+	"encoding/json"
+	"fmt"
+	"reflect"
+	"strings"
+
+	"github.com/quarkcms/quark-go/pkg/ui/component"
+)
 
 type Component struct {
 	component.Element
@@ -82,49 +89,76 @@ func (p *Component) SetColon(colon bool) *Component {
 }
 
 //  解析initialValue
-func (p *Component) parseInitialValue(item interface{}, initialValues map[string]interface{}) map[string]interface{} {
-	//  if(isset($item->name)) {
+func (p *Component) parseInitialValue(item interface{}, initialValues map[string]interface{}) interface{} {
+	name := reflect.
+		ValueOf(item).
+		Elem().
+		FieldByName("Name").String()
 
-	// 	 if(isset($item->defaultValue)) {
-	// 		 $value = $item->defaultValue;
-	// 	 }
+	if name == "" {
+		return nil
+	}
 
-	// 	 if(isset($initialValues[$item->name])) {
-	// 		 $value = $initialValues[$item->name];
-	// 	 }
+	var value any
 
-	// 	 if(isset($item->value)) {
-	// 		 $value = $item->value;
-	// 	 }
-	//  }
+	defaultValue := reflect.
+		ValueOf(item).
+		Elem().
+		FieldByName("DefaultValue").Interface()
 
-	//  return $value ?? null;
-	return map[string]interface{}{}
+	if defaultValue != nil {
+		value = defaultValue
+	}
+
+	if initialValues[name] != nil {
+		value = initialValues[name]
+	}
+
+	getValue := reflect.
+		ValueOf(item).
+		Elem().
+		FieldByName("Value").Interface()
+
+	if getValue != nil {
+		value = getValue
+	}
+
+	return value
 }
 
 // 表单默认值，只有初始化以及重置时生效
 func (p *Component) SetInitialValues(initialValues map[string]interface{}) *Component {
-	//  $data = $initialValues;
+	data := initialValues
 
-	//  foreach ($this->items as $item) {
-	// 	 $value = $this->parseInitialValue($item,$initialValues);
+	for _, v := range p.Body.([]any) {
+		value := p.parseInitialValue(v, initialValues)
+		if value != nil {
+			name := reflect.
+				ValueOf(v).
+				Elem().
+				FieldByName("Name").String()
 
-	// 	 if($value !== null) {
-	// 		 $data[$item->name] = $value;
-	// 	 }
-	//  }
+			data[name] = value
+		}
+	}
 
-	//  foreach ($data as $key => $value) {
-	// 	 if(is_string($value)) {
-	// 		 if(count(explode('[',$value))>1 || count(explode('{',$value))>1) {
-	// 			 $value = json_decode($value, true);
-	// 		 }
-	// 	 }
+	for k, v := range data {
+		getV, ok := v.(string)
+		if ok {
+			if strings.Contains(getV, "[") || strings.Contains(getV, "{") {
+				m := make(map[string]string)
+				err := json.Unmarshal([]byte(getV), &m)
+				if err != nil {
+					fmt.Printf("Unmarshal with error: %+v\n", err)
+				}
+				v = m
+			}
+		}
 
-	// 	 $data[$key] = $value;
-	//  }
+		data[k] = v
+	}
 
-	//  $this->initialValues = $data;
+	p.InitialValues = data
 
 	return p
 }
@@ -256,42 +290,44 @@ func (p *Component) SetBody(items interface{}) *Component {
 	return p
 }
 
-/**
- * 解析保存提交数据库前的值
- *
- * @param array $rules
- * @return array
- */
+// 解析保存提交数据库前的值
 func (p *Component) parseSubmitData(data map[string]interface{}) interface{} {
 	items := p.Body
 
-	//  foreach ($items as $key => $item) {
+	for _, v := range items.([]any) {
+		ignore := reflect.
+			ValueOf(v).
+			Elem().
+			FieldByName("Ignore").Bool()
 
-	// 	 // 删除忽略的值
-	// 	 if($item->ignore) {
-	// 		 if(isset($data[$item->name])) {
-	// 			 unset($data[$item->name]);
-	// 		 }
-	// 	 }
-	//  }
+		// 删除忽略的值
+		if ignore {
 
-	//  foreach ($data as $key => $value) {
-	// 	 if(is_array($value)) {
-	// 		 $data[$key] = json_encode($value);
-	// 	 }
-	//  }
+			name := reflect.
+				ValueOf(v).
+				Elem().
+				FieldByName("Name").String()
 
-	//  return $data;
+			if name != "" {
+				if data[name] != nil {
+					delete(data, name)
+				}
+			}
+		}
+	}
 
-	return items
+	for k, v := range data {
+		getValue, ok := v.(map[string]interface{})
+		if ok {
+			jsonString, _ := json.Marshal(getValue)
+			data[k] = jsonString
+		}
+	}
+
+	return data
 }
 
-/**
- * 行为
- *
- * @param array $actions
- * @return $this
- */
+// 行为
 func (p *Component) SetActions(actions []interface{}) *Component {
 	p.Actions = actions
 

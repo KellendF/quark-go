@@ -367,7 +367,7 @@ func (p *Resource) BeforeDetailShowing(c *fiber.Ctx, data map[string]interface{}
 
 // 创建页面显示前回调
 func (p *Resource) BeforeCreating(c *fiber.Ctx) map[string]interface{} {
-	return nil
+	return map[string]interface{}{}
 }
 
 // 编辑页面显示前回调
