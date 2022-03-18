@@ -14,7 +14,7 @@ type Component struct {
 	Size         string      `json:"size"`
 	Type         string      `json:"type"`
 	ActionType   string      `json:"actionType"`
-	SubmitForm   string      `json:"submitForm"`
+	SubmitForm   any         `json:"submitForm"`
 	Href         string      `json:"href"`
 	Target       string      `json:"target"`
 	Modal        interface{} `json:"modal"`
