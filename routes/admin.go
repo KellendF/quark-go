@@ -22,7 +22,7 @@ func (p *Admin) Route(app *fiber.App) {
 	amg.Get("/:resource/editable", (&controllers.ResourceEditable{}).Handle)     // 表格行内编辑
 	amg.Get("/:resource/action/:uriKey", (&controllers.ResourceAction{}).Handle) // 执行行为
 	amg.Get("/:resource/create", (&controllers.ResourceCreate{}).Handle)         // 创建页面
-	// amg.Post("/:resource/store", (&controllers.ResourceStore{}).Handle) // 创建方法
+	amg.Post("/:resource/store", (&controllers.ResourceStore{}).Handle)          // 创建方法
 	// amg.Get("/:resource/edit", (&controllers.ResourceEdit{}).Handle) // 编辑页面
 	// amg.Get("/:resource/edit/values", (&controllers.ResourceEdit{}).Values) // 获取编辑页面表单值
 	// amg.Post("/:resource/save", (&controllers.ResourceUpdate{}).Handle) // 保存编辑值
