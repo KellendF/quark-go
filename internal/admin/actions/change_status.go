@@ -28,7 +28,7 @@ func (p *ChangeStatus) Init() *ChangeStatus {
 	//  执行成功后刷新的组件
 	p.Reload = "table"
 
-	// 仅在列表行内展示
+	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)
 
 	// 当行为在表格行展示时，支持js表达式

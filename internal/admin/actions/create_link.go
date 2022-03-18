@@ -25,7 +25,7 @@ func (p *CreateLink) Init(name string) *CreateLink {
 	// 文字
 	p.Name = "创建" + name
 
-	// 仅在列表展示
+	// 设置展示位置
 	p.SetOnlyOnIndex(true)
 
 	return p

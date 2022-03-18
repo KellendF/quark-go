@@ -28,7 +28,7 @@ func (p *Disable) Init(name string) *Disable {
 	//  执行成功后刷新的组件
 	p.Reload = "table"
 
-	// 批量操作
+	// 设置展示位置
 	p.SetOnlyOnIndexTableAlert(true)
 
 	// 当行为在表格行展示时，支持js表达式

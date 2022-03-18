@@ -111,10 +111,10 @@ func (p *Resource) CreationApi(c *fiber.Ctx) string {
 
 	if uri[len(uri)-1] == "index" {
 
-		return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/index", "/store")
+		return stringy.New(stringy.New(c.Path()).ReplaceFirst("/api/", "")).ReplaceLast("/index", "/store")
 	}
 
-	return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/create", "/store")
+	return stringy.New(stringy.New(c.Path()).ReplaceFirst("/api/", "")).ReplaceLast("/create", "/store")
 }
 
 //更新表单的接口
@@ -128,10 +128,10 @@ func (p *Resource) UpdateApi(c *fiber.Ctx) string {
 
 	if uri[len(uri)-1] == "index" {
 
-		return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/index", "/save")
+		return stringy.New(stringy.New(c.Path()).ReplaceFirst("/api/", "")).ReplaceLast("/index", "/save")
 	}
 
-	return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/edit", "/save")
+	return stringy.New(stringy.New(c.Path()).ReplaceFirst("/api/", "")).ReplaceLast("/edit", "/save")
 }
 
 // 编辑页面获取表单数据接口
@@ -141,10 +141,10 @@ func (p *Resource) EditValueApi(c *fiber.Ctx) string {
 
 	if uri[len(uri)-1] == "index" {
 
-		return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/index", "/edit/values?id=${id}")
+		return stringy.New(stringy.New(c.Path()).ReplaceFirst("/api/", "")).ReplaceLast("/index", "/edit/values?id=${id}")
 	}
 
-	return stringy.New(stringy.New(c.Path()).ReplaceFirst("api/", "")).ReplaceLast("/edit", "/edit/values?id=${id}")
+	return stringy.New(stringy.New(c.Path()).ReplaceFirst("/api/", "")).ReplaceLast("/edit", "/edit/values?id=${id}")
 }
 
 // 表单标题
@@ -313,6 +313,7 @@ func (p *Resource) FormWithinCard(
 		SetStyle(map[string]interface{}{
 			"padding": "24px",
 		}).
+		SetApi(api).
 		SetActions(actions).
 		SetBody(fields).
 		SetInitialValues(data)

@@ -25,7 +25,7 @@ func (p *EditLink) Init(name string) *EditLink {
 	// 文字
 	p.Name = name
 
-	// 仅在列表行内展示
+	// 设置展示位置
 	p.SetOnlyOnIndexTableRow(true)
 
 	return p

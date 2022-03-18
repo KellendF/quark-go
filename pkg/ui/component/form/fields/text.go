@@ -17,7 +17,9 @@ type Text struct {
 // 初始化
 func (p *Text) Init() *Text {
 	p.Component = "textField"
+	p.MaxLength = 200
 	p.InitItem().SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.SetWidth(200)
 
 	return p
 }

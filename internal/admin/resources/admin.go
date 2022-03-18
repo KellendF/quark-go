@@ -84,5 +84,9 @@ func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 		(&actions.ChangeStatus{}).Init(),
 		(&actions.EditLink{}).Init("编辑"),
 		(&actions.Delete{}).Init("删除").SetOnlyOnIndexTableRow(true),
+		(&actions.FormSubmit{}).Init(),
+		(&actions.FormReset{}).Init(),
+		(&actions.FormBack{}).Init(),
+		(&actions.FormExtraBack{}).Init(),
 	}
 }

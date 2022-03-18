@@ -30,7 +30,7 @@ type Component struct {
 
 // 初始化
 func (p *Component) Init() *Component {
-	p.Component = "from"
+	p.Component = "form"
 	p.Colon = true
 	p.LabelAlign = "right"
 	p.Preserve = true

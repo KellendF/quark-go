@@ -14,7 +14,6 @@ type Item struct {
 	Component            string                 `json:"component"`
 	Style                map[string]interface{} `json:"style"`
 	Tooltip              string                 `json:"tooltip"`
-	Width                int                    `json:"width"`
 	Colon                bool                   `json:"colon"`
 	Value                interface{}            `json:"value"`
 	DefaultValue         interface{}            `json:"defaultValue"`
@@ -104,11 +103,10 @@ func (p *Item) SetTooltip(tooltip string) *Item {
 
 // Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
 func (p *Item) SetWidth(width int) *Item {
-	// if(!in_array(width,["xs","s","m","l","x"])) {
-	//     throw new Exception("argument must be "xs","s","m","l","x"!")
-	// }
+	p.Style = map[string]interface{}{
+		"width": width,
+	}
 
-	p.Style["width"] = width
 	return p
 }
 
