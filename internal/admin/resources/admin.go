@@ -85,12 +85,12 @@ func (p *Admin) Searches(c *fiber.Ctx) []interface{} {
 func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 	return []interface{}{
 		(&actions.CreateLink{}).Init(p.Title),
-		(&actions.Delete{}).Init("批量删除").SetOnlyOnIndexTableAlert(true),
+		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Disable{}).Init("批量禁用"),
 		(&actions.Enable{}).Init("批量启用"),
 		(&actions.ChangeStatus{}).Init(),
 		(&actions.EditLink{}).Init("编辑"),
-		(&actions.Delete{}).Init("删除").SetOnlyOnIndexTableRow(true),
+		(&actions.Delete{}).Init("删除"),
 		(&actions.FormSubmit{}).Init(),
 		(&actions.FormReset{}).Init(),
 		(&actions.FormBack{}).Init(),

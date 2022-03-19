@@ -31,6 +31,14 @@ func (p *Delete) Init(name string) *Delete {
 	// 当行为在表格行展示时，支持js表达式
 	p.WithConfirm("确定要删除吗？", "删除后数据将无法恢复，请谨慎操作！", "modal")
 
+	if name == "删除" {
+		p.SetOnlyOnIndexTableRow(true)
+	}
+
+	if name == "批量删除" {
+		p.SetOnlyOnIndexTableAlert(true)
+	}
+
 	return p
 }
 
