@@ -41,6 +41,10 @@ func (t *Time) Scan(v interface{}) error {
 	case time.Time:
 		// 字符串转成 time.Time 类型
 		*t = Time(vt)
+	case string:
+		// 字符串转成 time.Time 类型
+		getTime, _ := time.Parse("2006-01-02 15:04:05", vt)
+		*t = Time(getTime)
 	default:
 		return errors.New("类型处理错误")
 	}

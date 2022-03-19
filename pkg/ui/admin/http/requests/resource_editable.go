@@ -21,11 +21,11 @@ func (p *ResourceEditable) HandleEditable(c *fiber.Ctx) error {
 		v = utils.UnsafeString(val)
 
 		if v == "true" {
-			v = true
+			v = 1
 		}
 
 		if v == "false" {
-			v = false
+			v = 0
 		}
 
 		data[k] = v

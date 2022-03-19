@@ -10,11 +10,23 @@ var appKey string
 
 // 初始化
 func init() {
-	key := config.Get("app.key").(string)
-	if key == "" {
-		key = rand.Make("alphanumeric", 950)
+	key := config.Get("app.key")
+
+	if key == nil {
+		appKey = rand.Make("alphanumeric", 950)
+	} else {
+		getKey, ok := key.(string)
+
+		if !ok {
+			panic("AppKey must be string type")
+		}
+
+		if getKey == "" {
+			appKey = rand.Make("alphanumeric", 950)
+		} else {
+			appKey = getKey
+		}
 	}
-	appKey = key
 }
 
 // 创建token
