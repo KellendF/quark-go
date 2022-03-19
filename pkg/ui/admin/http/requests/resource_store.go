@@ -2,6 +2,7 @@ package requests
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 
 	"github.com/gofiber/fiber/v2"
@@ -21,6 +22,12 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) error {
 	fields := resourceInstance.(interface {
 		CreationFields(c *fiber.Ctx, resourceInstance interface{}) interface{}
 	}).CreationFields(c, resourceInstance)
+
+	validator := resourceInstance.(interface {
+		ValidatorForCreation(c *fiber.Ctx, resourceInstance interface{}, data interface{}) interface{}
+	}).ValidatorForCreation(c, resourceInstance, false)
+
+	fmt.Print(validator)
 
 	json.Unmarshal(c.Body(), &data)
 
