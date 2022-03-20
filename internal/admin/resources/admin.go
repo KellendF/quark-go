@@ -62,6 +62,14 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 				map[string]string{
 					"unique": "用户名已存在",
 				},
+			).
+			SetUpdateRules(
+				[]string{
+					"unique:admins,username,{id}",
+				},
+				map[string]string{
+					"unique": "用户名已存在",
+				},
 			),
 
 		field.Text("nickname", "昵称").
