@@ -15,6 +15,6 @@ func (p *ResourceStore) Handle(c *fiber.Ctx) error {
 	if result == nil {
 		return msg.Success("操作成功！", "", "")
 	} else {
-		return msg.Error("操作失败！", "")
+		return msg.Error(result.Error(), "")
 	}
 }

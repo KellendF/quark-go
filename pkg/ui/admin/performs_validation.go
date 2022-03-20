@@ -2,28 +2,132 @@ package admin
 
 import (
 	"encoding/json"
+	"errors"
 	"reflect"
+	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/derekstavis/go-qs"
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/framework/db"
 )
 
 // 创建请求的验证器
-func (p *Resource) ValidatorForCreation(c *fiber.Ctx, resourceInstance interface{}, data interface{}) interface{} {
-	ruleData := p.RulesForCreation(c, resourceInstance)
+func (p *Resource) ValidatorForCreation(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) error {
+	rules, messages := p.RulesForCreation(c, resourceInstance)
 
-	//  return Validator::make($data ? $data : $request->all(), $ruleData['rules'], $ruleData['messages'])
-	// 		 ->after(function ($validator) use ($request) {
-	// 			 static::afterValidation($request, $validator);
-	// 			 static::afterCreationValidation($request, $validator);
-	// 		 });
+	validator := p.Validator(rules, messages, data)
 
-	return ruleData
+	p.afterValidation(c, validator)
+	p.afterCreationValidation(c, validator)
+
+	return validator
+}
+
+// 验证规则
+func (p *Resource) Validator(rules []interface{}, messages []interface{}, data map[string]interface{}) error {
+	var result error
+
+	for _, rule := range rules {
+		for k, v := range rule.(map[string]interface{}) {
+			fieldValue := data[k]
+			for _, item := range v.([]interface{}) {
+				getItem, ok := item.(string)
+				if ok {
+					getItems := strings.Split(getItem, ":")
+					getOption := ""
+					if len(getItems) == 2 {
+						getItem = getItems[0]
+						getOption = getItems[1]
+					}
+
+					switch getItem {
+					case "required":
+						if fieldValue == nil {
+							errMsg := p.getRuleMessage(messages, k+"."+getItem)
+
+							if errMsg != "" {
+								result = errors.New(errMsg)
+							}
+						}
+					case "min":
+						strNum := utf8.RuneCountInString(fieldValue.(string))
+						minOption, _ := strconv.Atoi(getOption)
+
+						if strNum < minOption {
+							errMsg := p.getRuleMessage(messages, k+"."+getItem)
+							if errMsg != "" {
+								result = errors.New(errMsg)
+							}
+						}
+					case "max":
+						strNum := utf8.RuneCountInString(fieldValue.(string))
+						maxOption, _ := strconv.Atoi(getOption)
+
+						if strNum > maxOption {
+							errMsg := p.getRuleMessage(messages, k+"."+getItem)
+							if errMsg != "" {
+								result = errors.New(errMsg)
+							}
+						}
+					case "unique":
+						var (
+							table  string
+							field  string
+							except string
+							count  int
+						)
+						uniqueOptions := strings.Split(getOption, ",")
+
+						if len(uniqueOptions) == 2 {
+							table = uniqueOptions[0]
+							field = uniqueOptions[1]
+						}
+
+						if len(uniqueOptions) == 3 {
+							except = uniqueOptions[2]
+						}
+
+						query := (&db.Model{}).DB().Raw("SELECT Count("+field+") FROM "+table+" WHERE "+field+" = ?", fieldValue)
+
+						if except != "" {
+							query.Where(field+" <> ? ", except)
+						}
+
+						query.Scan(&count)
+
+						if count > 0 {
+							errMsg := p.getRuleMessage(messages, k+"."+getItem)
+							if errMsg != "" {
+								result = errors.New(errMsg)
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return result
+}
+
+// 获取规则错误信息
+func (p *Resource) getRuleMessage(messages []interface{}, key string) string {
+	msg := ""
+
+	for _, v := range messages {
+		getMsg := v.(map[string]interface{})[key]
+		if getMsg != nil {
+			msg = getMsg.(string)
+		}
+	}
+
+	return msg
 }
 
 // 创建请求的验证规则
-func (p *Resource) RulesForCreation(c *fiber.Ctx, resourceInstance interface{}) map[string]interface{} {
+func (p *Resource) RulesForCreation(c *fiber.Ctx, resourceInstance interface{}) ([]interface{}, []interface{}) {
 
 	fields := resourceInstance.(interface {
 		CreationFieldsWithoutWhen(*fiber.Ctx, interface{}) interface{}
@@ -34,8 +138,14 @@ func (p *Resource) RulesForCreation(c *fiber.Ctx, resourceInstance interface{}) 
 
 	for _, v := range fields.([]interface{}) {
 		getResult := p.getRulesForCreation(c, v)
-		rules = append(rules, getResult["rules"])
-		ruleMessages = append(ruleMessages, getResult["messages"])
+
+		if len(getResult["rules"].(map[string]interface{})) > 0 {
+			rules = append(rules, getResult["rules"])
+		}
+
+		if len(getResult["messages"].(map[string]interface{})) > 0 {
+			ruleMessages = append(ruleMessages, getResult["messages"])
+		}
 
 		when := reflect.
 			ValueOf(v).
@@ -58,13 +168,25 @@ func (p *Resource) RulesForCreation(c *fiber.Ctx, resourceInstance interface{}) 
 							if ok {
 								for _, bv := range getBody {
 									whenItemResult := p.getRulesForCreation(c, bv)
-									rules = append(rules, whenItemResult["rules"])
-									ruleMessages = append(ruleMessages, whenItemResult["messages"])
+
+									if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
+										rules = append(rules, whenItemResult["rules"])
+									}
+
+									if len(whenItemResult["messages"].(map[string]interface{})) > 0 {
+										ruleMessages = append(ruleMessages, whenItemResult["messages"])
+									}
 								}
 							} else {
 								whenItemResult := p.getRulesForCreation(c, getBody)
-								rules = append(rules, whenItemResult["rules"])
-								ruleMessages = append(ruleMessages, whenItemResult["messages"])
+
+								if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
+									rules = append(rules, whenItemResult["rules"])
+								}
+
+								if len(whenItemResult["messages"].(map[string]interface{})) > 0 {
+									ruleMessages = append(ruleMessages, whenItemResult["messages"])
+								}
 							}
 						}
 					}
@@ -74,10 +196,7 @@ func (p *Resource) RulesForCreation(c *fiber.Ctx, resourceInstance interface{}) 
 
 	}
 
-	return map[string]interface{}{
-		"rules":    rules,
-		"messages": ruleMessages,
-	}
+	return rules, ruleMessages
 }
 
 // 判断是否需要验证When组件里的规则
@@ -200,19 +319,19 @@ func (p *Resource) getRulesForCreation(c *fiber.Ctx, field interface{}) map[stri
 }
 
 // 更新请求的验证器
-func (p *Resource) ValidatorForUpdate(c *fiber.Ctx, resourceInstance interface{}, data interface{}) interface{} {
-	ruleData := p.RulesForUpdate(c, resourceInstance)
+func (p *Resource) ValidatorForUpdate(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
+	rules, messages := p.RulesForUpdate(c, resourceInstance)
 
-	//  return Validator::make($data ? $data : $request->all(), $ruleData['rules'], $ruleData['messages'])
-	// 		 ->after(function ($validator) use ($request) {
-	// 			 static::afterValidation($request, $validator);
-	// 			 static::afterImportValidation($request, $validator);
-	// 		 });
-	return ruleData
+	validator := p.Validator(rules, messages, data)
+
+	p.afterValidation(c, validator)
+	p.afterCreationValidation(c, validator)
+
+	return validator
 }
 
 // 更新请求的验证规则
-func (p *Resource) RulesForUpdate(c *fiber.Ctx, resourceInstance interface{}) map[string]interface{} {
+func (p *Resource) RulesForUpdate(c *fiber.Ctx, resourceInstance interface{}) ([]interface{}, []interface{}) {
 
 	fields := resourceInstance.(interface {
 		UpdateFieldsWithoutWhen(*fiber.Ctx, interface{}) interface{}
@@ -223,8 +342,14 @@ func (p *Resource) RulesForUpdate(c *fiber.Ctx, resourceInstance interface{}) ma
 
 	for _, v := range fields.([]interface{}) {
 		getResult := p.getRulesForUpdate(c, v)
-		rules = append(rules, getResult["rules"])
-		ruleMessages = append(ruleMessages, getResult["messages"])
+
+		if len(getResult["rules"].(map[string]interface{})) > 0 {
+			rules = append(rules, getResult["rules"])
+		}
+
+		if len(getResult["messages"].(map[string]interface{})) > 0 {
+			ruleMessages = append(ruleMessages, getResult["messages"])
+		}
 
 		when := reflect.
 			ValueOf(v).
@@ -249,13 +374,25 @@ func (p *Resource) RulesForUpdate(c *fiber.Ctx, resourceInstance interface{}) ma
 							if ok {
 								for _, bv := range getBody {
 									whenItemResult := p.getRulesForUpdate(c, bv)
-									rules = append(rules, whenItemResult["rules"])
-									ruleMessages = append(ruleMessages, whenItemResult["messages"])
+
+									if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
+										rules = append(rules, whenItemResult["rules"])
+									}
+
+									if len(whenItemResult["messages"].(map[string]interface{})) > 0 {
+										ruleMessages = append(ruleMessages, whenItemResult["messages"])
+									}
 								}
 							} else {
 								whenItemResult := p.getRulesForUpdate(c, getBody)
-								rules = append(rules, whenItemResult["rules"])
-								ruleMessages = append(ruleMessages, whenItemResult["messages"])
+
+								if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
+									rules = append(rules, whenItemResult["rules"])
+								}
+
+								if len(whenItemResult["messages"].(map[string]interface{})) > 0 {
+									ruleMessages = append(ruleMessages, whenItemResult["messages"])
+								}
 							}
 						}
 					}
@@ -265,10 +402,7 @@ func (p *Resource) RulesForUpdate(c *fiber.Ctx, resourceInstance interface{}) ma
 
 	}
 
-	return map[string]interface{}{
-		"rules":    rules,
-		"messages": ruleMessages,
-	}
+	return rules, ruleMessages
 }
 
 // 获取更新请求资源规则
@@ -331,20 +465,19 @@ func (p *Resource) getRulesForUpdate(c *fiber.Ctx, field interface{}) map[string
 }
 
 // 导入请求的验证器
-func (p *Resource) ValidatorForImport(c *fiber.Ctx, resourceInstance interface{}, data interface{}) interface{} {
-	ruleData := p.RulesForImport(c, resourceInstance)
+func (p *Resource) ValidatorForImport(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
+	rules, messages := p.RulesForImport(c, resourceInstance)
 
-	//  return Validator::make($data ? $data : $request->all(), $ruleData['rules'], $ruleData['messages'])
-	// 		 ->after(function ($validator) use ($request) {
-	// 			 static::afterValidation($request, $validator);
-	// 			 static::afterImportValidation($request, $validator);
-	// 		 });
+	validator := p.Validator(rules, messages, data)
 
-	return ruleData
+	p.afterValidation(c, validator)
+	p.afterCreationValidation(c, validator)
+
+	return validator
 }
 
 // 创建请求的验证规则
-func (p *Resource) RulesForImport(c *fiber.Ctx, resourceInstance interface{}) map[string]interface{} {
+func (p *Resource) RulesForImport(c *fiber.Ctx, resourceInstance interface{}) ([]interface{}, []interface{}) {
 
 	fields := resourceInstance.(interface {
 		ImportFieldsWithoutWhen(*fiber.Ctx, interface{}) interface{}
@@ -355,8 +488,14 @@ func (p *Resource) RulesForImport(c *fiber.Ctx, resourceInstance interface{}) ma
 
 	for _, v := range fields.([]map[string]interface{}) {
 		getResult := p.getRulesForCreation(c, v)
-		rules = append(rules, getResult["rules"])
-		ruleMessages = append(ruleMessages, getResult["messages"])
+
+		if len(getResult["rules"].(map[string]interface{})) > 0 {
+			rules = append(rules, getResult["rules"])
+		}
+
+		if len(getResult["messages"].(map[string]interface{})) > 0 {
+			ruleMessages = append(ruleMessages, getResult["messages"])
+		}
 
 		when := reflect.
 			ValueOf(v).
@@ -381,13 +520,25 @@ func (p *Resource) RulesForImport(c *fiber.Ctx, resourceInstance interface{}) ma
 							if ok {
 								for _, bv := range getBody {
 									whenItemResult := p.getRulesForCreation(c, bv)
-									rules = append(rules, whenItemResult["rules"])
-									ruleMessages = append(ruleMessages, whenItemResult["messages"])
+
+									if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
+										rules = append(rules, whenItemResult["rules"])
+									}
+
+									if len(whenItemResult["messages"].(map[string]interface{})) > 0 {
+										ruleMessages = append(ruleMessages, whenItemResult["messages"])
+									}
 								}
 							} else {
 								whenItemResult := p.getRulesForCreation(c, getBody)
-								rules = append(rules, whenItemResult["rules"])
-								ruleMessages = append(ruleMessages, whenItemResult["messages"])
+
+								if len(whenItemResult["rules"].(map[string]interface{})) > 0 {
+									rules = append(rules, whenItemResult["rules"])
+								}
+
+								if len(whenItemResult["messages"].(map[string]interface{})) > 0 {
+									ruleMessages = append(ruleMessages, whenItemResult["messages"])
+								}
 							}
 						}
 					}
@@ -397,10 +548,7 @@ func (p *Resource) RulesForImport(c *fiber.Ctx, resourceInstance interface{}) ma
 
 	}
 
-	return map[string]interface{}{
-		"rules":    rules,
-		"messages": ruleMessages,
-	}
+	return rules, ruleMessages
 }
 
 // 格式化规则

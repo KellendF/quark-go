@@ -41,11 +41,39 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 		field.Text("username", "用户名", func() interface{} {
 
 			return "<a href='#/index?api=admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
-		}),
+		}).
+			SetEditable(true).
+			SetRules(
+				[]string{
+					"required",
+					"min:6",
+					"max:20",
+				},
+				map[string]string{
+					"required": "用户名必须填写",
+					"min":      "用户名不能少于6个字符",
+					"max":      "用户名不能超过20个字符",
+				},
+			).
+			SetCreationRules(
+				[]string{
+					"unique:admins,username",
+				},
+				map[string]string{
+					"unique": "用户名已存在",
+				},
+			),
 
 		field.Text("nickname", "昵称").
 			SetEditable(true).
-			SetRules([]string{"required"}, map[string]string{"required": "昵称必须填写"}),
+			SetRules(
+				[]string{
+					"required",
+				},
+				map[string]string{
+					"required": "昵称必须填写",
+				},
+			),
 
 		field.Text("email", "邮箱"),
 
