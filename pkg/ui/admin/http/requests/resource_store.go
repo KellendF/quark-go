@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type ResourceStore struct {
@@ -12,7 +13,7 @@ type ResourceStore struct {
 }
 
 // 执行行为
-func (p *ResourceStore) HandleStore(c *fiber.Ctx) error {
+func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 	resourceInstance := p.Resource(c)
 	model := p.NewModel(resourceInstance)
 
@@ -33,6 +34,12 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) error {
 		if name == "" {
 			delete(data, name)
 		}
+
+		arrayValue, ok := data[name].([]interface{})
+
+		if ok {
+			data[name], _ = json.Marshal(arrayValue)
+		}
 	}
 
 	validator := resourceInstance.(interface {
@@ -43,5 +50,22 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) error {
 		return validator
 	}
 
-	return model.Create(data).Error
+	getData := resourceInstance.(interface {
+		BeforeSaving(c *fiber.Ctx, data map[string]interface{}) interface{}
+	}).BeforeSaving(c, data)
+
+	if value, ok := getData.(error); ok {
+		return value
+	}
+
+	if value, ok := getData.(map[string]interface{}); ok {
+		data = value
+	}
+
+	// 获取对象
+	getModel := model.Create(data)
+
+	return resourceInstance.(interface {
+		AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{}
+	}).AfterSaved(c, getModel)
 }

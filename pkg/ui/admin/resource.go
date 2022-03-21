@@ -376,12 +376,12 @@ func (p *Resource) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[
 }
 
 // 保存数据前回调
-func (p *Resource) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) map[string]interface{} {
+func (p *Resource) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) interface{} {
 	return submitData
 }
 
 // 保存数据后回调
-func (p *Resource) AfterSaved(c *fiber.Ctx, model *gorm.DB) *gorm.DB {
+func (p *Resource) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 	return model
 }
 

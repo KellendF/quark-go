@@ -83,9 +83,57 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 				},
 			),
 
-		field.Text("email", "邮箱"),
+		field.Text("email", "邮箱").
+			SetRules(
+				[]string{
+					"required",
+				},
+				map[string]string{
+					"required": "邮箱必须填写",
+				},
+			).
+			SetCreationRules(
+				[]string{
+					"unique:admins,email",
+				},
+				map[string]string{
+					"unique": "邮箱已存在",
+				},
+			).
+			SetUpdateRules(
+				[]string{
+					"unique:admins,email,{id}",
+				},
+				map[string]string{
+					"unique": "邮箱已存在",
+				},
+			),
 
-		field.Text("phone", "手机号"),
+		field.Text("phone", "手机号").
+			SetRules(
+				[]string{
+					"required",
+				},
+				map[string]string{
+					"required": "手机号必须填写",
+				},
+			).
+			SetCreationRules(
+				[]string{
+					"unique:admins,phone",
+				},
+				map[string]string{
+					"unique": "手机号已存在",
+				},
+			).
+			SetUpdateRules(
+				[]string{
+					"unique:admins,phone,{id}",
+				},
+				map[string]string{
+					"unique": "手机号已存在",
+				},
+			),
 
 		field.Radio("sex", "性别").
 			SetOptions(map[string]interface{}{
@@ -97,7 +145,17 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 				return column.SetFilters(true)
 			}),
 
-		field.Datetime("last_login_time", "最后登录时间"),
+		field.Text("password", "密码").
+			SetCreationRules(
+				[]string{
+					"required",
+				},
+				map[string]string{
+					"required": "密码必须填写",
+				},
+			).OnlyOnForms(),
+
+		field.Datetime("last_login_time", "最后登录时间").OnlyOnIndex(),
 
 		field.Switch("status", "状态").
 			SetTrueValue("正常").
