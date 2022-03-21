@@ -8,6 +8,7 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
+	"github.com/quarkcms/quark-go/pkg/framework/hash"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
@@ -145,7 +146,7 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 				return column.SetFilters(true)
 			}),
 
-		field.Text("password", "密码").
+		field.Password("password", "密码").
 			SetCreationRules(
 				[]string{
 					"required",
@@ -190,4 +191,13 @@ func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 		(&actions.FormBack{}).Init(),
 		(&actions.FormExtraBack{}).Init(),
 	}
+}
+
+// 保存数据前回调
+func (p *Admin) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) interface{} {
+
+	// 加密密码
+	submitData["password"] = hash.Make(submitData["password"].(string))
+
+	return submitData
 }

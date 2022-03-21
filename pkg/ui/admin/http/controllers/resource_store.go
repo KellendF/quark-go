@@ -14,7 +14,12 @@ func (p *ResourceStore) Handle(c *fiber.Ctx) error {
 	result := (&requests.ResourceStore{}).HandleStore(c)
 
 	if value, ok := result.(error); ok {
-		return value
+		errorMsg := value.Error()
+		if errorMsg != "" {
+			return msg.Error(errorMsg, "")
+		} else {
+			return value
+		}
 	}
 
 	if value, ok := result.(*gorm.DB); ok {
