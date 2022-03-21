@@ -135,7 +135,16 @@ func (p *Column) SetCopyable(copyable bool) *Column {
  * @return p
  */
 func (p *Column) SetValueEnum(valueEnum interface{}) *Column {
-	p.ValueEnum = valueEnum
+	valueEnumStr, ok := valueEnum.(map[string]interface{})
+	if ok {
+		p.ValueEnum = valueEnumStr
+	}
+
+	valueEnumInt, ok := valueEnum.(map[int]interface{})
+	if ok {
+		p.ValueEnum = valueEnumInt
+	}
+
 	return p
 }
 

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/framework/msg"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/http/requests"
 )
 
@@ -18,20 +19,43 @@ func (p *ResourceEdit) Handle(c *fiber.Ctx) error {
 		return c.SendStatus(404)
 	}
 
-	// 断言BeforeCreating方法，获取初始数据
-	data := resourceInstance.(interface {
-		BeforeCreating(*fiber.Ctx) map[string]interface{}
-	}).BeforeCreating(c)
+	data := resourceEdit.FillData(c)
 
-	// 断言CreationComponentRender方法
-	creationComponent := resourceInstance.(interface {
-		CreationComponentRender(*fiber.Ctx, interface{}, map[string]interface{}) interface{}
-	}).CreationComponentRender(c, resourceInstance, data)
+	// 断言BeforeEditing方法，获取初始数据
+	data = resourceInstance.(interface {
+		BeforeEditing(*fiber.Ctx, map[string]interface{}) map[string]interface{}
+	}).BeforeEditing(c, data)
+
+	// 断言UpdateComponentRender方法
+	updateComponent := resourceInstance.(interface {
+		UpdateComponentRender(*fiber.Ctx, interface{}, map[string]interface{}) interface{}
+	}).UpdateComponentRender(c, resourceInstance, data)
 
 	// 断言Render方法
 	component := resourceInstance.(interface {
 		Render(*fiber.Ctx, interface{}, interface{}) interface{}
-	}).Render(c, resourceInstance, creationComponent)
+	}).Render(c, resourceInstance, updateComponent)
 
 	return c.JSON(component)
+}
+
+// 获取表单初始化数据
+func (p *ResourceEdit) Values(c *fiber.Ctx) error {
+	resourceEdit := &requests.ResourceEdit{}
+
+	// 资源实例
+	resourceInstance := resourceEdit.Resource(c)
+
+	if resourceInstance == nil {
+		return c.SendStatus(404)
+	}
+
+	data := resourceEdit.FillData(c)
+
+	// 断言BeforeEditing方法，获取初始数据
+	data = resourceInstance.(interface {
+		BeforeEditing(*fiber.Ctx, map[string]interface{}) map[string]interface{}
+	}).BeforeEditing(c, data)
+
+	return msg.Success("获取成功", "", data)
 }

@@ -137,10 +137,10 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 			),
 
 		field.Radio("sex", "性别").
-			SetOptions(map[string]interface{}{
-				"1": "男",
-				"2": "女",
-			}).SetDefault("1").
+			SetOptions(map[interface{}]interface{}{
+				1: "男",
+				2: "女",
+			}).SetDefault(1).
 			SetColumn(func(column *table.Column) *table.Column {
 				// return column.SetSorter(true)
 				return column.SetFilters(true)
@@ -191,6 +191,13 @@ func (p *Admin) Actions(c *fiber.Ctx) interface{} {
 		(&actions.FormBack{}).Init(),
 		(&actions.FormExtraBack{}).Init(),
 	}
+}
+
+// 编辑页面显示前回调
+func (p *Admin) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[string]interface{} {
+	delete(data, "password")
+
+	return data
 }
 
 // 保存数据前回调

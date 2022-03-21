@@ -15,7 +15,7 @@ func (p *Radio) Init() *Radio {
 }
 
 // 设置单选属性
-func (p *Radio) SetOptions(options map[string]interface{}) *Radio {
+func (p *Radio) SetOptions(options map[interface{}]interface{}) *Radio {
 	var data []map[string]interface{}
 	for k, v := range options {
 		option := map[string]interface{}{

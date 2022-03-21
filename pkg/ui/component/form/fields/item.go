@@ -627,11 +627,11 @@ func (p *Item) SetColumn(f func(column *table.Column) *table.Column) *Item {
 }
 
 // 当前列值的枚举 valueEnum
-func (p *Item) GetValueEnum() map[string]interface{} {
-	data := map[string]interface{}{}
+func (p *Item) GetValueEnum() map[interface{}]interface{} {
+	data := map[interface{}]interface{}{}
 	for _, v := range p.Options.([]map[string]interface{}) {
 
-		data[v["value"].(string)] = v["label"]
+		data[v["value"]] = v["label"]
 	}
 
 	return data
