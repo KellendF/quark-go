@@ -204,7 +204,9 @@ func (p *Admin) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[str
 func (p *Admin) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) interface{} {
 
 	// 加密密码
-	submitData["password"] = hash.Make(submitData["password"].(string))
+	if submitData["password"] != nil {
+		submitData["password"] = hash.Make(submitData["password"].(string))
+	}
 
 	return submitData
 }

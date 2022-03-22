@@ -78,6 +78,7 @@ func (p *Resource) Validator(rules []interface{}, messages []interface{}, data m
 							except string
 							count  int
 						)
+
 						uniqueOptions := strings.Split(getOption, ",")
 
 						if len(uniqueOptions) == 2 {
@@ -86,16 +87,16 @@ func (p *Resource) Validator(rules []interface{}, messages []interface{}, data m
 						}
 
 						if len(uniqueOptions) == 3 {
+							table = uniqueOptions[0]
+							field = uniqueOptions[1]
 							except = uniqueOptions[2]
 						}
 
-						query := (&db.Model{}).DB().Raw("SELECT Count("+field+") FROM "+table+" WHERE "+field+" = ?", fieldValue)
-
 						if except != "" {
-							query.Where(field+" <> ? ", except)
+							(&db.Model{}).DB().Raw("SELECT Count("+field+") FROM "+table+" WHERE id <> "+except+" AND "+field+" = ?", fieldValue).Scan(&count)
+						} else {
+							(&db.Model{}).DB().Raw("SELECT Count("+field+") FROM "+table+" WHERE "+field+" = ?", fieldValue).Scan(&count)
 						}
-
-						query.Scan(&count)
 
 						if count > 0 {
 							errMsg := p.getRuleMessage(messages, k+"."+getItem)
@@ -319,7 +320,7 @@ func (p *Resource) getRulesForCreation(c *fiber.Ctx, field interface{}) map[stri
 }
 
 // 更新请求的验证器
-func (p *Resource) ValidatorForUpdate(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
+func (p *Resource) ValidatorForUpdate(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) error {
 	rules, messages := p.RulesForUpdate(c, resourceInstance)
 
 	validator := p.Validator(rules, messages, data)
@@ -465,7 +466,7 @@ func (p *Resource) getRulesForUpdate(c *fiber.Ctx, field interface{}) map[string
 }
 
 // 导入请求的验证器
-func (p *Resource) ValidatorForImport(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
+func (p *Resource) ValidatorForImport(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) error {
 	rules, messages := p.RulesForImport(c, resourceInstance)
 
 	validator := p.Validator(rules, messages, data)
@@ -553,14 +554,25 @@ func (p *Resource) RulesForImport(c *fiber.Ctx, resourceInstance interface{}) ([
 
 // 格式化规则
 func (p *Resource) formatRules(c *fiber.Ctx, rules []string) []string {
-	id := c.Query("id")
+	data := map[string]interface{}{}
+	json.Unmarshal(c.Body(), &data)
 
-	if id == "" {
+	formId := data["id"]
+	requestId := c.Query("id")
+
+	if requestId == "" && formId == nil {
 		return rules
 	}
 
-	for key, v := range rules {
-		rules[key] = strings.Replace(v, "{id}", id, -1)
+	if requestId != "" {
+		for key, v := range rules {
+			rules[key] = strings.Replace(v, "{id}", requestId, -1)
+		}
+	} else if formId != nil {
+		for key, v := range rules {
+			requestId = strconv.FormatFloat(formId.(float64), 'E', -1, 64)
+			rules[key] = strings.Replace(v, "{id}", requestId, -1)
+		}
 	}
 
 	return rules

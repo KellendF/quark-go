@@ -25,5 +25,5 @@ func (p *Admin) Route(app *fiber.App) {
 	amg.Post("/:resource/store", (&controllers.ResourceStore{}).Handle)          // 创建方法
 	amg.Get("/:resource/edit", (&controllers.ResourceEdit{}).Handle)             // 编辑页面
 	amg.Get("/:resource/edit/values", (&controllers.ResourceEdit{}).Values)      // 获取编辑页面表单值
-	// amg.Post("/:resource/save", (&controllers.ResourceUpdate{}).Handle) // 保存编辑值
+	amg.Post("/:resource/save", (&controllers.ResourceUpdate{}).Handle)          // 保存编辑值
 }
