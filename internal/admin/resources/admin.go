@@ -1,7 +1,6 @@
 package resources
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -39,8 +38,6 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 
 	// 角色列表
 	roles := (&models.Role{}).List()
-
-	fmt.Print(roles)
 
 	return []interface{}{
 		field.Hidden("id", "ID"),
@@ -216,6 +213,9 @@ func (p *Admin) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) in
 	if submitData["password"] != nil {
 		submitData["password"] = hash.Make(submitData["password"].(string))
 	}
+
+	// 暂时清理role_ids
+	delete(submitData, "role_ids")
 
 	return submitData
 }

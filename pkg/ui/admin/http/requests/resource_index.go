@@ -52,9 +52,13 @@ func (p *ResourceIndex) IndexQuery(c *fiber.Ctx) interface{} {
 	if pageSize != "" {
 		perPage, _ = strconv.Atoi(pageSize)
 	}
-
 	getPage, _ := strconv.Atoi(page)
-	query.Limit(perPage.(int)).Offset((getPage - 1) * perPage.(int)).Find(&lists).Count(&total)
+
+	// 获取总数量
+	query.Count(&total)
+
+	// 获取列表
+	query.Limit(perPage.(int)).Offset((getPage - 1) * perPage.(int)).Find(&lists)
 
 	// 获取列表字段
 	indexFields := resourceInstance.(interface {
