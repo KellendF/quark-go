@@ -46,7 +46,6 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 
 			return "<a href='#/index?api=admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"
 		}).
-			SetEditable(true).
 			SetRules(
 				[]string{
 					"required",
