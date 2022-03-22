@@ -1,6 +1,8 @@
 package table
 
-import "github.com/quarkcms/quark-go/pkg/ui/component"
+import (
+	"github.com/quarkcms/quark-go/pkg/ui/component"
+)
 
 type Column struct {
 	component.Element
@@ -135,13 +137,22 @@ func (p *Column) SetCopyable(copyable bool) *Column {
  * @return p
  */
 func (p *Column) SetValueEnum(valueEnum interface{}) *Column {
-	valueEnumStr, ok := valueEnum.(map[string]interface{})
-	if ok {
+	valueEnumStr := map[string]interface{}{}
+	valueEnumInt := map[int]interface{}{}
+
+	for k, v := range valueEnum.(map[interface{}]interface{}) {
+		if value, ok := k.(string); ok == true {
+			valueEnumStr[value] = v
+		} else if value, ok := k.(int); ok == true {
+			valueEnumInt[value] = v
+		}
+	}
+
+	if len(valueEnumStr) > 0 {
 		p.ValueEnum = valueEnumStr
 	}
 
-	valueEnumInt, ok := valueEnum.(map[int]interface{})
-	if ok {
+	if len(valueEnumInt) > 0 {
 		p.ValueEnum = valueEnumInt
 	}
 

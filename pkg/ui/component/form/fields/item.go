@@ -638,8 +638,8 @@ func (p *Item) GetValueEnum() map[interface{}]interface{} {
 }
 
 // Switch组件值的枚举 valueEnum
-func (p *Item) GetSwitchValueEnum() map[int]interface{} {
-	data := map[int]interface{}{}
+func (p *Item) GetSwitchValueEnum() map[interface{}]interface{} {
+	data := map[interface{}]interface{}{}
 	for k, v := range p.Options.(map[string]interface{}) {
 		var key int
 		if k == "on" {
