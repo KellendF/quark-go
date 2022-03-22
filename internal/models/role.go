@@ -26,3 +26,16 @@ type RoleHasPermission struct {
 	PermissionId int    `json:"permission_id"`
 	RoleId       string `json:"role_id"`
 }
+
+// 获取角色列表
+func (model *Role) List() map[interface{}]interface{} {
+	roles := []Role{}
+	results := map[interface{}]interface{}{}
+
+	model.DB().Find(&roles)
+	for _, v := range roles {
+		results[v.Id] = v.Name
+	}
+
+	return results
+}

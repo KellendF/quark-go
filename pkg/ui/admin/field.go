@@ -113,6 +113,19 @@ func (p *Field) Radio(params ...string) *fields.Radio {
 	return field
 }
 
+// 多选组件
+func (p *Field) Checkbox(params ...string) *fields.Checkbox {
+	field := &fields.Checkbox{}
+
+	if len(params) == 2 {
+		field.Init().SetName(params[0]).SetLabel(params[1])
+	} else {
+		field.Init().SetName(params[0]).SetLabel(params[0])
+	}
+
+	return field
+}
+
 // 日期时间组件
 func (p *Field) Datetime(params ...interface{}) *fields.Datetime {
 	field := &fields.Datetime{}

@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -35,6 +36,11 @@ func (p *Admin) Init() interface{} {
 // 字段
 func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 	field := &admin.Field{}
+
+	// 角色列表
+	roles := (&models.Role{}).List()
+
+	fmt.Print(roles)
 
 	return []interface{}{
 		field.Hidden("id", "ID"),
@@ -72,6 +78,9 @@ func (p *Admin) Fields(c *fiber.Ctx) interface{} {
 					"unique": "用户名已存在",
 				},
 			),
+
+		field.Checkbox("role_ids", "角色").
+			SetOptions(roles),
 
 		field.Text("nickname", "昵称").
 			SetEditable(true).
