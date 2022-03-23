@@ -54,6 +54,7 @@ type Item struct {
 	Column               *table.Column          `json:"-"`
 	Callback             interface{}            `json:"-"`
 	Placeholder          string                 `json:"placeholder"`
+	TreeData             interface{}            `json:"treeData"`
 }
 
 const DEFAULT_KEY = ""

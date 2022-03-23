@@ -31,6 +31,7 @@ func (p *Role) Init() interface{} {
 // 字段
 func (p *Role) Fields(c *fiber.Ctx) interface{} {
 	field := &admin.Field{}
+	treeData := (&models.Menu{}).Tree()
 
 	return []interface{}{
 		field.Hidden("id", "ID"),
@@ -46,6 +47,7 @@ func (p *Role) Fields(c *fiber.Ctx) interface{} {
 			),
 
 		field.Text("guard_name", "GuardName").SetDefault("admin"),
+		field.Tree("menu_ids", "权限").SetData(treeData).OnlyOnForms(),
 		field.Datetime("created_at", "创建时间").OnlyOnIndex(),
 		field.Datetime("updated_at", "更新时间").OnlyOnIndex(),
 	}

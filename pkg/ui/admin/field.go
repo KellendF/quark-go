@@ -173,3 +173,38 @@ func (p *Field) Switch(params ...string) *fields.Switch {
 
 	return field
 }
+
+// 输入框组件
+func (p *Field) Tree(params ...interface{}) *fields.Tree {
+	field := (&fields.Tree{}).Init()
+
+	placeholder := reflect.
+		ValueOf(field).
+		Elem().
+		FieldByName("Placeholder").String()
+
+	if len(params) >= 2 {
+
+		if placeholder == "" {
+			field.SetPlaceholder("请选择" + params[1].(string))
+		}
+
+		field.SetName(params[0].(string)).SetLabel(params[1].(string))
+		if len(params) == 3 {
+
+			// 判断是否为闭包函数
+			closure, ok := params[2].(func() interface{})
+			if ok {
+				field.SetCallback(closure)
+			}
+		}
+	} else {
+		if placeholder == "" {
+			field.SetPlaceholder("请选择" + params[1].(string))
+		}
+
+		field.SetName(params[0].(string)).SetLabel(params[0].(string))
+	}
+
+	return field
+}
