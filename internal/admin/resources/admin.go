@@ -33,7 +33,7 @@ func (p *Admin) Init() interface{} {
 }
 
 // 字段
-func (p *Admin) Fields(c *fiber.Ctx) interface{} {
+func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 	field := &admin.Field{}
 
 	// 角色列表
@@ -182,7 +182,7 @@ func (p *Admin) Searches(c *fiber.Ctx) []interface{} {
 }
 
 // 行为
-func (p *Admin) Actions(c *fiber.Ctx) interface{} {
+func (p *Admin) Actions(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		(&actions.CreateLink{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),

@@ -189,11 +189,11 @@ func (p *Resource) CreationFieldsWithoutWhen(c *fiber.Ctx, resourceInstance inte
 func (p *Resource) CreationFieldsWithinComponents(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 
 	fields := resourceInstance.(interface {
-		Fields(c *fiber.Ctx) interface{}
+		Fields(c *fiber.Ctx) []interface{}
 	}).Fields(c)
 	var items []interface{}
 
-	for _, v := range fields.([]interface{}) {
+	for _, v := range fields {
 
 		component := reflect.
 			ValueOf(v).
@@ -284,11 +284,11 @@ func (p *Resource) UpdateFieldsWithoutWhen(c *fiber.Ctx, resourceInstance interf
 func (p *Resource) UpdateFieldsWithinComponents(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 
 	fields := resourceInstance.(interface {
-		Fields(c *fiber.Ctx) interface{}
+		Fields(c *fiber.Ctx) []interface{}
 	}).Fields(c)
 	var items []interface{}
 
-	for _, v := range fields.([]interface{}) {
+	for _, v := range fields {
 
 		component := reflect.
 			ValueOf(v).
@@ -363,11 +363,11 @@ func (p *Resource) DetailFieldsWithinComponents(c *fiber.Ctx, resourceInstance i
 	componentType := "description"
 
 	fields := resourceInstance.(interface {
-		Fields(c *fiber.Ctx) interface{}
+		Fields(c *fiber.Ctx) []interface{}
 	}).Fields(c)
 	var items []interface{}
 
-	for _, v := range fields.([]interface{}) {
+	for _, v := range fields {
 
 		component := reflect.
 			ValueOf(v).
@@ -496,7 +496,7 @@ func (p *Resource) ImportFieldsWithoutWhen(c *fiber.Ctx, resourceInstance interf
 func (p *Resource) getFields(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 
 	fields := resourceInstance.(interface {
-		Fields(c *fiber.Ctx) interface{}
+		Fields(c *fiber.Ctx) []interface{}
 	}).Fields(c)
 
 	return p.findFields(fields, true)
@@ -506,7 +506,7 @@ func (p *Resource) getFields(c *fiber.Ctx, resourceInstance interface{}) interfa
 func (p *Resource) getFieldsWithoutWhen(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 
 	fields := resourceInstance.(interface {
-		Fields(c *fiber.Ctx) interface{}
+		Fields(c *fiber.Ctx) []interface{}
 	}).Fields(c)
 
 	return p.findFields(fields, false)

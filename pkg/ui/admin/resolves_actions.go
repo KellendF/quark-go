@@ -10,10 +10,12 @@ import (
 
 // 列表行为
 func (p *Resource) IndexActions(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	actions := resourceInstance.(interface{ Actions(*fiber.Ctx) interface{} }).Actions(c)
+	actions := resourceInstance.(interface {
+		Actions(*fiber.Ctx) []interface{}
+	}).Actions(c)
 
 	var items []interface{}
-	for _, v := range actions.([]interface{}) {
+	for _, v := range actions {
 		shownOnIndex := v.(interface {
 			ShownOnIndex() bool
 		}).ShownOnIndex()
@@ -29,10 +31,12 @@ func (p *Resource) IndexActions(c *fiber.Ctx, resourceInstance interface{}) inte
 
 //表格行内行为
 func (p *Resource) IndexTableRowActions(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	actions := resourceInstance.(interface{ Actions(*fiber.Ctx) interface{} }).Actions(c)
+	actions := resourceInstance.(interface {
+		Actions(*fiber.Ctx) []interface{}
+	}).Actions(c)
 
 	var items []interface{}
-	for _, v := range actions.([]interface{}) {
+	for _, v := range actions {
 		shownOnIndexTableRow := v.(interface {
 			ShownOnIndexTableRow() bool
 		}).ShownOnIndexTableRow()
@@ -48,10 +52,12 @@ func (p *Resource) IndexTableRowActions(c *fiber.Ctx, resourceInstance interface
 
 //表格多选弹出层行为
 func (p *Resource) IndexTableAlertActions(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	actions := resourceInstance.(interface{ Actions(*fiber.Ctx) interface{} }).Actions(c)
+	actions := resourceInstance.(interface {
+		Actions(*fiber.Ctx) []interface{}
+	}).Actions(c)
 
 	var items []interface{}
-	for _, v := range actions.([]interface{}) {
+	for _, v := range actions {
 		shownOnIndexTableAlert := v.(interface {
 			ShownOnIndexTableAlert() bool
 		}).ShownOnIndexTableAlert()
@@ -67,10 +73,12 @@ func (p *Resource) IndexTableAlertActions(c *fiber.Ctx, resourceInstance interfa
 
 //表单页行为
 func (p *Resource) FormActions(c *fiber.Ctx, resourceInstance interface{}) []interface{} {
-	actions := resourceInstance.(interface{ Actions(*fiber.Ctx) interface{} }).Actions(c)
+	actions := resourceInstance.(interface {
+		Actions(*fiber.Ctx) []interface{}
+	}).Actions(c)
 
 	var items []interface{}
-	for _, v := range actions.([]interface{}) {
+	for _, v := range actions {
 		shownOnForm := v.(interface {
 			ShownOnForm() bool
 		}).ShownOnForm()
@@ -86,10 +94,12 @@ func (p *Resource) FormActions(c *fiber.Ctx, resourceInstance interface{}) []int
 
 //表单页右上角自定义区域行为
 func (p *Resource) FormExtraActions(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	actions := resourceInstance.(interface{ Actions(*fiber.Ctx) interface{} }).Actions(c)
+	actions := resourceInstance.(interface {
+		Actions(*fiber.Ctx) []interface{}
+	}).Actions(c)
 
 	var items []interface{}
-	for _, v := range actions.([]interface{}) {
+	for _, v := range actions {
 		shownOnFormExtra := v.(interface {
 			ShownOnFormExtra() bool
 		}).ShownOnFormExtra()
@@ -105,10 +115,12 @@ func (p *Resource) FormExtraActions(c *fiber.Ctx, resourceInstance interface{}) 
 
 //详情页行为
 func (p *Resource) DetailActions(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	actions := resourceInstance.(interface{ Actions(*fiber.Ctx) interface{} }).Actions(c)
+	actions := resourceInstance.(interface {
+		Actions(*fiber.Ctx) []interface{}
+	}).Actions(c)
 
 	var items []interface{}
-	for _, v := range actions.([]interface{}) {
+	for _, v := range actions {
 		shownOnDetail := v.(interface {
 			ShownOnDetail() bool
 		}).ShownOnDetail()
@@ -124,10 +136,12 @@ func (p *Resource) DetailActions(c *fiber.Ctx, resourceInstance interface{}) int
 
 //详情页右上角自定义区域行为
 func (p *Resource) DetailExtraActions(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	actions := resourceInstance.(interface{ Actions(*fiber.Ctx) interface{} }).Actions(c)
+	actions := resourceInstance.(interface {
+		Actions(*fiber.Ctx) []interface{}
+	}).Actions(c)
 
 	var items []interface{}
-	for _, v := range actions.([]interface{}) {
+	for _, v := range actions {
 		shownOnDetailExtra := v.(interface {
 			ShownOnDetailExtra() bool
 		}).ShownOnDetailExtra()

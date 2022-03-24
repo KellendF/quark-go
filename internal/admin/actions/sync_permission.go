@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/framework/msg"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/actions"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"gorm.io/gorm"
 )
 
@@ -36,5 +37,7 @@ func (p *SyncPermission) Init() *SyncPermission {
 
 // 执行行为句柄
 func (p *SyncPermission) Handle(c *fiber.Ctx, model *gorm.DB) error {
+	// 获取当前权限
+	utils.GetPermissions()
 	return msg.Error("操作失败，请重试！", "")
 }

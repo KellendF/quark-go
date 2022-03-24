@@ -29,7 +29,7 @@ func (p *Permission) Init() interface{} {
 }
 
 // 字段
-func (p *Permission) Fields(c *fiber.Ctx) interface{} {
+func (p *Permission) Fields(c *fiber.Ctx) []interface{} {
 	field := &admin.Field{}
 
 	return []interface{}{
@@ -59,7 +59,7 @@ func (p *Permission) Searches(c *fiber.Ctx) []interface{} {
 }
 
 // 行为
-func (p *Permission) Actions(c *fiber.Ctx) interface{} {
+func (p *Permission) Actions(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		(&actions.SyncPermission{}).Init(),
 		(&actions.CreateLink{}).Init(p.Title),

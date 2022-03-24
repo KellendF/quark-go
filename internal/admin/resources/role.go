@@ -29,7 +29,7 @@ func (p *Role) Init() interface{} {
 }
 
 // 字段
-func (p *Role) Fields(c *fiber.Ctx) interface{} {
+func (p *Role) Fields(c *fiber.Ctx) []interface{} {
 	field := &admin.Field{}
 	treeData := (&models.Menu{}).Tree()
 
@@ -61,7 +61,7 @@ func (p *Role) Searches(c *fiber.Ctx) []interface{} {
 }
 
 // 行为
-func (p *Role) Actions(c *fiber.Ctx) interface{} {
+func (p *Role) Actions(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		(&actions.CreateLink{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),

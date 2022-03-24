@@ -74,3 +74,16 @@ func StructToMap(v any) any {
 
 	return mapResult
 }
+
+// 存储权限
+var Permissions []string
+
+// 设置权限
+func SetPermissions(permissions []string) {
+	Permissions = permissions
+}
+
+// 获取权限
+func GetPermissions() []string {
+	return Permissions
+}
