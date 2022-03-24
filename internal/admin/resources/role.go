@@ -2,6 +2,7 @@ package resources
 
 import (
 	"encoding/json"
+	"errors"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -132,6 +133,10 @@ func (p *Role) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 		Pluck("id", &permissionIds)
 
 	var result error
+
+	if len(permissionIds) == 0 {
+		return errors.New("获取的权限为空，请在菜单管理中绑定权限")
+	}
 
 	if p.IsCreating(c) {
 		lastRole := map[string]interface{}{}
