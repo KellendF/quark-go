@@ -1,12 +1,16 @@
 package resources
 
 import (
+	"encoding/json"
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
+	"gorm.io/gorm"
 )
 
 type Role struct {
@@ -76,10 +80,114 @@ func (p *Role) Actions(c *fiber.Ctx) []interface{} {
 
 // 编辑页面显示前回调
 func (p *Role) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[string]interface{} {
+	id := c.Query("id")
+	menus := []map[string]interface{}{}
+
+	(&db.Model{}).Model(&models.Menu{}).Find(&menus)
+
+	checkedMenus := []int{}
+	for _, v := range menus {
+		var permissionIds []int
+		(&db.Model{}).
+			Model(&models.Permission{}).
+			Where("menu_id", v["id"]).
+			Pluck("id", &permissionIds)
+
+		roleHasPermission := map[string]interface{}{}
+		(&db.Model{}).
+			Model(&models.RoleHasPermission{}).
+			Where("permission_id IN", permissionIds).
+			Where("role_id", id).
+			First(&roleHasPermission)
+
+		if len(roleHasPermission) > 0 {
+			checkedMenus = append(checkedMenus, v["id"].(int))
+		}
+	}
+
+	data["menu_ids"] = checkedMenus
+
 	return data
 }
 
 // 保存数据前回调
 func (p *Role) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) interface{} {
+
+	delete(submitData, "menu_ids")
+
 	return submitData
+}
+
+// 保存后回调
+func (p *Role) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
+
+	data := map[string]interface{}{}
+	json.Unmarshal(c.Body(), &data)
+
+	// 根据菜单id获取所有权限
+	var permissionIds []int
+	(&db.Model{}).
+		Model(&models.Permission{}).
+		Where("menu_id IN", data["menu_id"]).
+		Pluck("id", &permissionIds)
+
+	var result error
+
+	if p.IsCreating(c) {
+		lastRole := map[string]interface{}{}
+		model.Order("id desc").First(&lastRole) // hack
+
+		// 同步权限
+		result = p.syncPermissions(lastRole["id"].(int), permissionIds)
+	} else {
+
+		// 同步权限
+		getId := c.Query("id")
+		id, _ := strconv.Atoi(getId)
+
+		result = p.syncPermissions(id, permissionIds)
+	}
+
+	return result
+}
+
+// 保存后回调
+func (p *Role) syncPermissions(roleId int, permissionIds []int) error {
+	permissionIds = p.arrayFilter(permissionIds)
+
+	// 先清空此角色的权限
+	(&db.Model{}).Model(&models.RoleHasPermission{}).Where("role_id", roleId).Delete("")
+
+	data := []map[string]interface{}{}
+	for _, v := range permissionIds {
+		permission := map[string]interface{}{
+			"role_id":       roleId,
+			"permission_id": v,
+		}
+		data = append(data, permission)
+	}
+	result := (&db.Model{}).Model(&models.RoleHasPermission{}).Create(data)
+
+	return result.Error
+}
+
+// 数组去重
+func (p *Role) arrayFilter(list []int) []int {
+	var x []int = []int{}
+	for _, i := range list {
+		if len(x) == 0 {
+			x = append(x, i)
+		} else {
+			for k, v := range x {
+				if i == v {
+					break
+				}
+				if k == len(x)-1 {
+					x = append(x, i)
+				}
+			}
+		}
+	}
+
+	return x
 }
