@@ -45,11 +45,18 @@ func (p *SyncPermission) Handle(c *fiber.Ctx, model *gorm.DB) error {
 	permissions := utils.GetPermissions()
 	data := []map[string]interface{}{}
 
-	for _, v := range permissions {
-		var count int64
-		(&db.Model{}).Model(&models.Permission{}).Where("name = ?", v).Count(&count)
+	var names []string
+	(&db.Model{}).Model(&models.Permission{}).Pluck("name", &names)
 
-		if count == 0 {
+	for _, v := range permissions {
+		has := false
+		for _, nv := range names {
+			if nv == v {
+				has = true
+			}
+		}
+
+		if has == false {
 			permission := map[string]interface{}{
 				"menu_id":    0,
 				"name":       v,
