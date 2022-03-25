@@ -114,6 +114,17 @@ func (p *Role) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[stri
 // 保存数据前回调
 func (p *Role) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) interface{} {
 
+	// 根据菜单id获取所有权限
+	var permissionIds []int
+	(&db.Model{}).
+		Model(&models.Permission{}).
+		Where("menu_id IN", submitData["menu_ids"]).
+		Pluck("id", &permissionIds)
+
+	if len(permissionIds) == 0 {
+		return errors.New("获取的权限为空，请在菜单管理中绑定权限")
+	}
+
 	delete(submitData, "menu_ids")
 
 	return submitData
@@ -129,14 +140,14 @@ func (p *Role) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 	var permissionIds []int
 	(&db.Model{}).
 		Model(&models.Permission{}).
-		Where("menu_id IN", data["menu_id"]).
+		Where("menu_id IN", data["menu_ids"]).
 		Pluck("id", &permissionIds)
 
-	var result error
-
 	if len(permissionIds) == 0 {
-		return errors.New("获取的权限为空，请在菜单管理中绑定权限")
+		return errors.New("获取的权限为空，请先在菜单管理中绑定权限")
 	}
+
+	var result error
 
 	if p.IsCreating(c) {
 		lastRole := map[string]interface{}{}

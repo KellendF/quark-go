@@ -21,8 +21,8 @@ func (p *AdminMiddleware) Handle(c *fiber.Ctx) error {
 		return c.SendStatus(401)
 	}
 
-	if adminId.(float64) != 1 {
-		permissions := (&models.Admin{}).GetPermissionsViaRoles(adminId.(float64))
+	if adminId.(int) != 1 {
+		permissions := (&models.Admin{}).GetPermissionsViaRoles(adminId.(int))
 		if permissions == nil {
 			return c.SendStatus(403)
 		}

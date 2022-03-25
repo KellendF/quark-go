@@ -24,7 +24,7 @@ func (p *ResourceAction) HandleAction(c *fiber.Ctx) error {
 
 	if id != "" {
 		if strings.Contains(id, ",") {
-			model.Where("id IN ?", strings.Split(",", id))
+			model.Where("id IN ?", strings.Split(id, ","))
 		} else {
 			model.Where("id = ?", id)
 		}

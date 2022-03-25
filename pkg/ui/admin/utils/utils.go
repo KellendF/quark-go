@@ -29,15 +29,19 @@ func Admin(c *fiber.Ctx, field string) interface{} {
 		return nil
 	}
 
+	if value, ok := userInfo[field].(float64); ok {
+		return int(value)
+	}
+
 	return userInfo[field]
 }
 
 // 数据集转换成Tree
-func ListToTree(list []interface{}, pk string, pid string, child string, root float64) []interface{} {
+func ListToTree(list []interface{}, pk string, pid string, child string, root int) []interface{} {
 	var treeList []interface{}
 	for _, v := range list {
-		if v.(map[string]interface{})["pid"] == root {
-			childNode := ListToTree(list, pk, pid, child, v.(map[string]interface{})[pk].(float64))
+		if v.(map[string]interface{})[pid] == root {
+			childNode := ListToTree(list, pk, pid, child, v.(map[string]interface{})[pk].(int))
 			if childNode != nil {
 				v.(map[string]interface{})[child] = childNode
 			}

@@ -32,9 +32,9 @@ func (model *Admin) GetAdminViaUsername(username string) *Admin {
 }
 
 // 通过角色获取管理员权限
-func (model *Admin) GetPermissionsViaRoles(id float64) []Permission {
-	var roleIds []float64
-	var permissionIds []float64
+func (model *Admin) GetPermissionsViaRoles(id int) []Permission {
+	var roleIds []int
+	var permissionIds []int
 
 	// 角色id
 	(&ModelHasRole{}).DB().Where("model_id", id).Where("model_type", "admin").Pluck("id", &roleIds)
@@ -58,7 +58,7 @@ func (model *Admin) GetPermissionsViaRoles(id float64) []Permission {
 }
 
 // 获取管理员角色
-func (model *Admin) GetRoles(id float64) *ModelHasRole {
+func (model *Admin) GetRoles(id int) *ModelHasRole {
 	modelHasRole := &ModelHasRole{}
 	modelHasRole.DB().Where("model_id", id).Where("model_type", "admin").First(&modelHasRole)
 
@@ -66,16 +66,16 @@ func (model *Admin) GetRoles(id float64) *ModelHasRole {
 }
 
 // 获取管理员权限菜单
-func (model *Admin) GetMenus(adminId float64) interface{} {
+func (model *Admin) GetMenus(adminId int) interface{} {
 
 	menu := &Menu{}
-	var menus []Menu
+	var menus []map[string]interface{}
 	var menuKey int
 
 	if adminId == 1 {
-		menu.DB().Where("status = ?", 1).Where("guard_name", "admin").Order("sort asc").Find(&menus)
+		menu.DB().Model(&Menu{}).Where("status = ?", 1).Where("guard_name", "admin").Order("sort asc").Find(&menus)
 	} else {
-		var menuIds []float64
+		var menuIds []int
 		permissions := model.GetPermissionsViaRoles(adminId)
 
 		// 转换map
@@ -83,11 +83,11 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 
 		if getPermissions != nil {
 			for key, v := range getPermissions {
-				menuIds[key] = v.(map[string]float64)["menu_id"]
+				menuIds[key] = v.(map[string]int)["menu_id"]
 			}
 		}
 
-		var pids1 []float64
+		var pids1 []int
 
 		// 三级查询列表
 		menu.DB().
@@ -98,17 +98,18 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 			Find(&menus)
 
 		for key, v := range menus {
-			if v.Pid != 0 {
-				pids1[key] = v.Pid
+			if v["pid"] != 0 {
+				pids1[key] = v["pid"].(int)
 			}
 			menuKey = key
 		}
 
-		var pids2 []float64
-		var menu2 []Menu
+		var pids2 []int
+		menu2 := []map[string]interface{}{}
 
 		// 二级查询列表
 		menu.DB().
+			Model(&Menu{}).
 			Where("status = ?", 1).
 			Where("id in (?)", pids1).
 			Where("pid <> ?", 0).
@@ -116,18 +117,19 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 			Find(&menu2)
 
 		for key, v := range menu2 {
-			if v.Pid != 0 {
-				pids2[key] = v.Pid
+			if v["pid"] != 0 {
+				pids2[key] = v["pid"].(int)
 			}
 
 			menuKey = menuKey + key
 			menus[menuKey] = v
 		}
 
-		var menu3 []Menu
+		menu3 := []map[string]interface{}{}
 
 		// 一级查询列表
 		menu.DB().
+			Model(&Menu{}).
 			Where("status = ?", 1).
 			Where("id in (?)", pids2).
 			Where("pid", 0).
@@ -140,20 +142,28 @@ func (model *Admin) GetMenus(adminId float64) interface{} {
 		}
 	}
 
-	for key, v := range menus {
-		menus[key].Key = uuid.New()
-		menus[key].Locale = "menu" + strings.Replace(v.Path, "/", ".", -1)
+	result := []interface{}{}
+	getMenu := map[string]interface{}{}
 
-		if v.Show == 1 {
-			menus[key].HideInMenu = false
+	for _, v := range menus {
+
+		getMenu = v
+
+		getMenu["key"] = uuid.New()
+		getMenu["locale"] = "menu" + strings.Replace(v["path"].(string), "/", ".", -1)
+
+		if v["show"] == 1 {
+			getMenu["hideInMenu"] = false
 		} else {
-			menus[key].HideInMenu = true
+			getMenu["hideInMenu"] = true
 		}
 
-		if v.Type == "engine" {
-			menus[key].Path = "/index?api=" + v.Path
+		if v["type"] == "engine" {
+			getMenu["path"] = "/index?api=" + v["path"].(string)
 		}
+
+		result = append(result, getMenu)
 	}
 
-	return utils.ListToTree(utils.StructToMap(menus).([]interface{}), "id", "pid", "routes", 0)
+	return utils.ListToTree(result, "id", "pid", "routes", 0)
 }

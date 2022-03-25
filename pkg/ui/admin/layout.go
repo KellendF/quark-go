@@ -38,7 +38,7 @@ func (p *Layout) LayoutComponentRender(c *fiber.Ctx, resourceInstance interface{
 	adminId := utils.Admin(c, "id")
 
 	// 获取管理员菜单
-	getMenus := (&models.Admin{}).GetMenus(adminId.(float64))
+	getMenus := (&models.Admin{}).GetMenus(adminId.(int))
 
 	// 页脚
 	footer := (&footer.Component{}).
