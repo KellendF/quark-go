@@ -45,8 +45,7 @@ func (p *Menu) Fields(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		field.Hidden("id", "ID"), // 列表读取且不展示的字段
 
-		field.Hidden("pid", "PID").
-			OnIndexShowing(true), // 列表读取且不展示的字段
+		field.Hidden("pid", "PID").OnlyOnIndex(), // 列表读取且不展示的字段
 
 		field.Text("name", "名称").
 			SetRules(
@@ -112,7 +111,7 @@ func (p *Menu) Searches(c *fiber.Ctx) []interface{} {
 // 行为
 func (p *Menu) Actions(c *fiber.Ctx) []interface{} {
 	return []interface{}{
-		(&actions.CreateLink{}).Init(p.Title),
+		(&actions.CreateDrawer{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Disable{}).Init("批量禁用"),
 		(&actions.Enable{}).Init("批量启用"),

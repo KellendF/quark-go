@@ -21,7 +21,7 @@ func (p *Resource) IndexActions(c *fiber.Ctx, resourceInstance interface{}) inte
 		}).ShownOnIndex()
 
 		if shownOnIndex {
-			getAction := p.buildAction(c, v)
+			getAction := p.buildAction(c, v, resourceInstance)
 			items = append(items, getAction)
 		}
 	}
@@ -42,7 +42,7 @@ func (p *Resource) IndexTableRowActions(c *fiber.Ctx, resourceInstance interface
 		}).ShownOnIndexTableRow()
 
 		if shownOnIndexTableRow {
-			getAction := p.buildAction(c, v)
+			getAction := p.buildAction(c, v, resourceInstance)
 			items = append(items, getAction)
 		}
 	}
@@ -63,7 +63,7 @@ func (p *Resource) IndexTableAlertActions(c *fiber.Ctx, resourceInstance interfa
 		}).ShownOnIndexTableAlert()
 
 		if shownOnIndexTableAlert {
-			getAction := p.buildAction(c, v)
+			getAction := p.buildAction(c, v, resourceInstance)
 			items = append(items, getAction)
 		}
 	}
@@ -84,7 +84,7 @@ func (p *Resource) FormActions(c *fiber.Ctx, resourceInstance interface{}) []int
 		}).ShownOnForm()
 
 		if shownOnForm {
-			getAction := p.buildAction(c, v)
+			getAction := p.buildAction(c, v, resourceInstance)
 			items = append(items, getAction)
 		}
 	}
@@ -105,7 +105,7 @@ func (p *Resource) FormExtraActions(c *fiber.Ctx, resourceInstance interface{}) 
 		}).ShownOnFormExtra()
 
 		if shownOnFormExtra {
-			getAction := p.buildAction(c, v)
+			getAction := p.buildAction(c, v, resourceInstance)
 			items = append(items, getAction)
 		}
 	}
@@ -126,7 +126,7 @@ func (p *Resource) DetailActions(c *fiber.Ctx, resourceInstance interface{}) int
 		}).ShownOnDetail()
 
 		if shownOnDetail {
-			getAction := p.buildAction(c, v)
+			getAction := p.buildAction(c, v, resourceInstance)
 			items = append(items, getAction)
 		}
 	}
@@ -147,7 +147,7 @@ func (p *Resource) DetailExtraActions(c *fiber.Ctx, resourceInstance interface{}
 		}).ShownOnDetailExtra()
 
 		if shownOnDetailExtra {
-			getAction := p.buildAction(c, v)
+			getAction := p.buildAction(c, v, resourceInstance)
 			items = append(items, getAction)
 		}
 	}
@@ -156,7 +156,7 @@ func (p *Resource) DetailExtraActions(c *fiber.Ctx, resourceInstance interface{}
 }
 
 //创建行为组件
-func (p *Resource) buildAction(c *fiber.Ctx, item interface{}) interface{} {
+func (p *Resource) buildAction(c *fiber.Ctx, item interface{}, resourceInstance interface{}) interface{} {
 	name := item.(interface{ GetName() string }).GetName()
 	withLoading := item.(interface{ GetWithLoading() bool }).GetWithLoading()
 	reload := item.(interface{ GetReload() string }).GetReload()
@@ -213,7 +213,10 @@ func (p *Resource) buildAction(c *fiber.Ctx, item interface{}) interface{} {
 	case "modal":
 		// todo
 	case "drawer":
-		// todo
+		// formBody := item.(interface{ GetBody(c *fiber.Ctx,resourceInstance interface{}) interface{} }).GetBody(c,resourceInstance)
+		// formActions := item.(interface{ GetActions(c *fiber.Ctx,resourceInstance interface{}) []interface{} }).GetActions(c,resourceInstance)
+
+		// action = action.SetDrawer()
 	}
 
 	if confirmTitle != "" {

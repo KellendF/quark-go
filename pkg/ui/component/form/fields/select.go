@@ -4,10 +4,6 @@ import "github.com/quarkcms/quark-go/pkg/ui/component"
 
 type Select struct {
 	Item
-	Mode       string            `json:"mode"`
-	Size       string            `json:"size"`
-	AllowClear bool              `json:"allowClear"`
-	Load       map[string]string `json:"load"`
 }
 
 // 初始化

@@ -55,6 +55,10 @@ type Item struct {
 	Callback             interface{}            `json:"-"`
 	Placeholder          string                 `json:"placeholder"`
 	TreeData             interface{}            `json:"treeData"`
+	Mode                 string                 `json:"mode"`
+	Size                 string                 `json:"size"`
+	AllowClear           bool                   `json:"allowClear"`
+	Load                 map[string]string      `json:"load"`
 }
 
 const DEFAULT_KEY = ""

@@ -237,7 +237,11 @@ func (p *Component) SetModal(callback interface{}) *Component {
  * @return p
  */
 func (p *Component) SetDrawer(callback interface{}) *Component {
-	// todo
+	drawer := (&Drawer{}).Init()
+	getCallback := callback.(func(drawer *Drawer) interface{})
+
+	p.Drawer = getCallback(drawer)
+
 	return p
 }
 
