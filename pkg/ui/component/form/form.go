@@ -1,11 +1,14 @@
 package form
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
 
+	"github.com/go-basic/uuid"
 	"github.com/quarkcms/quark-go/pkg/ui/component"
 )
 
@@ -33,6 +36,25 @@ type Component struct {
 	InitApi            string                 `json:"initApi"`
 	Body               interface{}            `json:"body"`
 	Actions            []interface{}          `json:"actions"`
+}
+
+// 设置Key
+func (p *Component) SetKey(key string, crypt bool) *Component {
+
+	if key == "" {
+		key = uuid.New()
+	}
+
+	if crypt {
+		h := md5.New()
+		h.Write([]byte(key))
+		key = hex.EncodeToString(h.Sum(nil))
+	}
+
+	p.Key = key
+	p.ComponentKey = key
+
+	return p
 }
 
 // 初始化

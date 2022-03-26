@@ -28,6 +28,17 @@ type Drawer struct {
 func (p *Drawer) Init() *Drawer {
 	p.Component = "drawer"
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.Closable = true
+	p.FooterStyle = map[string]interface{}{
+		"textAlign": "right",
+	}
+	p.Height = 256
+	p.Keyboard = true
+	p.Mask = true
+	p.MaskClosable = true
+	p.Placement = "right"
+	p.Width = 256
+	p.ZIndex = 1000
 
 	return p
 }

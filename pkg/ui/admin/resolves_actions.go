@@ -188,7 +188,7 @@ func (p *Resource) buildAction(c *fiber.Ctx, item interface{}, resourceInstance 
 	confirmText := item.(interface{ GetConfirmText() string }).GetConfirmText()
 	confirmType := item.(interface{ GetConfirmType() string }).GetConfirmType()
 
-	action := (&action.Component{}).
+	getAction := (&action.Component{}).
 		Init().
 		SetLabel(name).
 		SetWithLoading(withLoading).
@@ -199,7 +199,7 @@ func (p *Resource) buildAction(c *fiber.Ctx, item interface{}, resourceInstance 
 		SetSize(size)
 
 	if icon != "" {
-		action = action.
+		getAction = getAction.
 			SetIcon(icon)
 	}
 
@@ -208,23 +208,39 @@ func (p *Resource) buildAction(c *fiber.Ctx, item interface{}, resourceInstance 
 		href := item.(interface{ GetHref(c *fiber.Ctx) string }).GetHref(c)
 		target := item.(interface{ GetTarget(c *fiber.Ctx) string }).GetTarget(c)
 
-		action = action.
+		getAction = getAction.
 			SetLink(href, target)
 	case "modal":
 		// todo
 	case "drawer":
-		// formBody := item.(interface{ GetBody(c *fiber.Ctx,resourceInstance interface{}) interface{} }).GetBody(c,resourceInstance)
-		// formActions := item.(interface{ GetActions(c *fiber.Ctx,resourceInstance interface{}) []interface{} }).GetActions(c,resourceInstance)
+		formWidth := item.(interface {
+			GetWidth() int
+		}).GetWidth()
 
-		// action = action.SetDrawer()
+		formBody := item.(interface {
+			GetBody(c *fiber.Ctx, resourceInstance interface{}) interface{}
+		}).GetBody(c, resourceInstance)
+
+		formActions := item.(interface {
+			GetActions(c *fiber.Ctx, resourceInstance interface{}) []interface{}
+		}).GetActions(c, resourceInstance)
+
+		getAction = getAction.SetDrawer(func(drawer *action.Drawer) interface{} {
+			return drawer.
+				SetTitle(name).
+				SetWidth(formWidth).
+				SetBody(formBody).
+				SetActions(formActions).
+				SetDestroyOnClose(true)
+		})
 	}
 
 	if confirmTitle != "" {
-		action = action.
+		getAction = getAction.
 			SetWithConfirm(confirmTitle, confirmText, confirmType)
 	}
 
-	return action
+	return getAction
 }
 
 //创建行为接口

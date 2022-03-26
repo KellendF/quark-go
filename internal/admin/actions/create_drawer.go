@@ -3,6 +3,8 @@ package actions
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/actions"
+	"github.com/quarkcms/quark-go/pkg/ui/component/action"
+	"github.com/quarkcms/quark-go/pkg/ui/component/form"
 )
 
 type CreateDrawer struct {
@@ -34,34 +36,50 @@ func (p *CreateDrawer) Init(name string) *CreateDrawer {
 
 // 内容
 func (p *CreateDrawer) GetBody(c *fiber.Ctx, resourceInstance interface{}) interface{} {
-	//  $request = new ResourceCreateRequest;
 
-	//  // 表单
-	//  return Form::key('createDrawerForm')
-	//  ->api($request->newResource()->creationApi($request))
-	//  ->items($request->newResource()->creationFieldsWithinComponents($request))
-	//  ->initialValues($request->newResource()->beforeCreating($request))
-	//  ->labelCol([
-	// 	 'span' => 6
-	//  ])
-	//  ->wrapperCol([
-	// 	 'span' => 18
-	//  ]);
+	api := resourceInstance.(interface {
+		CreationApi(*fiber.Ctx) string
+	}).CreationApi(c)
 
-	return nil
+	fields := resourceInstance.(interface {
+		CreationFieldsWithinComponents(*fiber.Ctx, interface{}) interface{}
+	}).CreationFieldsWithinComponents(c, resourceInstance)
+
+	// 断言BeforeCreating方法，获取初始数据
+	data := resourceInstance.(interface {
+		BeforeCreating(*fiber.Ctx) map[string]interface{}
+	}).BeforeCreating(c)
+
+	return (&form.Component{}).
+		Init().
+		SetKey("createDrawerForm", false).
+		SetApi(api).
+		SetBody(fields).
+		SetInitialValues(data).
+		SetLabelCol(map[string]interface{}{
+			"span": 6,
+		}).
+		SetWrapperCol(map[string]interface{}{
+			"span": 18,
+		})
 }
 
 // 弹窗行为
 func (p *CreateDrawer) GetActions(c *fiber.Ctx, resourceInstance interface{}) []interface{} {
-	//  return [
-	// 	 Action::make('取消')->actionType('cancel'),
 
-	// 	 Action::make("提交")
-	// 	 ->reload('table')
-	// 	 ->type('primary')
-	// 	 ->actionType('submit')
-	// 	 ->submitForm('createDrawerForm')
-	//  ];
+	return []interface{}{
+		(&action.Component{}).
+			Init().
+			SetLabel("取消").
+			SetActionType("cancel"),
 
-	return []interface{}{}
+		(&action.Component{}).
+			Init().
+			SetLabel("提交").
+			SetWithLoading(true).
+			SetReload("table").
+			SetActionType("submit").
+			SetType("primary", false).
+			SetSubmitForm("createDrawerForm"),
+	}
 }
