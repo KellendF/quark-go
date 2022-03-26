@@ -8,19 +8,19 @@ import (
 // 字段
 type Menu struct {
 	db.Model
-	Key        string `json:"key"`
-	Id         int    `json:"id"`
-	Name       string `json:"name"`
-	GuardName  string `json:"guard_name"`
-	Icon       string `json:"icon"`
-	Type       string `json:"type"`
-	Pid        int    `json:"pid"`
-	Sort       int    `json:"sort"`
-	Path       string `json:"path"`
-	Show       int    `json:"show"`
-	Status     bool   `json:"status"`
-	Locale     string `json:"locale"`
-	HideInMenu bool   `json:"hideInMenu"`
+	Key        string
+	Id         int
+	Name       string
+	GuardName  string
+	Icon       string
+	Type       string
+	Pid        int
+	Sort       int
+	Path       string
+	Show       int
+	Status     bool
+	Locale     string
+	HideInMenu bool
 }
 
 // 获取菜单的有序列表

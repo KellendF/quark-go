@@ -7,17 +7,17 @@ import (
 // 字段
 type Picture struct {
 	db.Model
-	Id                int    `json:"id"`
-	ObjType           string `json:"obj_type"`
-	ObjId             int    `json:"obj_id"`
-	PictureCategoryId int    `json:"picture_category_id"`
-	Sort              int    `json:"sort"`
-	Name              string `json:"name"`
-	Size              string `json:"size"`
-	Width             string `json:"width"`
-	Height            string `json:"height"`
-	Ext               string `json:"ext"`
-	Path              string `json:"path"`
-	Md5               string `json:"md5"`
-	Status            bool   `json:"status"`
+	Id                int
+	ObjType           string
+	ObjId             int
+	PictureCategoryId int
+	Sort              int
+	Name              string
+	Size              string
+	Width             string
+	Height            string
+	Ext               string
+	Path              string
+	Md5               string
+	Status            bool
 }

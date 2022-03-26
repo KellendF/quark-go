@@ -78,12 +78,9 @@ func (model *Admin) GetMenus(adminId int) interface{} {
 		var menuIds []int
 		permissions := model.GetPermissionsViaRoles(adminId)
 
-		// 转换map
-		getPermissions := utils.StructToMap(permissions).([]interface{})
-
-		if getPermissions != nil {
-			for key, v := range getPermissions {
-				menuIds[key] = v.(map[string]int)["menu_id"]
+		if permissions != nil {
+			for key, v := range permissions {
+				menuIds[key] = v.MenuId
 			}
 		}
 

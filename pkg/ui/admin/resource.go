@@ -6,6 +6,7 @@ import (
 
 	"github.com/gobeam/stringy"
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/component/card"
 	"github.com/quarkcms/quark-go/pkg/ui/component/form"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
@@ -20,7 +21,7 @@ type Resource struct {
 	PerPage      interface{}
 	IndexPolling int
 	IndexOrder   string
-	Model        *gorm.DB
+	Model        interface{}
 	Field        map[string]interface{}
 	WithExport   bool
 }
@@ -33,7 +34,7 @@ func (p *Resource) NewModel(resourceInstance interface{}) *gorm.DB {
 		Elem().
 		FieldByName("Model").Interface()
 
-	return model.(*gorm.DB)
+	return (&db.Model{}).Model(&model)
 }
 
 // 列表页表格主体

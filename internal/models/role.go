@@ -7,24 +7,24 @@ import (
 // 角色
 type Role struct {
 	db.Model
-	Id        int    `json:"id"`
-	Name      string `json:"name"`
-	GuardName string `json:"guard_name"`
+	Id        int
+	Name      string
+	GuardName string
 }
 
 // 模型角色关联表
 type ModelHasRole struct {
 	db.Model
-	RoleId    int    `json:"role_id"`
-	ModelType string `json:"model_type"`
-	ModelId   int    `json:"model_id"`
+	RoleId    int
+	ModelType string
+	ModelId   int
 }
 
 // 角色权限关联表
 type RoleHasPermission struct {
 	db.Model
-	PermissionId int    `json:"permission_id"`
-	RoleId       string `json:"role_id"`
+	PermissionId int
+	RoleId       string
 }
 
 // 获取角色列表

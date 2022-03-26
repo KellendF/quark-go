@@ -7,10 +7,10 @@ import (
 // 权限
 type Permission struct {
 	db.Model
-	Id        int    `json:"id"`
-	MenuId    int    `json:"menu_id"`
-	Name      string `json:"name"`
-	GuardName string `json:"guard_name"`
+	Id        int
+	MenuId    int
+	Name      string
+	GuardName string
 }
 
 // 获取列表

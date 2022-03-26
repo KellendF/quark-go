@@ -7,11 +7,11 @@ import (
 // 字段
 type ActionLog struct {
 	db.Model
-	Id       int    `json:"id"`
-	ObjectId int    `json:"object_id"`
-	Url      string `json:"url"`
-	Remark   string `json:"remark"`
-	Ip       string `json:"ip"`
-	Type     string `json:"type"`
-	Status   bool   `json:"status"`
+	Id       int
+	ObjectId int
+	Url      string
+	Remark   string
+	Ip       string
+	Type     string
+	Status   bool
 }

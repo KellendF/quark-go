@@ -7,7 +7,6 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
-	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/framework/hash"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
@@ -24,7 +23,7 @@ func (p *Admin) Init() interface{} {
 	p.Title = "管理员"
 
 	// 模型
-	p.Model = (&db.Model{}).Model(&models.Admin{})
+	p.Model = &models.Admin{}
 
 	// 分页
 	p.PerPage = 10

@@ -1,13 +1,10 @@
 package resources
 
 import (
-	"fmt"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
-	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/framework/hash"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
@@ -24,7 +21,7 @@ func (p *Menu) Init() interface{} {
 	p.Title = "菜单"
 
 	// 模型
-	p.Model = (&db.Model{}).Model(&models.Menu{})
+	p.Model = &models.Menu{}
 
 	// 分页
 	p.PerPage = false
@@ -46,7 +43,8 @@ func (p *Menu) Fields(c *fiber.Ctx) []interface{} {
 	menus := (&models.Menu{}).OrderedList()
 
 	return []interface{}{
-		field.Hidden("id", "ID"),
+		field.Hidden("id", "ID").
+			OnlyOnForms(),
 
 		field.Text("name", "名称").
 			SetRules(
@@ -78,8 +76,7 @@ func (p *Menu) Fields(c *fiber.Ctx) []interface{} {
 
 		field.Select("pid", "父节点").
 			SetOptions(menus).
-			SetDefault(0).
-			OnlyOnForms(),
+			SetDefault(0),
 
 		field.Text("sort", "排序").
 			SetEditable(true).
@@ -128,9 +125,8 @@ func (p *Menu) Actions(c *fiber.Ctx) []interface{} {
 
 // 列表页面显示前回调
 func (p *Menu) BeforeIndexShowing(c *fiber.Ctx, list []interface{}) []interface{} {
-	// 转换成树形表格
 
-	fmt.Print(list)
+	// 转换成树形表格
 	return utils.ListToTree(list, "id", "pid", "children", 0)
 }
 

@@ -5,7 +5,6 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
-	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 )
 
@@ -20,7 +19,7 @@ func (p *Permission) Init() interface{} {
 	p.Title = "权限"
 
 	// 模型
-	p.Model = (&db.Model{}).Model(&models.Permission{})
+	p.Model = &models.Permission{}
 
 	// 分页
 	p.PerPage = 10

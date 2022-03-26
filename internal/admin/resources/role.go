@@ -25,7 +25,7 @@ func (p *Role) Init() interface{} {
 	p.Title = "角色"
 
 	// 模型
-	p.Model = (&db.Model{}).Model(&models.Role{})
+	p.Model = &models.Role{}
 
 	// 分页
 	p.PerPage = 10
