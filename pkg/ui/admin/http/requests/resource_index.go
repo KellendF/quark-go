@@ -133,8 +133,6 @@ func (p *ResourceIndex) performsList(c *fiber.Ctx, resourceInstance interface{},
 		}).SetField(v)
 
 		fields := make(map[string]interface{})
-
-		fields = v
 		for _, field := range indexFields.([]interface{}) {
 
 			// 字段名

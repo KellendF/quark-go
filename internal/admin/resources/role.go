@@ -39,7 +39,7 @@ func (p *Role) Fields(c *fiber.Ctx) []interface{} {
 	treeData := (&models.Menu{}).Tree()
 
 	return []interface{}{
-		field.Hidden("id", "ID"),
+		field.ID("id", "ID"),
 
 		field.Text("name", "名称").
 			SetRules(

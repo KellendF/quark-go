@@ -43,8 +43,10 @@ func (p *Menu) Fields(c *fiber.Ctx) []interface{} {
 	menus := (&models.Menu{}).OrderedList()
 
 	return []interface{}{
-		field.Hidden("id", "ID").
-			OnlyOnForms(),
+		field.Hidden("id", "ID"), // 列表读取且不展示的字段
+
+		field.Hidden("pid", "PID").
+			OnIndexShowing(true), // 列表读取且不展示的字段
 
 		field.Text("name", "名称").
 			SetRules(
@@ -76,7 +78,8 @@ func (p *Menu) Fields(c *fiber.Ctx) []interface{} {
 
 		field.Select("pid", "父节点").
 			SetOptions(menus).
-			SetDefault(0),
+			SetDefault(0).
+			OnlyOnForms(),
 
 		field.Text("sort", "排序").
 			SetEditable(true).

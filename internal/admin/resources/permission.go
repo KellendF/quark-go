@@ -32,7 +32,7 @@ func (p *Permission) Fields(c *fiber.Ctx) []interface{} {
 	field := &admin.Field{}
 
 	return []interface{}{
-		field.Hidden("id", "ID"),
+		field.ID("id", "ID"),
 
 		field.Text("name", "名称").
 			SetRules(

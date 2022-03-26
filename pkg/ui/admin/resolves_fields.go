@@ -40,7 +40,11 @@ func (p *Resource) IndexColumns(c *fiber.Ctx, resourceInstance interface{}) inte
 		}).IsShownOnIndex()
 
 		if isShownOnIndex {
-			columns = append(columns, p.fieldToColumn(c, v))
+			getColumn := p.fieldToColumn(c, v)
+
+			if getColumn != nil {
+				columns = append(columns, getColumn)
+			}
 		}
 	}
 
@@ -102,8 +106,20 @@ func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 		SetAttribute(name)
 
 	switch component {
+	case "idField":
+		// 是否显示在列表
+		onIndexDisplayed := reflect.
+			ValueOf(field).
+			Elem().
+			FieldByName("OnIndexDisplayed").Bool()
+
+		if onIndexDisplayed {
+			column = column.SetValueType("text")
+		} else {
+			return nil
+		}
 	case "hiddenField":
-		column = column.SetValueType("text")
+		return nil
 	case "textField":
 		column = column.SetValueType("text")
 	case "selectField":

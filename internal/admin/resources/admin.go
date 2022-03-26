@@ -39,7 +39,7 @@ func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 	roles := (&models.Role{}).List()
 
 	return []interface{}{
-		field.Hidden("id", "ID"),
+		field.ID("id", "ID"),
 
 		field.Text("username", "用户名", func() interface{} {
 
