@@ -1,13 +1,16 @@
 package resources
 
 import (
+	"encoding/json"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
-	"github.com/quarkcms/quark-go/pkg/framework/hash"
+	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
+	"gorm.io/gorm"
 )
 
 type Menu struct {
@@ -61,9 +64,7 @@ func (p *Menu) Fields(c *fiber.Ctx) []interface{} {
 			SetDefault("admin").
 			OnlyOnForms(),
 
-		field.Icon("icon", "图标").
-			SetDefault(0).
-			OnlyOnForms(),
+		field.Icon("icon", "图标").OnlyOnForms(),
 
 		field.Radio("type", "渲染组件").
 			SetOptions(map[interface{}]interface{}{
@@ -116,7 +117,7 @@ func (p *Menu) Actions(c *fiber.Ctx) []interface{} {
 		(&actions.Disable{}).Init("批量禁用"),
 		(&actions.Enable{}).Init("批量启用"),
 		(&actions.ChangeStatus{}).Init(),
-		(&actions.EditLink{}).Init("编辑"),
+		(&actions.EditDrawer{}).Init("编辑"),
 		(&actions.Delete{}).Init("删除"),
 		(&actions.FormSubmit{}).Init(),
 		(&actions.FormReset{}).Init(),
@@ -134,7 +135,18 @@ func (p *Menu) BeforeIndexShowing(c *fiber.Ctx, list []map[string]interface{}) [
 
 // 编辑页面显示前回调
 func (p *Menu) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[string]interface{} {
-	delete(data, "password")
+	id := c.Query("id")
+
+	if id != "" {
+		menus := []int{}
+
+		(&db.Model{}).
+			Model(&models.Permission{}).
+			Where("menu_id = ?", id).
+			Pluck("id", &menus)
+
+		data["permission_ids"] = menus
+	}
 
 	return data
 }
@@ -142,13 +154,40 @@ func (p *Menu) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[stri
 // 保存数据前回调
 func (p *Menu) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) interface{} {
 
-	// 加密密码
-	if submitData["password"] != nil {
-		submitData["password"] = hash.Make(submitData["password"].(string))
-	}
-
-	// 暂时清理role_ids
-	delete(submitData, "role_ids")
+	// 暂时清理permission_ids
+	delete(submitData, "permission_ids")
 
 	return submitData
+}
+
+// 保存后回调
+func (p *Menu) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
+
+	data := map[string]interface{}{}
+	json.Unmarshal(c.Body(), &data)
+	id := 0
+
+	if p.IsCreating(c) {
+		last := map[string]interface{}{}
+
+		// 获取最后一条记录的id
+		model.Order("id desc").First(&last)
+		id = last["id"].(int)
+	} else {
+		id = int(data["id"].(float64))
+
+		(&db.Model{}).
+			Model(&models.Permission{}).
+			Where("menu_id = ?", id).
+			Update("menu_id", 0)
+	}
+
+	if data["permission_ids"] != nil {
+		return (&db.Model{}).
+			Model(&models.Permission{}).
+			Where("id In ?", data["permission_ids"]).
+			Update("menu_id", id)
+	} else {
+		return model
+	}
 }

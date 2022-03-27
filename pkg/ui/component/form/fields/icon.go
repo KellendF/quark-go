@@ -72,6 +72,7 @@ func (p *Icon) Init() *Icon {
 	}
 
 	p.SetWidth(200)
+	p.SetDefault("")
 
 	return p
 }

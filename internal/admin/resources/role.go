@@ -140,7 +140,7 @@ func (p *Role) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 	var permissionIds []int
 	(&db.Model{}).
 		Model(&models.Permission{}).
-		Where("menu_id IN", data["menu_ids"]).
+		Where("menu_id IN ?", data["menu_ids"]).
 		Pluck("id", &permissionIds)
 
 	if len(permissionIds) == 0 {
