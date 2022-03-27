@@ -37,13 +37,13 @@ func Admin(c *fiber.Ctx, field string) interface{} {
 }
 
 // 数据集转换成Tree
-func ListToTree(list []interface{}, pk string, pid string, child string, root int) []interface{} {
+func ListToTree(list []map[string]interface{}, pk string, pid string, child string, root int) []interface{} {
 	var treeList []interface{}
 	for _, v := range list {
-		if v.(map[string]interface{})[pid] == root {
-			childNode := ListToTree(list, pk, pid, child, v.(map[string]interface{})[pk].(int))
+		if v[pid] == root {
+			childNode := ListToTree(list, pk, pid, child, v[pk].(int))
 			if childNode != nil {
-				v.(map[string]interface{})[child] = childNode
+				v[child] = childNode
 			}
 			treeList = append(treeList, v)
 		}
@@ -56,12 +56,16 @@ func ListToTree(list []interface{}, pk string, pid string, child string, root in
 func TreeToOrderedList(tree []interface{}, level int, field string, child string) []interface{} {
 	var list []interface{}
 	for _, v := range tree {
-		v.(map[string]string)[field] = strings.Repeat("—", level) + v.(map[string]string)[field]
-		if v.(map[string][]interface{})[child] != nil {
-			children := TreeToOrderedList(v.(map[string][]interface{})[child], level, field, child)
-			v = append(v.([]interface{}), children)
+		if value, ok := v.(map[string]interface{}); ok {
+			value[field] = strings.Repeat("—", level) + value[field].(string)
+			list = append(list, value)
+			if value[child] != nil {
+				if childValue, ok := value[child].([]interface{}); ok {
+					children := TreeToOrderedList(childValue, level+1, field, child)
+					list = append(list, children...)
+				}
+			}
 		}
-		list = append(list, v)
 	}
 
 	return list

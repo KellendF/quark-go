@@ -139,7 +139,7 @@ func (model *Admin) GetMenus(adminId int) interface{} {
 		}
 	}
 
-	result := []interface{}{}
+	result := []map[string]interface{}{}
 	getMenu := map[string]interface{}{}
 
 	for _, v := range menus {

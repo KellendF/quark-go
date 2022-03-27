@@ -126,7 +126,7 @@ func (p *Menu) Actions(c *fiber.Ctx) []interface{} {
 }
 
 // 列表页面显示前回调
-func (p *Menu) BeforeIndexShowing(c *fiber.Ctx, list []interface{}) []interface{} {
+func (p *Menu) BeforeIndexShowing(c *fiber.Ctx, list []map[string]interface{}) []interface{} {
 
 	// 转换成树形表格
 	return utils.ListToTree(list, "id", "pid", "children", 0)

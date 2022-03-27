@@ -14,13 +14,18 @@ type Permission struct {
 }
 
 // 获取列表
-func (model *Permission) List() map[interface{}]interface{} {
+func (model *Permission) List() []map[string]interface{} {
 	permissions := []Permission{}
-	results := map[interface{}]interface{}{}
+	results := []map[string]interface{}{}
 
 	model.DB().Find(&permissions)
 	for _, v := range permissions {
-		results[v.Id] = v.Name
+		option := map[string]interface{}{
+			"label": v.Name,
+			"value": v.Id,
+		}
+
+		results = append(results, option)
 	}
 
 	return results

@@ -24,18 +24,31 @@ type Menu struct {
 }
 
 // 获取菜单的有序列表
-func (model *Menu) OrderedList() map[interface{}]interface{} {
-	var menus []interface{}
-	model.DB().Where("guard_name = ?", "admin").Order("sort asc,id asc").Find(&menus)
-	lists := map[interface{}]interface{}{}
+func (model *Menu) OrderedList() []map[string]interface{} {
+	var menus []map[string]interface{}
 
+	(&db.Model{}).
+		Model(&model).
+		Where("guard_name = ?", "admin").
+		Order("sort asc,id asc").
+		Find(&menus)
+
+	lists := []map[string]interface{}{}
 	menuTrees := utils.ListToTree(menus, "id", "pid", "children", 0)
 	menuTreeLists := utils.TreeToOrderedList(menuTrees, 0, "name", "children")
 
-	lists[0] = "根节点"
+	lists = append(lists, map[string]interface{}{
+		"label": "根节点",
+		"value": 0,
+	})
+
 	for _, v := range menuTreeLists {
-		getID := v.(map[string]interface{})["id"]
-		lists[getID] = v.((map[string]interface{}))["name"].(string)
+		option := map[string]interface{}{
+			"label": v.((map[string]interface{}))["name"],
+			"value": v.(map[string]interface{})["id"],
+		}
+
+		lists = append(lists, option)
 	}
 
 	return lists
@@ -45,7 +58,7 @@ func (model *Menu) OrderedList() map[interface{}]interface{} {
 func (model *Menu) Tree() []interface{} {
 	menus := []Menu{}
 	model.DB().Where("status = ?", 1).Select("name", "id", "pid").Find(&menus)
-	lists := []interface{}{}
+	lists := []map[string]interface{}{}
 
 	for _, v := range menus {
 		item := map[string]interface{}{

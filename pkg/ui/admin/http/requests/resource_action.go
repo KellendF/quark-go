@@ -81,8 +81,8 @@ func resourceToPermission(c *fiber.Ctx) []string {
 		providerName := reflect.TypeOf(provider).String()
 
 		// 处理仪表盘
-		if find := strings.Contains(providerName, "*dashboard."); find {
-			structName := strings.Replace(providerName, "*dashboard.", "", -1)
+		if find := strings.Contains(providerName, "*dashboards."); find {
+			structName := strings.Replace(providerName, "*dashboards.", "", -1)
 			for _, v := range routes {
 				if strings.Contains(v, ":dashboard") {
 					permissions = append(permissions, strings.Replace(v, ":dashboard", strings.ToLower(structName), -1))

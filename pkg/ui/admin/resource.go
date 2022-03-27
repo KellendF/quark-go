@@ -357,8 +357,14 @@ func (p *Resource) SetField(fieldData map[string]interface{}) interface{} {
 }
 
 // 列表页面显示前回调
-func (p *Resource) BeforeIndexShowing(c *fiber.Ctx, list []interface{}) []interface{} {
-	return list
+func (p *Resource) BeforeIndexShowing(c *fiber.Ctx, list []map[string]interface{}) []interface{} {
+	result := []interface{}{}
+
+	for _, v := range list {
+		result = append(result, v)
+	}
+
+	return result
 }
 
 // 详情页页面显示前回调

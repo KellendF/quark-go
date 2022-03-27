@@ -117,7 +117,7 @@ func (p *ResourceIndex) orderings(c *fiber.Ctx) map[string]interface{} {
 
 // 处理列表
 func (p *ResourceIndex) performsList(c *fiber.Ctx, resourceInstance interface{}, lists []map[string]interface{}) []interface{} {
-	result := []interface{}{}
+	result := []map[string]interface{}{}
 
 	// 获取列表字段
 	indexFields := resourceInstance.(interface {
@@ -159,6 +159,6 @@ func (p *ResourceIndex) performsList(c *fiber.Ctx, resourceInstance interface{},
 
 	// 回调处理列表字段值
 	return resourceInstance.(interface {
-		BeforeIndexShowing(c *fiber.Ctx, result []interface{}) []interface{}
+		BeforeIndexShowing(c *fiber.Ctx, result []map[string]interface{}) []interface{}
 	}).BeforeIndexShowing(c, result)
 }
