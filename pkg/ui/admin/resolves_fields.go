@@ -72,35 +72,34 @@ func (p *Resource) IndexColumns(c *fiber.Ctx, resourceInstance interface{}) inte
 // 将表单项转换为表格列
 func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 
-	// 字段
-	name := reflect.
+	reflectElem := reflect.
 		ValueOf(field).
-		Elem().
-		FieldByName("Name").String()
+		Elem()
+
+	// 字段
+	name := reflectElem.
+		FieldByName("Name").
+		String()
 
 	// 文字
-	label := reflect.
-		ValueOf(field).
-		Elem().
-		FieldByName("Label").String()
+	label := reflectElem.
+		FieldByName("Label").
+		String()
 
 	// 组件类型
-	component := reflect.
-		ValueOf(field).
-		Elem().
-		FieldByName("Component").String()
+	component := reflectElem.
+		FieldByName("Component").
+		String()
 
 	// 是否可编辑
-	editable := reflect.
-		ValueOf(field).
-		Elem().
-		FieldByName("Editable").Bool()
+	editable := reflectElem.
+		FieldByName("Editable").
+		Bool()
 
 	// 是否可编辑
-	getColumn := reflect.
-		ValueOf(field).
-		Elem().
-		FieldByName("Column").Interface()
+	getColumn := reflectElem.
+		FieldByName("Column").
+		Interface()
 
 	column := getColumn.(*table.Column).
 		SetTitle(label).
@@ -109,10 +108,9 @@ func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 	switch component {
 	case "idField":
 		// 是否显示在列表
-		onIndexDisplayed := reflect.
-			ValueOf(field).
-			Elem().
-			FieldByName("OnIndexDisplayed").Bool()
+		onIndexDisplayed := reflectElem.
+			FieldByName("OnIndexDisplayed").
+			Bool()
 
 		if onIndexDisplayed {
 			column = column.SetValueType("text")
@@ -146,10 +144,9 @@ func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 
 	if editable {
 		// 可编辑，设置编辑
-		options := reflect.
-			ValueOf(field).
-			Elem().
-			FieldByName("Options").Interface()
+		options := reflectElem.
+			FieldByName("Options").
+			Interface()
 
 		// 可编辑api地址
 		editableApi := strings.Replace(strings.Replace(c.Path(), "/api/", "", -1), "/index", "/editable", -1)
