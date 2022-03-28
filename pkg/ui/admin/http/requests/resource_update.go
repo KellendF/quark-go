@@ -26,6 +26,10 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 	data := map[string]interface{}{}
 	json.Unmarshal(c.Body(), &data)
 
+	if data["id"] == "" {
+		return msg.Error("参数错误！", "")
+	}
+
 	getData := resourceInstance.(interface {
 		BeforeSaving(c *fiber.Ctx, data map[string]interface{}) interface{}
 	}).BeforeSaving(c, data)
@@ -44,10 +48,6 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 
 	if validator != nil {
 		return validator
-	}
-
-	if data["id"] == "" {
-		return msg.Error("参数错误！", "")
 	}
 
 	for _, v := range fields.([]interface{}) {
