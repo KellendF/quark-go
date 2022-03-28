@@ -3,7 +3,6 @@ package resources
 import (
 	"encoding/json"
 	"errors"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
@@ -158,10 +157,8 @@ func (p *Role) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 	} else {
 
 		// 同步权限
-		getId := c.Query("id")
-		id, _ := strconv.Atoi(getId)
-
-		result = p.syncPermissions(id, permissionIds)
+		id := data["id"].(float64)
+		result = p.syncPermissions(int(id), permissionIds)
 	}
 
 	return result

@@ -3,6 +3,7 @@ package resources
 import (
 	"encoding/json"
 
+	"github.com/derekstavis/go-qs"
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
@@ -102,10 +103,9 @@ func (p *Menu) Fields(c *fiber.Ctx) []interface{} {
 // 搜索
 func (p *Menu) Searches(c *fiber.Ctx) []interface{} {
 	return []interface{}{
-		(&searches.Input{}).Init("username", "用户名"),
-		(&searches.Input{}).Init("nickname", "昵称"),
+		(&searches.Input{}).Init("name", "名称"),
+		(&searches.Input{}).Init("path", "路由"),
 		(&searches.Status{}).Init(),
-		(&searches.DateTimeRange{}).Init("last_login_time", "登录时间"),
 	}
 }
 
@@ -128,6 +128,18 @@ func (p *Menu) Actions(c *fiber.Ctx) []interface{} {
 
 // 列表页面显示前回调
 func (p *Menu) BeforeIndexShowing(c *fiber.Ctx, list []map[string]interface{}) []interface{} {
+
+	data, _ := qs.Unmarshal(c.OriginalURL())
+
+	if search, ok := data["search"].(map[string]interface{}); ok == true && search != nil {
+		result := []interface{}{}
+
+		for _, v := range list {
+			result = append(result, v)
+		}
+
+		return result
+	}
 
 	// 转换成树形表格
 	return utils.ListToTree(list, "id", "pid", "children", 0)
