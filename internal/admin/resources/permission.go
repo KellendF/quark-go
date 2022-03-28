@@ -61,9 +61,9 @@ func (p *Permission) Searches(c *fiber.Ctx) []interface{} {
 func (p *Permission) Actions(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		(&actions.SyncPermission{}).Init(),
-		(&actions.CreateLink{}).Init(p.Title),
+		(&actions.CreateModal{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),
-		(&actions.EditLink{}).Init("编辑"),
+		(&actions.EditModal{}).Init("编辑"),
 		(&actions.Delete{}).Init("删除"),
 		(&actions.FormSubmit{}).Init(),
 		(&actions.FormReset{}).Init(),

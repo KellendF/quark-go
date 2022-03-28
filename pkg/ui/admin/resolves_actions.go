@@ -211,7 +211,26 @@ func (p *Resource) buildAction(c *fiber.Ctx, item interface{}, resourceInstance 
 		getAction = getAction.
 			SetLink(href, target)
 	case "modal":
-		// todo
+		formWidth := item.(interface {
+			GetWidth() int
+		}).GetWidth()
+
+		formBody := item.(interface {
+			GetBody(c *fiber.Ctx, resourceInstance interface{}) interface{}
+		}).GetBody(c, resourceInstance)
+
+		formActions := item.(interface {
+			GetActions(c *fiber.Ctx, resourceInstance interface{}) []interface{}
+		}).GetActions(c, resourceInstance)
+
+		getAction = getAction.SetModal(func(modal *action.Modal) interface{} {
+			return modal.
+				SetTitle(name).
+				SetWidth(formWidth).
+				SetBody(formBody).
+				SetActions(formActions).
+				SetDestroyOnClose(true)
+		})
 	case "drawer":
 		formWidth := item.(interface {
 			GetWidth() int

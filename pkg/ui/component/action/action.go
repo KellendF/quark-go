@@ -148,7 +148,11 @@ func (p *Component) SetLink(href string, target string) *Component {
 
 // 弹窗
 func (p *Component) SetModal(callback interface{}) *Component {
-	// todo
+	modal := (&Modal{}).Init()
+	getCallback := callback.(func(modal *Modal) interface{})
+
+	p.Modal = getCallback(modal)
+
 	return p
 }
 
