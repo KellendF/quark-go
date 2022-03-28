@@ -25,6 +25,31 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 
 	data := map[string]interface{}{}
 	json.Unmarshal(c.Body(), &data)
+
+	getData := resourceInstance.(interface {
+		BeforeSaving(c *fiber.Ctx, data map[string]interface{}) interface{}
+	}).BeforeSaving(c, data)
+
+	if value, ok := getData.(error); ok {
+		return value
+	}
+
+	if value, ok := getData.(map[string]interface{}); ok {
+		data = value
+	}
+
+	validator := resourceInstance.(interface {
+		ValidatorForUpdate(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) error
+	}).ValidatorForUpdate(c, resourceInstance, data)
+
+	if validator != nil {
+		return validator
+	}
+
+	if data["id"] == "" {
+		return msg.Error("参数错误！", "")
+	}
+
 	for _, v := range fields.([]interface{}) {
 
 		name := reflect.
@@ -41,30 +66,6 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 		if ok {
 			data[name], _ = json.Marshal(arrayValue)
 		}
-	}
-
-	validator := resourceInstance.(interface {
-		ValidatorForUpdate(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) error
-	}).ValidatorForUpdate(c, resourceInstance, data)
-
-	if validator != nil {
-		return validator
-	}
-
-	getData := resourceInstance.(interface {
-		BeforeSaving(c *fiber.Ctx, data map[string]interface{}) interface{}
-	}).BeforeSaving(c, data)
-
-	if value, ok := getData.(error); ok {
-		return value
-	}
-
-	if value, ok := getData.(map[string]interface{}); ok {
-		data = value
-	}
-
-	if data["id"] == "" {
-		return msg.Error("参数错误！", "")
 	}
 
 	// 获取对象
