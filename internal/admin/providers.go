@@ -13,4 +13,7 @@ var Providers = []interface{}{
 	&resources.Permission{},
 	&resources.Menu{},
 	&resources.ActionLog{},
+	&resources.Config{},
+	&resources.File{},
+	&resources.Picture{},
 }

@@ -19,5 +19,5 @@ type Picture struct {
 	Ext               string
 	Path              string
 	Md5               string
-	Status            bool
+	Status            int
 }
