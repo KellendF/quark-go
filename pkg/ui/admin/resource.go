@@ -10,6 +10,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/ui/component/card"
 	"github.com/quarkcms/quark-go/pkg/ui/component/form"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
+	"github.com/quarkcms/quark-go/pkg/ui/component/tabs"
 	"gorm.io/gorm"
 )
 
@@ -281,13 +282,14 @@ func (p *Resource) FormComponentRender(
 	actions []interface{},
 	data map[string]interface{}) interface{} {
 
-	getFields, ok := fields.([]map[string]interface{})
+	getFields, ok := fields.([]interface{})
 
 	if ok {
 		component := reflect.
-			ValueOf(fields.([]map[string]interface{})[0]).
+			ValueOf(fields.([]interface{})[0]).
 			Elem().
 			FieldByName("Component").String()
+
 		if component == "tabPane" {
 			return p.FormWithinTabs(c, resourceInstance, title, extra, api, getFields, actions, data)
 		} else {
@@ -337,16 +339,19 @@ func (p *Resource) FormWithinTabs(
 	fields interface{},
 	actions []interface{},
 	data map[string]interface{}) interface{} {
-	//  return Form::api($api)
-	//  ->actions($actions)
-	//  ->style([
-	// 	 'backgroundColor' => '#fff',
-	// 	 'paddingBottom' => '20px'
-	//  ])
-	//  ->body(Tabs::tabPanes($fields)->tabBarExtraContent($extra))
-	//  ->initialValues($data);
 
-	return ""
+	tabsComponent := (&tabs.Component{}).Init().SetTabPanes(fields).SetTabBarExtraContent(extra)
+
+	return (&form.Component{}).
+		Init().
+		SetStyle(map[string]interface{}{
+			"backgroundColor": "#fff",
+			"paddingBottom":   "20px",
+		}).
+		SetApi(api).
+		SetActions(actions).
+		SetBody(tabsComponent).
+		SetInitialValues(data)
 }
 
 // 设置单列字段

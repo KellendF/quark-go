@@ -112,10 +112,13 @@ func (p *Component) SetColon(colon bool) *Component {
 
 //  解析initialValue
 func (p *Component) parseInitialValue(item interface{}, initialValues map[string]interface{}) interface{} {
-	name := reflect.
+	reflectElem := reflect.
 		ValueOf(item).
-		Elem().
-		FieldByName("Name").String()
+		Elem()
+
+	name := reflectElem.
+		FieldByName("Name").
+		String()
 
 	if name == "" {
 		return nil
@@ -123,26 +126,34 @@ func (p *Component) parseInitialValue(item interface{}, initialValues map[string
 
 	var value any
 
-	defaultValue := reflect.
-		ValueOf(item).
-		Elem().
-		FieldByName("DefaultValue").Interface()
+	issetDefaultValue := reflectElem.
+		FieldByName("DefaultValue").IsValid()
 
-	if defaultValue != nil {
-		value = defaultValue
+	if issetDefaultValue {
+		defaultValue := reflectElem.
+			FieldByName("DefaultValue").
+			Interface()
+
+		if defaultValue != nil {
+			value = defaultValue
+		}
 	}
 
 	if initialValues[name] != nil {
 		value = initialValues[name]
 	}
 
-	getValue := reflect.
-		ValueOf(item).
-		Elem().
-		FieldByName("Value").Interface()
+	issetValue := reflectElem.
+		FieldByName("Value").IsValid()
 
-	if getValue != nil {
-		value = getValue
+	if issetValue {
+		getValue := reflectElem.
+			FieldByName("Value").
+			Interface()
+
+		if getValue != nil {
+			value = getValue
+		}
 	}
 
 	return value
@@ -152,15 +163,17 @@ func (p *Component) parseInitialValue(item interface{}, initialValues map[string
 func (p *Component) SetInitialValues(initialValues map[string]interface{}) *Component {
 	data := initialValues
 
-	for _, v := range p.Body.([]any) {
-		value := p.parseInitialValue(v, initialValues)
-		if value != nil {
-			name := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Name").String()
+	if body, ok := p.Body.([]any); ok {
+		for _, v := range body {
+			value := p.parseInitialValue(v, initialValues)
+			if value != nil {
+				name := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Name").String()
 
-			data[name] = value
+				data[name] = value
+			}
 		}
 	}
 

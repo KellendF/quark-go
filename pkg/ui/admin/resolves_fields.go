@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/component/descriptions"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
+	"github.com/quarkcms/quark-go/pkg/ui/component/tabs"
 )
 
 // 列表字段
@@ -238,7 +239,10 @@ func (p *Resource) CreationFieldsWithinComponents(c *fiber.Ctx, resourceInstance
 				}
 			}
 
-			v.(interface{ SetBody(interface{}) interface{} }).SetBody(subItems)
+			v.(interface {
+				SetBody(interface{}) *tabs.TabPane
+			}).SetBody(subItems)
+
 			items = append(items, v)
 		} else {
 			isShownOnCreation := v.(interface {

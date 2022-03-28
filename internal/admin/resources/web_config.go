@@ -5,6 +5,7 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
+	"github.com/quarkcms/quark-go/pkg/ui/component/tabs"
 )
 
 type WebConfig struct {
@@ -28,6 +29,15 @@ func (p *WebConfig) Init() interface{} {
 
 // 字段
 func (p *WebConfig) Fields(c *fiber.Ctx) []interface{} {
+
+	return []interface{}{
+		(&tabs.TabPane{}).Init().SetTitle("基础").SetBody(p.baseFields(c)),
+		(&tabs.TabPane{}).Init().SetTitle("扩展").SetBody(p.extendFields(c)),
+	}
+}
+
+// 字段
+func (p *WebConfig) baseFields(c *fiber.Ctx) []interface{} {
 	field := &admin.Field{}
 
 	return []interface{}{
@@ -80,6 +90,14 @@ func (p *WebConfig) Fields(c *fiber.Ctx) []interface{} {
 			}).
 			SetDefault("text").
 			OnlyOnForms(),
+	}
+}
+
+// 字段
+func (p *WebConfig) extendFields(c *fiber.Ctx) []interface{} {
+	field := &admin.Field{}
+
+	return []interface{}{
 
 		field.Text("sort", "排序").
 			SetEditable(true).
