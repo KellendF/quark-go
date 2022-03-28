@@ -37,6 +37,14 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 		data = value
 	}
 
+	validator := resourceInstance.(interface {
+		ValidatorForCreation(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) error
+	}).ValidatorForCreation(c, resourceInstance, data)
+
+	if validator != nil {
+		return validator
+	}
+
 	for _, v := range fields.([]interface{}) {
 
 		name := reflect.
@@ -53,14 +61,6 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 		if ok {
 			data[name], _ = json.Marshal(arrayValue)
 		}
-	}
-
-	validator := resourceInstance.(interface {
-		ValidatorForCreation(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) error
-	}).ValidatorForCreation(c, resourceInstance, data)
-
-	if validator != nil {
-		return validator
 	}
 
 	// 获取对象
