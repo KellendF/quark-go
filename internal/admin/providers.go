@@ -16,4 +16,5 @@ var Providers = []interface{}{
 	&resources.Config{},
 	&resources.File{},
 	&resources.Picture{},
+	&resources.WebConfig{},
 }
