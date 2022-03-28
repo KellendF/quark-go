@@ -9,6 +9,7 @@ type ActionLog struct {
 	db.Model
 	Id       int
 	ObjectId int
+	Username string
 	Url      string
 	Remark   string
 	Ip       string

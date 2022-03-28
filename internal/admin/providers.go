@@ -12,4 +12,5 @@ var Providers = []interface{}{
 	&resources.Role{},
 	&resources.Permission{},
 	&resources.Menu{},
+	&resources.ActionLog{},
 }
