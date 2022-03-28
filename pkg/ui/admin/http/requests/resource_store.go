@@ -24,6 +24,19 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 
 	data := map[string]interface{}{}
 	json.Unmarshal(c.Body(), &data)
+
+	getData := resourceInstance.(interface {
+		BeforeSaving(c *fiber.Ctx, data map[string]interface{}) interface{}
+	}).BeforeSaving(c, data)
+
+	if value, ok := getData.(error); ok {
+		return value
+	}
+
+	if value, ok := getData.(map[string]interface{}); ok {
+		data = value
+	}
+
 	for _, v := range fields.([]interface{}) {
 
 		name := reflect.
@@ -48,18 +61,6 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 
 	if validator != nil {
 		return validator
-	}
-
-	getData := resourceInstance.(interface {
-		BeforeSaving(c *fiber.Ctx, data map[string]interface{}) interface{}
-	}).BeforeSaving(c, data)
-
-	if value, ok := getData.(error); ok {
-		return value
-	}
-
-	if value, ok := getData.(map[string]interface{}); ok {
-		data = value
 	}
 
 	// 获取对象

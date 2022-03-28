@@ -97,7 +97,7 @@ func (p *Role) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[stri
 		roleHasPermission := map[string]interface{}{}
 		(&db.Model{}).
 			Model(&models.RoleHasPermission{}).
-			Where("permission_id IN", permissionIds).
+			Where("permission_id IN ?", permissionIds).
 			Where("role_id", id).
 			First(&roleHasPermission)
 
@@ -118,7 +118,7 @@ func (p *Role) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) int
 	var permissionIds []int
 	(&db.Model{}).
 		Model(&models.Permission{}).
-		Where("menu_id IN", submitData["menu_ids"]).
+		Where("menu_id IN ?", submitData["menu_ids"]).
 		Pluck("id", &permissionIds)
 
 	if len(permissionIds) == 0 {
@@ -147,7 +147,7 @@ func (p *Role) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 		return errors.New("获取的权限为空，请先在菜单管理中绑定权限")
 	}
 
-	var result error
+	var result interface{}
 
 	if p.IsCreating(c) {
 		lastRole := map[string]interface{}{}
@@ -168,7 +168,7 @@ func (p *Role) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 }
 
 // 保存后回调
-func (p *Role) syncPermissions(roleId int, permissionIds []int) error {
+func (p *Role) syncPermissions(roleId int, permissionIds []int) *gorm.DB {
 	permissionIds = p.arrayFilter(permissionIds)
 
 	// 先清空此角色的权限
@@ -182,9 +182,8 @@ func (p *Role) syncPermissions(roleId int, permissionIds []int) error {
 		}
 		data = append(data, permission)
 	}
-	result := (&db.Model{}).Model(&models.RoleHasPermission{}).Create(data)
 
-	return result.Error
+	return (&db.Model{}).Model(&models.RoleHasPermission{}).Create(data)
 }
 
 // 数组去重
