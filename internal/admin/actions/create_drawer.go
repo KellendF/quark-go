@@ -38,8 +38,8 @@ func (p *CreateDrawer) Init(name string) *CreateDrawer {
 func (p *CreateDrawer) GetBody(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 
 	api := resourceInstance.(interface {
-		CreationApi(*fiber.Ctx) string
-	}).CreationApi(c)
+		CreationApi(*fiber.Ctx, interface{}) string
+	}).CreationApi(c, resourceInstance)
 
 	fields := resourceInstance.(interface {
 		CreationFieldsWithinComponents(*fiber.Ctx, interface{}) interface{}

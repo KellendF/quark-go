@@ -104,9 +104,12 @@ func (p *Resource) FormApi(c *fiber.Ctx) string {
 }
 
 // 创建表单的接口
-func (p *Resource) CreationApi(c *fiber.Ctx) string {
-	if p.FormApi(c) != "" {
-		return p.FormApi(c)
+func (p *Resource) CreationApi(c *fiber.Ctx, resourceInstance interface{}) string {
+
+	formApi := resourceInstance.(interface{ FormApi(*fiber.Ctx) string }).FormApi(c)
+
+	if formApi != "" {
+		return formApi
 	}
 
 	uri := strings.Split(c.Path(), "/")
@@ -120,10 +123,12 @@ func (p *Resource) CreationApi(c *fiber.Ctx) string {
 }
 
 //更新表单的接口
-func (p *Resource) UpdateApi(c *fiber.Ctx) string {
+func (p *Resource) UpdateApi(c *fiber.Ctx, resourceInstance interface{}) string {
 
-	if p.FormApi(c) != "" {
-		return p.FormApi(c)
+	formApi := resourceInstance.(interface{ FormApi(*fiber.Ctx) string }).FormApi(c)
+
+	if formApi != "" {
+		return formApi
 	}
 
 	uri := strings.Split(c.Path(), "/")
@@ -235,7 +240,7 @@ func (p *Resource) IndexComponentRender(c *fiber.Ctx, resourceInstance interface
 func (p *Resource) CreationComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
 	title := p.FormTitle(c, resourceInstance)
 	formExtraActions := p.FormExtraActions(c, resourceInstance)
-	api := p.CreationApi(c)
+	api := p.CreationApi(c, resourceInstance)
 	fields := p.CreationFieldsWithinComponents(c, resourceInstance)
 	formActions := p.FormActions(c, resourceInstance)
 
@@ -255,7 +260,7 @@ func (p *Resource) CreationComponentRender(c *fiber.Ctx, resourceInstance interf
 func (p *Resource) UpdateComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
 	title := p.FormTitle(c, resourceInstance)
 	formExtraActions := p.FormExtraActions(c, resourceInstance)
-	api := p.UpdateApi(c)
+	api := p.UpdateApi(c, resourceInstance)
 	fields := p.UpdateFieldsWithinComponents(c, resourceInstance)
 	formActions := p.FormActions(c, resourceInstance)
 

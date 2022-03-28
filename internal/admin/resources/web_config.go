@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/models"
+	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/component/tabs"
 )
@@ -27,111 +28,85 @@ func (p *WebConfig) Init() interface{} {
 	return p
 }
 
+// 表单接口
+func (p *WebConfig) FormApi(c *fiber.Ctx) string {
+
+	return "admin/webConfig/action/change-web-config"
+}
+
 // 字段
 func (p *WebConfig) Fields(c *fiber.Ctx) []interface{} {
-
-	return []interface{}{
-		(&tabs.TabPane{}).Init().SetTitle("基础").SetBody(p.baseFields(c)),
-		(&tabs.TabPane{}).Init().SetTitle("扩展").SetBody(p.extendFields(c)),
-	}
-}
-
-// 字段
-func (p *WebConfig) baseFields(c *fiber.Ctx) []interface{} {
 	field := &admin.Field{}
+	groupNames := []string{}
 
-	return []interface{}{
-		field.ID("id", "ID"),
+	(&db.Model{}).Model(p.Model).Where("status = ?", 1).Distinct("group_name").Pluck("group_name", &groupNames)
 
-		field.Text("title", "标题").
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "标题必须填写",
-				},
-			),
+	tabPanes := []interface{}{}
+	for _, groupName := range groupNames {
+		configs := []map[string]interface{}{}
+		(&db.Model{}).
+			Model(p.Model).
+			Where("status = ?", 1).
+			Where("group_name = ?", groupName).
+			Order("sort asc").
+			Find(&configs)
 
-		field.Text("name", "名称").
-			SetEditable(true).
-			SetRules(
-				[]string{
-					"required",
-				},
-				map[string]string{
-					"required": "名称必须填写",
-				},
-			).
-			SetCreationRules(
-				[]string{
-					"unique:configs,name",
-				},
-				map[string]string{
-					"unique": "名称已存在",
-				},
-			).
-			SetUpdateRules(
-				[]string{
-					"unique:configs,name,{id}",
-				},
-				map[string]string{
-					"unique": "名称已存在",
-				},
-			),
+		fields := []interface{}{}
 
-		field.Radio("type", "表单类型").
-			SetOptions(map[interface{}]interface{}{
-				"text":     "输入框",
-				"textarea": "文本域",
-				"picture":  "图片",
-				"file":     "文件",
-				"switch":   "开关",
-			}).
-			SetDefault("text").
-			OnlyOnForms(),
+		for _, config := range configs {
+			switch config["type"] {
+			case "text":
+				getField := field.
+					Text(config["name"], config["title"]).SetExtra(config["remark"].(string))
+
+				fields = append(fields, getField)
+
+			case "switch":
+				getField := field.
+					Switch(config["name"].(string), config["title"].(string)).
+					SetTrueValue("正常").
+					SetFalseValue("禁用").
+					SetExtra(config["remark"].(string))
+
+				fields = append(fields, getField)
+			}
+		}
+
+		tabPane := (&tabs.TabPane{}).
+			Init().
+			SetTitle(groupName).
+			SetBody(fields)
+
+		tabPanes = append(tabPanes, tabPane)
 	}
-}
 
-// 字段
-func (p *WebConfig) extendFields(c *fiber.Ctx) []interface{} {
-	field := &admin.Field{}
-
-	return []interface{}{
-
-		field.Text("sort", "排序").
-			SetEditable(true).
-			SetDefault(0).
-			SetHelp("值越小越靠前").
-			OnlyOnForms(),
-
-		field.Text("group_name", "分组名称").
-			OnlyOnForms(),
-
-		field.Text("remark", "备注").
-			OnlyOnForms(),
-
-		field.Switch("status", "状态").
-			SetTrueValue("正常").
-			SetFalseValue("禁用").
-			SetEditable(true).
-			SetDefault(true),
-	}
+	return tabPanes
 }
 
 // 行为
 func (p *WebConfig) Actions(c *fiber.Ctx) []interface{} {
 	return []interface{}{
-		(&actions.CreateDrawer{}).Init(p.Title),
-		(&actions.Delete{}).Init("批量删除"),
-		(&actions.Disable{}).Init("批量禁用"),
-		(&actions.Enable{}).Init("批量启用"),
-		(&actions.ChangeStatus{}).Init(),
-		(&actions.EditDrawer{}).Init("编辑"),
-		(&actions.Delete{}).Init("删除"),
+		(&actions.ChangeWebConfig{}),
 		(&actions.FormSubmit{}).Init(),
 		(&actions.FormReset{}).Init(),
 		(&actions.FormBack{}).Init(),
 		(&actions.FormExtraBack{}).Init(),
 	}
+}
+
+// 创建页面显示前回调
+func (p *WebConfig) BeforeCreating(c *fiber.Ctx) map[string]interface{} {
+	configs := []map[string]interface{}{}
+	data := map[string]interface{}{}
+
+	(&db.Model{}).
+		Model(p.Model).
+		Where("status = ?", 1).
+		Find(&configs)
+
+	for _, config := range configs {
+		data[config["name"].(string)] = config["value"]
+	}
+
+	return data
 }

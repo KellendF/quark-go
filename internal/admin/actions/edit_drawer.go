@@ -38,8 +38,8 @@ func (p *EditDrawer) Init(name string) *EditDrawer {
 func (p *EditDrawer) GetBody(c *fiber.Ctx, resourceInstance interface{}) interface{} {
 
 	api := resourceInstance.(interface {
-		UpdateApi(*fiber.Ctx) string
-	}).UpdateApi(c)
+		UpdateApi(*fiber.Ctx, interface{}) string
+	}).UpdateApi(c, resourceInstance)
 
 	initApi := resourceInstance.(interface {
 		EditValueApi(*fiber.Ctx) string

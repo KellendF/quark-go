@@ -20,7 +20,7 @@ func (p *Admin) Route(app *fiber.App) {
 	amg.Get("/dashboard/:dashboard", (&controllers.Dashboard{}).Handle)          // 仪表盘
 	amg.Get("/:resource/index", (&controllers.ResourceIndex{}).Handle)           // 列表页面
 	amg.Get("/:resource/editable", (&controllers.ResourceEditable{}).Handle)     // 表格行内编辑
-	amg.Get("/:resource/action/:uriKey", (&controllers.ResourceAction{}).Handle) // 执行行为
+	amg.All("/:resource/action/:uriKey", (&controllers.ResourceAction{}).Handle) // 执行行为
 	amg.Get("/:resource/create", (&controllers.ResourceCreate{}).Handle)         // 创建页面
 	amg.Post("/:resource/store", (&controllers.ResourceStore{}).Handle)          // 创建方法
 	amg.Get("/:resource/edit", (&controllers.ResourceEdit{}).Handle)             // 编辑页面
