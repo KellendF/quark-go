@@ -189,27 +189,164 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 // 图片上传到阿里云OSS
 func (p *Picture) OssUpload(c *fiber.Ctx) error {
 
+	file, _ := c.FormFile("file")
+	limitW := c.Query("limitW")
+	limitH := c.Query("limitH")
+
+	limitType := []string{
+		"image/jpg",
+		"image/jpeg",
+		"image/png",
+		"image/gif",
+	}
+
+	typeAllowed := false
+
+	for _, v := range file.Header["Content-Type"] {
+		for _, limit := range limitType {
+			if v == limit {
+				typeAllowed = true
+			}
+		}
+	}
+
+	f, err := file.Open()
+
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	defer func() {
+		e := f.Close()
+		if err == nil {
+			err = e
+		}
+	}()
+
+	// 限制格式
+	if typeAllowed == false {
+		return msg.Error("只能上传jpg,jpeg,png,gif格式图片!", "")
+	}
+
+	imageConfig, _, err := image.DecodeConfig(f)
+
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	// 限制宽高
+	if limitW != "" && limitH != "" {
+		w, err := strconv.Atoi(limitW)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+
+		h, err := strconv.Atoi(limitH)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+
+		if imageConfig.Width != w || imageConfig.Height != h {
+			return msg.Error("请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
+		}
+	}
+
+	filePath := "pictures/" + time.Now().Format("20060102") + "/"
+	fileName := file.Filename
+	fileSize := file.Size
+
+	fileNames := strings.Split(fileName, ".")
+	if len(fileNames) <= 1 {
+		return msg.Error("无法获取文件扩展名！", "")
+	}
+
+	fileExt := fileNames[len(fileNames)-1]
+	fileNewName := rand.MakeAlphanumeric(40) + "." + fileExt
+
+	// 文件md5值
+	body, err := ioutil.ReadAll(f)
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
+
+	picture := map[string]interface{}{}
+	(&db.Model{}).Model(&models.Picture{}).Where("md5", fileMd5).Where("name", fileName).First(&picture)
+
+	result := map[string]interface{}{}
+
+	if len(picture) > 0 {
+		result = map[string]interface{}{
+			"id":   picture["id"],
+			"name": picture["name"],
+			"url":  picture["path"],
+			"size": picture["size"],
+		}
+
+		return msg.Success("上传成功！", "", result)
+	}
+
 	accessKeyId := utils.WebConfig("OSS_ACCESS_KEY_ID")
 	accessKeySecret := utils.WebConfig("OSS_ACCESS_KEY_SECRET")
 	endpoint := utils.WebConfig("OSS_ENDPOINT")
 	ossBucket := utils.WebConfig("OSS_BUCKET")
+	myDomain := utils.WebConfig("OSS_MYDOMAIN")
 
 	client, err := oss.New(endpoint, accessKeyId, accessKeySecret)
 	if err != nil {
-		// HandleError(err)
+		return msg.Error(err.Error(), "")
 	}
 
 	bucket, err := client.Bucket(ossBucket)
 	if err != nil {
-		// HandleError(err)
+		return msg.Error(err.Error(), "")
 	}
 
-	err = bucket.PutObjectFromFile("my-object", "LocalFile")
+	// 指定Object访问权限
+	objectAcl := oss.ObjectACL(oss.ACLPublicRead)
+
+	getFile, err := file.Open()
+
 	if err != nil {
-		// HandleError(err)
+		return msg.Error(err.Error(), "")
 	}
 
-	return msg.Success("上传成功！", "", "")
+	defer func() {
+		e := getFile.Close()
+		if err == nil {
+			err = e
+		}
+	}()
+
+	err = bucket.PutObject(filePath+fileNewName, getFile, objectAcl)
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	id := (&models.Picture{}).InsertGetId(map[string]interface{}{
+		"obj_type": "ADMINID",
+		"obj_id":   utils.Admin(c, "id"),
+		"name":     fileName,
+		"size":     fileSize,
+		"md5":      fileMd5,
+		"path":     strings.Replace(filePath+fileNewName, "pictures/", "//"+myDomain+"/pictures/", -1),
+		"width":    imageConfig.Width,
+		"height":   imageConfig.Height,
+		"ext":      fileExt,
+	})
+
+	if id == 0 {
+		return msg.Error("上传失败！", "")
+	}
+
+	result = map[string]interface{}{
+		"id":   id,
+		"name": fileName,
+		"url":  strings.Replace(filePath+fileNewName, "pictures/", "//"+myDomain+"/pictures/", -1),
+		"size": fileSize,
+	}
+
+	return msg.Success("上传成功！", "", result)
 }
 
 // 图片下载

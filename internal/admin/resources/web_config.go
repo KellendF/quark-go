@@ -106,6 +106,14 @@ func (p *WebConfig) BeforeCreating(c *fiber.Ctx) map[string]interface{} {
 
 	for _, config := range configs {
 		data[config["name"].(string)] = config["value"]
+
+		if config["type"] == "switch" {
+			if config["value"] != "0" {
+				data[config["name"].(string)] = true
+			} else {
+				data[config["name"].(string)] = false
+			}
+		}
 	}
 
 	return data
