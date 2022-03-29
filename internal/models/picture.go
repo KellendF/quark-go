@@ -27,7 +27,7 @@ type Picture struct {
 	UpdatedAt         time.Time
 }
 
-// 获取菜单的tree
+// 插入数据并返回ID
 func (model *Picture) InsertGetId(data map[string]interface{}) int {
 	size := strconv.FormatInt(data["size"].(int64), 10)
 	picture := Picture{
@@ -42,7 +42,6 @@ func (model *Picture) InsertGetId(data map[string]interface{}) int {
 		Ext:     data["ext"].(string),
 		Status:  1,
 	}
-
 	model.DB().Create(&picture)
 
 	return picture.Id

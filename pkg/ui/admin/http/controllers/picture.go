@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
@@ -30,7 +31,15 @@ func (p *Picture) GetLists(c *fiber.Ctx) {
 
 // 上传图片
 func (p *Picture) Upload(c *fiber.Ctx) error {
-	return p.LocalUpload(c)
+	var result error
+
+	if utils.WebConfig("OSS_OPEN") == "1" {
+		result = p.OssUpload(c)
+	} else {
+		result = p.LocalUpload(c)
+	}
+
+	return result
 }
 
 // 通过base64字符串上传图片
@@ -102,7 +111,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 		}
 	}
 
-	filePath := "./storage/uploads/pictures/" + time.Now().Format("20060102") + "/"
+	filePath := "./storage/app/public/pictures/" + time.Now().Format("20060102") + "/"
 	fileName := file.Filename
 	fileSize := file.Size
 
@@ -130,7 +139,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 		result = map[string]interface{}{
 			"id":   picture["id"],
 			"name": picture["name"],
-			"url":  picture["url"],
+			"url":  c.BaseURL() + strings.Replace(picture["path"].(string), "./storage/app/public", "/storage", -1),
 			"size": picture["size"],
 		}
 
@@ -170,7 +179,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 	result = map[string]interface{}{
 		"id":   id,
 		"name": fileName,
-		"url":  filePath + fileNewName,
+		"url":  c.BaseURL() + strings.Replace(filePath+fileNewName, "./storage/app/public", "/storage", -1),
 		"size": fileSize,
 	}
 
@@ -178,8 +187,29 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 }
 
 // 图片上传到阿里云OSS
-func (p *Picture) OssUpload(c *fiber.Ctx) {
+func (p *Picture) OssUpload(c *fiber.Ctx) error {
 
+	accessKeyId := utils.WebConfig("OSS_ACCESS_KEY_ID")
+	accessKeySecret := utils.WebConfig("OSS_ACCESS_KEY_SECRET")
+	endpoint := utils.WebConfig("OSS_ENDPOINT")
+	ossBucket := utils.WebConfig("OSS_BUCKET")
+
+	client, err := oss.New(endpoint, accessKeyId, accessKeySecret)
+	if err != nil {
+		// HandleError(err)
+	}
+
+	bucket, err := client.Bucket(ossBucket)
+	if err != nil {
+		// HandleError(err)
+	}
+
+	err = bucket.PutObjectFromFile("my-object", "LocalFile")
+	if err != nil {
+		// HandleError(err)
+	}
+
+	return msg.Success("上传成功！", "", "")
 }
 
 // 图片下载

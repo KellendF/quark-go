@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/framework/token"
 )
 
@@ -107,4 +108,43 @@ func PathExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+// 存储网站配置
+var webConfig = make(map[string]string)
+
+// 字段
+type Config struct {
+	db.Model
+	Id        int
+	Title     string
+	Type      string
+	Name      string
+	Sort      int
+	GroupName string
+	Value     string
+	Remark    string
+	Status    int
+}
+
+// 刷新网站配置
+func RefreshWebConfig() {
+	configs := []map[string]interface{}{}
+
+	(&db.Model{}).Model(&Config{}).Where("status", 1).Find(&configs)
+
+	for _, config := range configs {
+		webConfig[config["name"].(string)] = config["value"].(string)
+	}
+}
+
+// 获取网站配置信息
+func WebConfig(key string) string {
+
+	// 刷新网站配置
+	if len(webConfig) == 0 {
+		RefreshWebConfig()
+	}
+
+	return webConfig[key]
 }
