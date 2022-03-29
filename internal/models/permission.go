@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 )
 
@@ -11,6 +13,8 @@ type Permission struct {
 	MenuId    int
 	Name      string
 	GuardName string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // 获取列表

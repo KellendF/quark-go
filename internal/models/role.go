@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 )
 
@@ -10,6 +12,8 @@ type Role struct {
 	Id        int
 	Name      string
 	GuardName string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // 模型角色关联表

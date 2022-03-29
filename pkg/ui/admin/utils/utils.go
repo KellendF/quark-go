@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -94,4 +95,16 @@ func SetPermissions(permissions []string) {
 // 获取权限
 func GetPermissions() []string {
 	return Permissions
+}
+
+// 判断路径是否存在
+func PathExist(path string) bool {
+	_, err := os.Stat(path) //os.Stat获取文件信息
+	if err != nil {
+		if os.IsExist(err) {
+			return true
+		}
+		return false
+	}
+	return true
 }

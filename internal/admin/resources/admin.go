@@ -41,6 +41,8 @@ func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		field.ID("id", "ID"),
 
+		field.Image("avatar", "头像").OnlyOnForms(),
+
 		field.Text("username", "用户名", func() interface{} {
 
 			return "<a href='#/index?api=admin/admin/edit&id=" + strconv.Itoa(p.Field["id"].(int)) + "'>" + p.Field["username"].(string) + "</a>"

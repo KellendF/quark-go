@@ -59,6 +59,12 @@ type Item struct {
 	Size                 string                 `json:"size"`
 	AllowClear           bool                   `json:"allowClear"`
 	Load                 map[string]string      `json:"load"`
+	Button               string                 `json:"button"`
+	LimitSize            int                    `json:"limitSize"`
+	LimitType            []string               `json:"limitType"`
+	LimitNum             int                    `json:"limitNum"`
+	LimitWH              map[string]int         `json:"limitWH"`
+	Api                  string                 `json:"api"`
 }
 
 const DEFAULT_KEY = ""
