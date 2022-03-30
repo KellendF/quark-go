@@ -87,6 +87,41 @@ func (p *Field) Text(params ...interface{}) *fields.Text {
 	return field
 }
 
+// 文本域组件
+func (p *Field) TextArea(params ...interface{}) *fields.TextArea {
+	field := (&fields.TextArea{}).Init()
+
+	placeholder := reflect.
+		ValueOf(field).
+		Elem().
+		FieldByName("Placeholder").String()
+
+	if len(params) >= 2 {
+
+		if placeholder == "" {
+			field.SetPlaceholder("请输入" + params[1].(string))
+		}
+
+		field.SetName(params[0].(string)).SetLabel(params[1].(string))
+		if len(params) == 3 {
+
+			// 判断是否为闭包函数
+			closure, ok := params[2].(func() interface{})
+			if ok {
+				field.SetCallback(closure)
+			}
+		}
+	} else {
+		if placeholder == "" {
+			field.SetPlaceholder("请输入" + params[1].(string))
+		}
+
+		field.SetName(params[0].(string)).SetLabel(params[0].(string))
+	}
+
+	return field
+}
+
 // 密码框组件
 func (p *Field) Password(params ...interface{}) *fields.Password {
 	field := (&fields.Password{}).Init()

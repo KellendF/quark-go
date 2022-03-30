@@ -54,10 +54,23 @@ func (p *WebConfig) Fields(c *fiber.Ctx) []interface{} {
 		fields := []interface{}{}
 
 		for _, config := range configs {
+
+			remark, ok := config["remark"].(string)
+
+			if ok == false {
+				remark = ""
+			}
+
 			switch config["type"] {
 			case "text":
 				getField := field.
-					Text(config["name"], config["title"]).SetExtra(config["remark"].(string))
+					Text(config["name"], config["title"]).SetExtra(remark)
+
+				fields = append(fields, getField)
+
+			case "textarea":
+				getField := field.
+					TextArea(config["name"], config["title"]).SetExtra(remark)
 
 				fields = append(fields, getField)
 
@@ -65,7 +78,7 @@ func (p *WebConfig) Fields(c *fiber.Ctx) []interface{} {
 				getField := field.
 					File(config["name"], config["title"]).
 					SetButton("上传" + config["title"].(string)).
-					SetExtra(config["remark"].(string))
+					SetExtra(remark)
 
 				fields = append(fields, getField)
 
@@ -73,7 +86,7 @@ func (p *WebConfig) Fields(c *fiber.Ctx) []interface{} {
 				getField := field.
 					Image(config["name"], config["title"]).
 					SetButton("上传" + config["title"].(string)).
-					SetExtra(config["remark"].(string))
+					SetExtra(remark)
 
 				fields = append(fields, getField)
 
@@ -82,7 +95,7 @@ func (p *WebConfig) Fields(c *fiber.Ctx) []interface{} {
 					Switch(config["name"].(string), config["title"].(string)).
 					SetTrueValue("正常").
 					SetFalseValue("禁用").
-					SetExtra(config["remark"].(string))
+					SetExtra(remark)
 
 				fields = append(fields, getField)
 			}

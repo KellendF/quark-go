@@ -121,6 +121,8 @@ func (p *Resource) fieldToColumn(c *fiber.Ctx, field interface{}) interface{} {
 		return nil
 	case "textField":
 		column = column.SetValueType("text")
+	case "textAreaField":
+		column = column.SetValueType("text")
 	case "selectField":
 		valueEnum := field.(interface {
 			GetValueEnum() map[interface{}]interface{}
