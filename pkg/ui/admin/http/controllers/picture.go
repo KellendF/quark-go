@@ -27,8 +27,54 @@ import (
 type Picture struct{}
 
 // 编辑器图片选择
-func (p *Picture) GetLists(c *fiber.Ctx) {
+func (p *Picture) GetLists(c *fiber.Ctx) error {
+	page := c.Query("page", "1")
+	categoryId := c.Query("pictureCategoryId")
+	searchName := c.Query("pictureSearchName")
+	searchDateStart := c.Query("pictureSearchDate[0]")
+	searchDateEnd := c.Query("pictureSearchDate[1]")
 
+	getPage, _ := strconv.Atoi(page)
+	model := (&db.Model{}).Model(&models.Picture{})
+
+	if categoryId != "" {
+		model.Where("picture_category_id =?", categoryId)
+	}
+
+	if searchName != "" {
+		model.Where("name LIKE %?%", searchName)
+	}
+
+	if searchDateStart != "" && searchDateEnd != "" {
+		model.Where("created_at BETWEEN ? AND ?", searchDateStart, searchDateEnd)
+	}
+
+	var total int64
+	// 获取总数量
+	model.Count(&total)
+
+	pictures := []map[string]interface{}{}
+	model.Where("status =?", 1).Order("id desc").Limit(12).Offset((getPage - 1) * 12).Find(&pictures)
+
+	pagination := map[string]interface{}{
+		"defaultCurrent": 1,
+		"current":        getPage,
+		"pageSize":       12,
+		"total":          total,
+	}
+
+	categorys := []map[string]interface{}{}
+	(&db.Model{}).
+		Model(&models.PictureCategory{}).
+		Where("obj_type = ?", "ADMINID").
+		Where("obj_id", utils.Admin(c, "id")).
+		Find(&categorys)
+
+	return msg.Success("获取成功", "", map[string]interface{}{
+		"pagination": pagination,
+		"lists":      pictures,
+		"categorys":  categorys,
+	})
 }
 
 // 上传图片
