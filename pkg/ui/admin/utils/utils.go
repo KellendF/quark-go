@@ -13,6 +13,10 @@ import (
 
 // 获取管理员Token
 func GetAdminToken(c *fiber.Ctx) string {
+	if c.Query("token") != "" {
+		return c.Query("token")
+	}
+
 	header := c.GetReqHeaders()
 	getToken := strings.Split(header["Authorization"], " ")
 

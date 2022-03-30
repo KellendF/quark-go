@@ -31,6 +31,11 @@ func (p *Admin) Route(app *fiber.App) {
 	amg.Get("/:resource/:uriKey-form", (&controllers.ResourceCreate{}).Handle)
 	amg.Get("/:resource/:uriKey/form", (&controllers.ResourceCreate{}).Handle)
 
-	// 图片上传
+	// 图片上传、下载
 	amg.Post("/picture/upload", (&controllers.Picture{}).Upload)
+	amg.Get("/picture/download", (&controllers.Picture{}).Download)
+
+	// 文件上传、下载
+	amg.Post("/file/upload", (&controllers.File{}).Upload)
+	amg.Get("/file/download", (&controllers.File{}).Download)
 }
