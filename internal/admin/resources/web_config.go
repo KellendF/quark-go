@@ -22,9 +22,6 @@ func (p *WebConfig) Init() interface{} {
 	// 模型
 	p.Model = &models.Config{}
 
-	// 分页
-	p.PerPage = 10
-
 	return p
 }
 
