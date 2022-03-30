@@ -61,6 +61,22 @@ func (p *WebConfig) Fields(c *fiber.Ctx) []interface{} {
 
 				fields = append(fields, getField)
 
+			case "file":
+				getField := field.
+					File(config["name"], config["title"]).
+					SetButton("上传" + config["title"].(string)).
+					SetExtra(config["remark"].(string))
+
+				fields = append(fields, getField)
+
+			case "picture":
+				getField := field.
+					Image(config["name"], config["title"]).
+					SetButton("上传" + config["title"].(string)).
+					SetExtra(config["remark"].(string))
+
+				fields = append(fields, getField)
+
 			case "switch":
 				getField := field.
 					Switch(config["name"].(string), config["title"].(string)).

@@ -323,3 +323,26 @@ func (p *Field) Image(params ...interface{}) *fields.Image {
 
 	return field
 }
+
+// 文件组件
+func (p *Field) File(params ...interface{}) *fields.File {
+	field := (&fields.File{}).Init()
+
+	if len(params) >= 2 {
+
+		field.SetName(params[0].(string)).SetLabel(params[1].(string))
+		if len(params) == 3 {
+
+			// 判断是否为闭包函数
+			closure, ok := params[2].(func() interface{})
+			if ok {
+				field.SetCallback(closure)
+			}
+		}
+	} else {
+
+		field.SetName(params[0].(string)).SetLabel(params[0].(string))
+	}
+
+	return field
+}

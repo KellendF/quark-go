@@ -27,16 +27,19 @@ func (p *ChangeWebConfig) Handle(c *fiber.Ctx, model *gorm.DB) error {
 		config := map[string]interface{}{}
 		(&db.Model{}).Model(&models.Config{}).Where("name =?", k).First(&config)
 
-		value := v
-		if config["type"] == "file" || config["type"] == "picture" {
-			if mapValue, ok := v.(map[string]interface{}); ok {
-				if mapValue["id"] != nil {
-					value = mapValue["id"]
-				}
-			}
+		if getValue, ok := v.([]interface{}); ok {
+			v, _ = json.Marshal(getValue)
 		}
 
-		updateResult := (&db.Model{}).Model(&models.Config{}).Where("name", k).Update("value", value)
+		if getValue, ok := v.([]map[string]interface{}); ok {
+			v, _ = json.Marshal(getValue)
+		}
+
+		if getValue, ok := v.(map[string]interface{}); ok {
+			v, _ = json.Marshal(getValue)
+		}
+
+		updateResult := (&db.Model{}).Model(&models.Config{}).Where("name", k).Update("value", v)
 
 		if updateResult.Error != nil {
 			result = false
