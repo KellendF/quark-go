@@ -56,10 +56,16 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 			delete(data, name)
 		}
 
-		arrayValue, ok := data[name].([]interface{})
+		if getValue, ok := data[name].([]interface{}); ok {
+			data[name], _ = json.Marshal(getValue)
+		}
 
-		if ok {
-			data[name], _ = json.Marshal(arrayValue)
+		if getValue, ok := data[name].([]map[string]interface{}); ok {
+			data[name], _ = json.Marshal(getValue)
+		}
+
+		if getValue, ok := data[name].(map[string]interface{}); ok {
+			data[name], _ = json.Marshal(getValue)
 		}
 	}
 
