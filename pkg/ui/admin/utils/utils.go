@@ -117,7 +117,7 @@ func PathExist(path string) bool {
 // 存储网站配置
 var webConfig = make(map[string]string)
 
-// 字段
+// 配置结构体
 type Config struct {
 	db.Model
 	Id        int
@@ -152,3 +152,24 @@ func WebConfig(key string) string {
 
 	return webConfig[key]
 }
+
+// 图片结构体
+type Picture struct {
+	db.Model
+	Id        int
+	Title     string
+	Type      string
+	Name      string
+	Sort      int
+	GroupName string
+	Value     string
+	Remark    string
+	Status    int
+}
+
+// 获取图片
+// func GetPicture(params ...interface{}) {
+// 	picture := map[string]interface{}{}
+
+// 	(&db.Model{}).Model(&Picture{}).Where("id", id).Where("status", 1).First(&picture)
+// }

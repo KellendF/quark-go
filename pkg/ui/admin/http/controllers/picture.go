@@ -56,6 +56,13 @@ func (p *Picture) GetLists(c *fiber.Ctx) error {
 	pictures := []map[string]interface{}{}
 	model.Where("status =?", 1).Order("id desc").Limit(12).Offset((getPage - 1) * 12).Find(&pictures)
 
+	for k, v := range pictures {
+		if strings.Contains(v["path"].(string), "./") {
+			v["path"] = c.BaseURL() + strings.Replace(v["path"].(string), "./storage/app/public", "/storage", -1)
+			pictures[k] = v
+		}
+	}
+
 	pagination := map[string]interface{}{
 		"defaultCurrent": 1,
 		"current":        getPage,
