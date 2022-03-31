@@ -6,6 +6,7 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
+	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
 
 type Picture struct {
@@ -34,7 +35,10 @@ func (p *Picture) Fields(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		field.ID("id", "ID"),
 		field.Text("name", "名称"),
-		field.Text("size", "大小"),
+		field.Text("size", "大小").
+			SetColumn(func(column *table.Column) *table.Column {
+				return column.SetSorter(true)
+			}),
 		field.Text("width", "宽度"),
 		field.Text("height", "高度"),
 		field.Text("ext", "扩展名"),
