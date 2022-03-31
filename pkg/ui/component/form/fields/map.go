@@ -20,9 +20,11 @@ func (p *Map) Init() *Map {
 	}
 	p.Zoom = 14
 	p.MapKey = "788e08def03f95c670944fe2c78fa76f"
-	p.Style["height"] = 500
-	p.Style["width"] = "100%"
-	p.Style["marginTop"] = "10px"
+	p.Style = map[string]interface{}{
+		"height":    500,
+		"width":     "100%",
+		"marginTop": "10px",
+	}
 
 	return p
 }
@@ -41,13 +43,29 @@ func (p *Map) SetMapKey(key string) *Map {
 
 // 地图宽度
 func (p *Map) SetWidth(width interface{}) *Map {
-	p.Style["width"] = width
+	style := make(map[string]interface{})
+
+	for k, v := range p.Style {
+		style[k] = v
+	}
+
+	style["width"] = width
+	p.Style = style
+
 	return p
 }
 
 // 地图高度
 func (p *Map) SetHeight(height interface{}) *Map {
-	p.Style["height"] = height
+	style := make(map[string]interface{})
+
+	for k, v := range p.Style {
+		style[k] = v
+	}
+
+	style["height"] = height
+	p.Style = style
+
 	return p
 }
 

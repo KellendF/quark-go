@@ -10,15 +10,24 @@ type Editor struct {
 func (p *Editor) Init() *Editor {
 	p.Component = "editorField"
 	p.InitItem().SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
-	p.Style["height"] = 500
-	p.Style["width"] = 800
+	p.Style = map[string]interface{}{
+		"height": 500,
+		"width":  "100%",
+	}
 
 	return p
 }
 
 // 高度
-func (p *Editor) SetHeight(height int) *Editor {
-	p.Style["height"] = height
+func (p *Editor) SetHeight(height interface{}) *Editor {
+	style := make(map[string]interface{})
+
+	for k, v := range p.Style {
+		style[k] = v
+	}
+
+	style["height"] = height
+	p.Style = style
 
 	return p
 }
