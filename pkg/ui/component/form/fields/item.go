@@ -121,9 +121,7 @@ func (p *Item) SetTooltip(tooltip string) *Item {
 
 // Field 的长度，我们归纳了常用的 Field 长度以及适合的场景，支持了一些枚举 "xs" , "s" , "m" , "l" , "x"
 func (p *Item) SetWidth(width int) *Item {
-	p.Style = map[string]interface{}{
-		"width": width,
-	}
+	p.Style["width"] = width
 
 	return p
 }
