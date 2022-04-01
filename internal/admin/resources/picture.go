@@ -8,6 +8,7 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
 
@@ -36,7 +37,13 @@ func (p *Picture) Fields(c *fiber.Ctx) []interface{} {
 
 	return []interface{}{
 		field.ID("id", "ID"),
-		field.Text("name", "名称"),
+		field.Text("path", "显示", func() interface{} {
+
+			return "<img src='" + utils.GetPicture(c, p.Field["id"]) + "' width=50 height=50 />"
+		}),
+		field.Text("name", "名称").SetColumn(func(column *table.Column) *table.Column {
+			return column.SetEllipsis(true)
+		}),
 		field.Text("size", "大小").
 			SetColumn(func(column *table.Column) *table.Column {
 				return column.SetSorter(true)
