@@ -42,15 +42,19 @@ func (p *ResourceDetail) FillData(c *fiber.Ctx) map[string]interface{} {
 			FieldByName("Name").String()
 
 		// 获取实例的回调函数
-		callback := field.(interface{ GetCallback() interface{} }).GetCallback()
+		// callback := field.(interface{ GetCallback() interface{} }).GetCallback()
 
-		if callback != nil {
-			getCallback := callback.(func() interface{})
-			fields[name] = getCallback()
-		} else {
-			if result[name] != nil {
-				fields[name] = result[name]
-			}
+		// if callback != nil {
+		// 	getCallback := callback.(func() interface{})
+		// 	fields[name] = getCallback()
+		// } else {
+		// 	if result[name] != nil {
+		// 		fields[name] = result[name]
+		// 	}
+		// }
+
+		if result[name] != nil {
+			fields[name] = result[name]
 		}
 	}
 

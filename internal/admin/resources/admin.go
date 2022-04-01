@@ -173,15 +173,6 @@ func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 			return p.Field["last_login_time"].(time.Time).Format("2006-01-02 15:04:05")
 		}).OnlyOnIndex(),
 
-		field.Datetime("created_at", "创建时间", func() interface{} {
-			if p.Field["created_at"] == nil {
-				return p.Field["created_at"]
-
-			}
-
-			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
-		}),
-
 		field.Switch("status", "状态").
 			SetTrueValue("正常").
 			SetFalseValue("禁用").
@@ -207,7 +198,7 @@ func (p *Admin) Actions(c *fiber.Ctx) []interface{} {
 		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Disable{}).Init("批量禁用"),
 		(&actions.Enable{}).Init("批量启用"),
-		(&actions.ChangeStatus{}).Init(),
+		(&actions.DetailLink{}).Init("详情"),
 		(&actions.EditLink{}).Init("编辑"),
 		(&actions.Delete{}).Init("删除"),
 		(&actions.FormSubmit{}).Init(),
@@ -274,8 +265,10 @@ func (p *Admin) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 			roleData = append(roleData, item)
 		}
 
-		// 同步角色
-		result = (&db.Model{}).Model(&models.ModelHasRole{}).Create(roleData)
+		if len(roleData) > 0 {
+			// 同步角色
+			result = (&db.Model{}).Model(&models.ModelHasRole{}).Create(roleData)
+		}
 	} else {
 
 		// 同步角色
@@ -294,9 +287,15 @@ func (p *Admin) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 			roleData = append(roleData, item)
 		}
 
-		// 同步角色
-		result = (&db.Model{}).Model(&models.ModelHasRole{}).Create(roleData)
+		if len(roleData) > 0 {
+			// 同步角色
+			result = (&db.Model{}).Model(&models.ModelHasRole{}).Create(roleData)
+		}
 	}
 
-	return result
+	if result != nil {
+		return result
+	}
+
+	return model
 }

@@ -16,7 +16,7 @@ type ActionLog struct {
 	Remark    string
 	Ip        string
 	Type      string
-	Status    bool
+	Status    int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

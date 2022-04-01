@@ -21,7 +21,7 @@ type Admin struct {
 	Phone     string
 	Password  string
 	Avatar    string
-	Status    bool
+	Status    int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt

@@ -114,7 +114,7 @@ func (p *Resource) FormExtraActions(c *fiber.Ctx, resourceInstance interface{}) 
 }
 
 //详情页行为
-func (p *Resource) DetailActions(c *fiber.Ctx, resourceInstance interface{}) interface{} {
+func (p *Resource) DetailActions(c *fiber.Ctx, resourceInstance interface{}) []interface{} {
 	actions := resourceInstance.(interface {
 		Actions(*fiber.Ctx) []interface{}
 	}).Actions(c)

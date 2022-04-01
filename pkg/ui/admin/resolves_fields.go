@@ -378,7 +378,7 @@ func (p *Resource) DetailFields(c *fiber.Ctx, resourceInstance interface{}) inte
 }
 
 // 包裹在组件内的详情页字段
-func (p *Resource) DetailFieldsWithinComponents(c *fiber.Ctx, resourceInstance interface{}, data []interface{}) interface{} {
+func (p *Resource) DetailFieldsWithinComponents(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
 	componentType := "description"
 
 	fields := resourceInstance.(interface {

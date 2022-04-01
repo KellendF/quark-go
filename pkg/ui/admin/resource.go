@@ -365,6 +365,55 @@ func (p *Resource) FormWithinTabs(
 		SetInitialValues(data)
 }
 
+// 渲染详情页组件
+func (p *Resource) DetailComponentRender(c *fiber.Ctx, resourceInstance interface{}, data map[string]interface{}) interface{} {
+	title := p.DetailTitle(c, resourceInstance)
+	formExtraActions := p.DetailExtraActions(c, resourceInstance)
+	fields := p.DetailFieldsWithinComponents(c, resourceInstance, data)
+	formActions := p.DetailActions(c, resourceInstance)
+
+	return p.DetailWithinCard(
+		c,
+		resourceInstance,
+		title,
+		formExtraActions,
+		fields,
+		formActions,
+		data,
+	)
+}
+
+// 在卡片内的详情页组件
+func (p *Resource) DetailWithinCard(
+	c *fiber.Ctx,
+	resourceInstance interface{},
+	title string,
+	extra interface{},
+	fields interface{},
+	actions []interface{},
+	data map[string]interface{}) interface{} {
+
+	return (&card.Component{}).
+		Init().
+		SetTitle(title).
+		SetHeaderBordered(true).
+		SetExtra(extra).
+		SetBody(fields)
+}
+
+// 在标签页内的详情页组件
+func (p *Resource) DetailWithinTabs(
+	c *fiber.Ctx,
+	resourceInstance interface{},
+	title string,
+	extra interface{},
+	fields interface{},
+	actions []interface{},
+	data map[string]interface{}) interface{} {
+
+	return (&tabs.Component{}).Init().SetTabPanes(fields).SetTabBarExtraContent(extra)
+}
+
 // 设置单列字段
 func (p *Resource) SetField(fieldData map[string]interface{}) interface{} {
 	p.Field = fieldData

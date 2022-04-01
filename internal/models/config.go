@@ -17,7 +17,7 @@ type Config struct {
 	GroupName string
 	Value     string
 	Remark    string
-	Status    bool
+	Status    int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

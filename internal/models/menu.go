@@ -20,9 +20,9 @@ type Menu struct {
 	Sort       int
 	Path       string
 	Show       int
-	Status     bool
+	Status     int
 	Locale     string
-	HideInMenu bool
+	HideInMenu int
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

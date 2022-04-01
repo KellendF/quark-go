@@ -90,7 +90,17 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 
 			switch reflectFieldName.Type().String() {
 			case "int":
-				reflectValue = reflect.ValueOf(int(formValue.(float64)))
+				if value, ok := formValue.(bool); ok {
+					if value == true {
+						reflectValue = reflect.ValueOf(1)
+					} else {
+						reflectValue = reflect.ValueOf(0)
+					}
+				}
+
+				if value, ok := formValue.(float64); ok {
+					reflectValue = reflect.ValueOf(int(value))
+				}
 			case "time.Time":
 				getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
 				reflectValue = reflect.ValueOf(getTime)

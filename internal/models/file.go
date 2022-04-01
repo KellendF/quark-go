@@ -20,7 +20,7 @@ type File struct {
 	Ext            string
 	Path           string
 	Md5            string
-	Status         bool
+	Status         int
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
@@ -36,7 +36,7 @@ func (model *File) InsertGetId(data map[string]interface{}) int {
 		Md5:     data["md5"].(string),
 		Path:    data["path"].(string),
 		Ext:     data["ext"].(string),
-		Status:  true,
+		Status:  1,
 	}
 	model.DB().Create(&picture)
 

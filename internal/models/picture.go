@@ -22,7 +22,7 @@ type Picture struct {
 	Ext               string
 	Path              string
 	Md5               string
-	Status            bool
+	Status            int
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 }
@@ -40,7 +40,7 @@ func (model *Picture) InsertGetId(data map[string]interface{}) int {
 		Width:   data["width"].(int),
 		Height:  data["height"].(int),
 		Ext:     data["ext"].(string),
-		Status:  true,
+		Status:  1,
 	}
 	model.DB().Create(&picture)
 
