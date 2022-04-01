@@ -1,6 +1,8 @@
 package resources
 
 import (
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
@@ -40,7 +42,13 @@ func (p *File) Fields(c *fiber.Ctx) []interface{} {
 				return column.SetSorter(true)
 			}),
 		field.Text("ext", "扩展名"),
-		field.Datetime("created_at", "上传时间"),
+		field.Datetime("created_at", "上传时间", func() interface{} {
+			if p.Field["created_at"] == nil {
+				return p.Field["created_at"]
+			}
+
+			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
+		}),
 	}
 }
 

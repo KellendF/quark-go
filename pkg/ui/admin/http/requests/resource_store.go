@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"reflect"
 
+	"github.com/gobeam/stringy"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -45,6 +46,11 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 		return validator
 	}
 
+	modelInstance := reflect.
+		ValueOf(resourceInstance).
+		Elem().
+		FieldByName("Model").Interface()
+
 	for _, v := range fields.([]interface{}) {
 
 		name := reflect.
@@ -52,25 +58,42 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 			Elem().
 			FieldByName("Name").String()
 
-		if name == "" {
-			delete(data, name)
+		formValue := data[name]
+
+		if getValue, ok := formValue.([]interface{}); ok {
+			formValue, _ = json.Marshal(getValue)
 		}
 
-		if getValue, ok := data[name].([]interface{}); ok {
-			data[name], _ = json.Marshal(getValue)
+		if getValue, ok := formValue.([]map[string]interface{}); ok {
+			formValue, _ = json.Marshal(getValue)
 		}
 
-		if getValue, ok := data[name].([]map[string]interface{}); ok {
-			data[name], _ = json.Marshal(getValue)
+		if getValue, ok := formValue.(map[string]interface{}); ok {
+			formValue, _ = json.Marshal(getValue)
 		}
 
-		if getValue, ok := data[name].(map[string]interface{}); ok {
-			data[name], _ = json.Marshal(getValue)
+		if name != "" && formValue != nil {
+			fieldName := stringy.New(name).CamelCase("?", "")
+
+			reflectFieldName := reflect.
+				ValueOf(modelInstance).
+				Elem().
+				FieldByName(fieldName)
+
+			var reflectValue reflect.Value
+
+			if reflect.TypeOf(formValue).String() == "float64" {
+				reflectValue = reflect.ValueOf(int(formValue.(float64)))
+			} else {
+				reflectValue = reflect.ValueOf(formValue)
+			}
+
+			reflectFieldName.Set(reflectValue)
 		}
 	}
 
 	// 获取对象
-	getModel := model.Create(data)
+	getModel := model.Create(modelInstance)
 
 	return resourceInstance.(interface {
 		AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{}

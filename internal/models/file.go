@@ -2,6 +2,7 @@ package models
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 )
@@ -20,6 +21,8 @@ type File struct {
 	Path           string
 	Md5            string
 	Status         bool
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
 }
 
 // 插入数据并返回ID
@@ -33,7 +36,7 @@ func (model *File) InsertGetId(data map[string]interface{}) int {
 		Md5:     data["md5"].(string),
 		Path:    data["path"].(string),
 		Ext:     data["ext"].(string),
-		Status:  1,
+		Status:  true,
 	}
 	model.DB().Create(&picture)
 

@@ -27,6 +27,12 @@ type Resource struct {
 	WithExport   bool
 }
 
+// 初始化
+func (p *Resource) Init() *Resource {
+
+	return p
+}
+
 // 获取模型
 func (p *Resource) NewModel(resourceInstance interface{}) *gorm.DB {
 

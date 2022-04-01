@@ -89,7 +89,14 @@ func (p *Config) Fields(c *fiber.Ctx) []interface{} {
 			OnlyOnForms(),
 
 		field.Text("group_name", "分组名称").
-			OnlyOnForms(),
+			SetRules(
+				[]string{
+					"required",
+				},
+				map[string]string{
+					"required": "分组名称必须填写",
+				},
+			).OnlyOnForms(),
 
 		field.Text("remark", "备注").
 			OnlyOnForms(),

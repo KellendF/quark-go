@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 )
@@ -18,9 +20,11 @@ type Menu struct {
 	Sort       int
 	Path       string
 	Show       int
-	Status     int
+	Status     bool
 	Locale     string
 	HideInMenu bool
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 // 获取菜单的有序列表

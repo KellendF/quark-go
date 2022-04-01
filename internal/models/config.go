@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 )
 
@@ -15,5 +17,7 @@ type Config struct {
 	GroupName string
 	Value     string
 	Remark    string
-	Status    int
+	Status    bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

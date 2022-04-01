@@ -1,6 +1,8 @@
 package resources
 
 import (
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
@@ -46,7 +48,13 @@ func (p *ActionLog) Fields(c *fiber.Ctx) []interface{} {
 		field.Text("username", "用户"),
 		field.Text("url", "行为"),
 		field.Text("ip", "IP"),
-		field.Datetime("created_at", "发生时间"),
+		field.Datetime("created_at", "发生时间", func() interface{} {
+			if p.Field["created_at"] == nil {
+				return p.Field["created_at"]
+			}
+
+			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
+		}),
 	}
 }
 

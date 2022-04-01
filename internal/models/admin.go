@@ -2,25 +2,29 @@ package models
 
 import (
 	"strings"
+	"time"
 
 	"github.com/go-basic/uuid"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
+	"gorm.io/gorm"
 )
 
 // 字段
 type Admin struct {
 	db.Model
-	Id            int    `json:"id"`
-	Username      string `json:"username"`
-	Nickname      string `json:"nickname"`
-	Sex           int    `json:"sex"`
-	Email         string `json:"email"`
-	Phone         string `json:"phone"`
-	Password      string `json:"password"`
-	Avatar        string `json:"avatar"`
-	LastLoginTime Time   `json:"last_login_time"`
-	Status        int    `json:"status"`
+	Id        int
+	Username  string
+	Nickname  string
+	Sex       int
+	Email     string
+	Phone     string
+	Password  string
+	Avatar    string
+	Status    bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt
 }
 
 // 通过用户名获取管理员信息
