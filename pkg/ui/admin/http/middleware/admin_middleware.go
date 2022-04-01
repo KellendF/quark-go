@@ -39,5 +39,13 @@ func (p *AdminMiddleware) Handle(c *fiber.Ctx) error {
 		}
 	}
 
+	// 记录操作日志
+	(&models.ActionLog{}).Insert(map[string]interface{}{
+		"obj_id": utils.Admin(c, "id"),
+		"url":    c.OriginalURL(),
+		"ip":     c.IP(),
+		"type":   "admin",
+	})
+
 	return c.Next()
 }

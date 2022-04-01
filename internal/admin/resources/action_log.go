@@ -8,6 +8,7 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
+	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 	"gorm.io/gorm"
 )
 
@@ -46,7 +47,10 @@ func (p *ActionLog) Fields(c *fiber.Ctx) []interface{} {
 	return []interface{}{
 		field.ID("id", "ID"),
 		field.Text("username", "用户"),
-		field.Text("url", "行为"),
+		field.Text("url", "行为").
+			SetColumn(func(column *table.Column) *table.Column {
+				return column.SetEllipsis(true)
+			}),
 		field.Text("ip", "IP"),
 		field.Datetime("created_at", "发生时间", func() interface{} {
 			if p.Field["created_at"] == nil {
