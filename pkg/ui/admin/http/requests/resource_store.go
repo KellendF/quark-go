@@ -91,6 +91,10 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 				reflectValue = reflect.ValueOf(getTime)
 			default:
 				reflectValue = reflect.ValueOf(formValue)
+
+				if reflect.ValueOf(formValue).Type().String() == "[]uint8" {
+					reflectValue = reflect.ValueOf(string(formValue.([]uint8)))
+				}
 			}
 
 			reflectFieldName.Set(reflectValue)

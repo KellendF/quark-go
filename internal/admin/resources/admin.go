@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"encoding/json"
 	"strconv"
 	"time"
 
@@ -8,9 +9,11 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
+	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/framework/hash"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
 	"github.com/quarkcms/quark-go/pkg/ui/component/table"
+	"gorm.io/gorm"
 )
 
 type Admin struct {
@@ -173,6 +176,7 @@ func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 		field.Datetime("created_at", "创建时间", func() interface{} {
 			if p.Field["created_at"] == nil {
 				return p.Field["created_at"]
+
 			}
 
 			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
@@ -217,6 +221,15 @@ func (p *Admin) Actions(c *fiber.Ctx) []interface{} {
 func (p *Admin) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[string]interface{} {
 	delete(data, "password")
 
+	roleIds := []int{}
+	(&db.Model{}).
+		Model(&models.ModelHasRole{}).
+		Where("model_id = ?", data["id"]).
+		Where("model_type = ?", "admin").
+		Pluck("role_id", &roleIds)
+
+	data["role_ids"] = roleIds
+
 	return data
 }
 
@@ -232,4 +245,58 @@ func (p *Admin) BeforeSaving(c *fiber.Ctx, submitData map[string]interface{}) in
 	delete(submitData, "role_ids")
 
 	return submitData
+}
+
+// 保存后回调
+func (p *Admin) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
+
+	data := map[string]interface{}{}
+	json.Unmarshal(c.Body(), &data)
+
+	if data["role_ids"] == nil {
+		return model
+	}
+
+	var result interface{}
+
+	if p.IsCreating(c) {
+		last := map[string]interface{}{}
+		model.Order("id desc").First(&last) // hack
+
+		roleData := []map[string]interface{}{}
+
+		for _, v := range data["role_ids"].([]interface{}) {
+			item := map[string]interface{}{
+				"role_id":    v,
+				"model_type": "admin",
+				"model_id":   last["id"],
+			}
+			roleData = append(roleData, item)
+		}
+
+		// 同步角色
+		result = (&db.Model{}).Model(&models.ModelHasRole{}).Create(roleData)
+	} else {
+
+		// 同步角色
+		id := data["id"].(float64)
+		roleData := []map[string]interface{}{}
+
+		// 先清空用户对应的角色
+		(&db.Model{}).Model(&models.ModelHasRole{}).Where("model_id = ?", id).Where("model_type = ?", "admin").Delete("")
+
+		for _, v := range data["role_ids"].([]interface{}) {
+			item := map[string]interface{}{
+				"role_id":    v,
+				"model_type": "admin",
+				"model_id":   int(id),
+			}
+			roleData = append(roleData, item)
+		}
+
+		// 同步角色
+		result = (&db.Model{}).Model(&models.ModelHasRole{}).Create(roleData)
+	}
+
+	return result
 }
