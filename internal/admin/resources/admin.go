@@ -81,7 +81,8 @@ func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 			),
 
 		field.Checkbox("role_ids", "角色").
-			SetOptions(roles),
+			SetOptions(roles).
+			OnlyOnForms(),
 
 		field.Text("nickname", "昵称").
 			SetEditable(true).

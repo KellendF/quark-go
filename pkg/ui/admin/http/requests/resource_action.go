@@ -75,6 +75,7 @@ func resourceToPermission(c *fiber.Ctx) []string {
 		"api/admin/:resource/edit",
 		"api/admin/:resource/edit/values",
 		"api/admin/:resource/save",
+		"api/admin/:resource/detail",
 	}
 
 	for _, provider := range admin.Providers {
