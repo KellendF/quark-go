@@ -170,6 +170,14 @@ func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 			return p.Field["last_login_time"].(time.Time).Format("2006-01-02 15:04:05")
 		}).OnlyOnIndex(),
 
+		field.Datetime("created_at", "创建时间", func() interface{} {
+			if p.Field["created_at"] == nil {
+				return p.Field["created_at"]
+			}
+
+			return p.Field["created_at"].(time.Time).Format("2006-01-02 15:04:05")
+		}),
+
 		field.Switch("status", "状态").
 			SetTrueValue("正常").
 			SetFalseValue("禁用").

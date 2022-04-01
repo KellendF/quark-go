@@ -3,6 +3,7 @@ package requests
 import (
 	"encoding/json"
 	"reflect"
+	"time"
 
 	"github.com/gobeam/stringy"
 	"github.com/gofiber/fiber/v2"
@@ -82,9 +83,13 @@ func (p *ResourceStore) HandleStore(c *fiber.Ctx) interface{} {
 
 			var reflectValue reflect.Value
 
-			if reflect.TypeOf(formValue).String() == "float64" {
+			switch reflectFieldName.Type().String() {
+			case "int":
 				reflectValue = reflect.ValueOf(int(formValue.(float64)))
-			} else {
+			case "time.Time":
+				getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
+				reflectValue = reflect.ValueOf(getTime)
+			default:
 				reflectValue = reflect.ValueOf(formValue)
 			}
 
