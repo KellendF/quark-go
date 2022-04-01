@@ -148,7 +148,6 @@ func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 				2: "女",
 			}).SetDefault(1).
 			SetColumn(func(column *table.Column) *table.Column {
-				// return column.SetSorter(true)
 				return column.SetFilters(true)
 			}),
 
