@@ -106,15 +106,17 @@ func (p *Role) BeforeEditing(c *fiber.Ctx, data map[string]interface{}) map[stri
 			Where("menu_id", v["id"]).
 			Pluck("id", &permissionIds)
 
-		roleHasPermission := map[string]interface{}{}
-		(&db.Model{}).
-			Model(&models.RoleHasPermission{}).
-			Where("permission_id IN ?", permissionIds).
-			Where("role_id", id).
-			First(&roleHasPermission)
+		if len(permissionIds) > 0 {
+			roleHasPermission := map[string]interface{}{}
+			(&db.Model{}).
+				Model(&models.RoleHasPermission{}).
+				Where("permission_id IN ?", permissionIds).
+				Where("role_id", id).
+				First(&roleHasPermission)
 
-		if len(roleHasPermission) > 0 {
-			checkedMenus = append(checkedMenus, v["id"].(int))
+			if len(roleHasPermission) > 0 {
+				checkedMenus = append(checkedMenus, v["id"].(int))
+			}
 		}
 	}
 
