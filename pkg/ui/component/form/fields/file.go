@@ -10,7 +10,6 @@ type File struct {
 func (p *File) Init() *File {
 	p.Component = "fileField"
 	p.InitItem().SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
-	p.Mode = "single"
 	p.Button = "上传文件"
 	p.LimitSize = 2
 	p.LimitNum = 3

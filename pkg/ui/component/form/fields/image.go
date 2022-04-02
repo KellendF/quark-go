@@ -27,6 +27,35 @@ func (p *Image) Init() *Image {
 	return p
 }
 
+// 上传模式，单图或多图，single|multiple
+func (p *Image) SetMode(mode string) *Image {
+	if mode == "s" {
+		mode = "single"
+	}
+
+	if mode == "m" {
+		mode = "multiple"
+	}
+
+	limits := []string{
+		"single", "multiple",
+	}
+
+	inSlice := false
+	for _, limit := range limits {
+		if limit == mode {
+			inSlice = true
+		}
+	}
+
+	if inSlice == false {
+		panic("argument must be in 'single', 'multiple'!")
+	}
+
+	p.Mode = mode
+	return p
+}
+
 // 上传文件大小限制
 func (p *Image) SetLimitSize(limitSize int) *Image {
 	p.LimitSize = limitSize
