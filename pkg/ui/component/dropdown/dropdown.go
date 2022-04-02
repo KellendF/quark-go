@@ -4,21 +4,30 @@ import "github.com/quarkcms/quark-go/pkg/ui/component"
 
 type Component struct {
 	component.Element
-	Label    string `json:"label"`
-	Block    bool   `json:"block"`
-	Danger   bool   `json:"danger"`
-	Disabled bool   `json:"disabled"`
-	Ghost    bool   `json:"ghost"`
-	Icon     string `json:"icon"`
-	Shape    string `json:"shape"`
-	Size     string `json:"size"`
-	Type     string `json:"type"`
+	Label              string                 `json:"label"`
+	Block              bool                   `json:"block"`
+	Danger             bool                   `json:"danger"`
+	Disabled           bool                   `json:"disabled"`
+	Ghost              bool                   `json:"ghost"`
+	Icon               string                 `json:"icon"`
+	Shape              string                 `json:"shape"`
+	Size               string                 `json:"size"`
+	Type               string                 `json:"type"`
+	Arrow              bool                   `json:"arrow"`
+	DestroyPopupOnHide bool                   `json:"destroyPopupOnHide"`
+	Overlay            interface{}            `json:"overlay"`
+	OverlayClassName   string                 `json:"overlayClassName"`
+	OverlayStyle       map[string]interface{} `json:"overlayStyle"`
+	Placement          string                 `json:"placement"`
+	Trigger            []string               `json:"trigger"`
+	Visible            bool                   `json:"-"`
 }
 
 // 初始化
 func (p *Component) Init() *Component {
 	p.Component = "dropdown"
 	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.Visible = true
 
 	return p
 }
@@ -90,6 +99,62 @@ func (p *Component) SetType(buttonType string, danger bool) *Component {
 // 设置按钮大小，large | middle | small | default
 func (p *Component) SetSize(size string) *Component {
 	p.Size = size
+
+	return p
+}
+
+// 下拉框箭头是否显示
+func (p *Component) SetArrow(arrow bool) *Component {
+	p.Arrow = arrow
+
+	return p
+}
+
+// 关闭后是否销毁 Dropdown
+func (p *Component) SetDestroyPopupOnHide(destroyPopupOnHide bool) *Component {
+	p.DestroyPopupOnHide = destroyPopupOnHide
+
+	return p
+}
+
+// 菜单
+func (p *Component) SetOverlay(overlay interface{}) *Component {
+	p.Overlay = overlay
+
+	return p
+}
+
+// 下拉根元素的类名称
+func (p *Component) SetOverlayClassName(overlayClassName string) *Component {
+	p.OverlayClassName = overlayClassName
+
+	return p
+}
+
+// 下拉根元素的样式
+func (p *Component) SetOverlayStyle(overlayStyle map[string]interface{}) *Component {
+	p.OverlayStyle = overlayStyle
+
+	return p
+}
+
+// 菜单弹出位置：bottomLeft bottomCenter bottomRight topLeft topCenter topRight
+func (p *Component) SetPlacement(placement string) *Component {
+	p.Placement = placement
+
+	return p
+}
+
+// 触发下拉的行为, 移动端不支持 hover,Array<click|hover|contextMenu>
+func (p *Component) SetTrigger(trigger []string) *Component {
+	p.Trigger = trigger
+
+	return p
+}
+
+// 菜单是否显示
+func (p *Component) SetVisible(visible bool) *Component {
+	p.Visible = visible
 
 	return p
 }

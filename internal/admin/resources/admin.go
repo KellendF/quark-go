@@ -200,8 +200,10 @@ func (p *Admin) Actions(c *fiber.Ctx) []interface{} {
 		(&actions.Disable{}).Init("批量禁用"),
 		(&actions.Enable{}).Init("批量启用"),
 		(&actions.DetailLink{}).Init("详情"),
-		(&actions.EditLink{}).Init("编辑"),
-		(&actions.Delete{}).Init("删除"),
+		(&actions.MoreActions{}).Init("更多").SetActions([]interface{}{
+			(&actions.EditLink{}).Init("编辑"),
+			(&actions.Delete{}).Init("删除"),
+		}),
 		(&actions.FormSubmit{}).Init(),
 		(&actions.FormReset{}).Init(),
 		(&actions.FormBack{}).Init(),

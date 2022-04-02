@@ -49,7 +49,19 @@ func (p *ResourceAction) HandleAction(c *fiber.Ctx) error {
 		actionType := v.(interface{ GetActionType() string }).GetActionType()
 
 		if actionType == "dropdown" {
-			// todo
+			dropdownActions := v.(interface{ GetActions() []interface{} }).GetActions()
+			for _, dropdownAction := range dropdownActions {
+				// uri唯一标识
+				uriKey := dropdownAction.(interface {
+					GetUriKey(interface{}) string
+				}).GetUriKey(dropdownAction)
+
+				if c.Params("uriKey") == uriKey {
+					result = dropdownAction.(interface {
+						Handle(*fiber.Ctx, *gorm.DB) error
+					}).Handle(c, model)
+				}
+			}
 		} else {
 			if c.Params("uriKey") == uriKey {
 				result = v.(interface {
@@ -114,7 +126,21 @@ func resourceToPermission(c *fiber.Ctx) []string {
 								GetUriKey(interface{}) string
 							}).GetUriKey(av)
 
-							v = strings.Replace(v, ":uriKey", uriKey, -1)
+							actionType := av.(interface{ GetActionType() string }).GetActionType()
+
+							if actionType == "dropdown" {
+								dropdownActions := av.(interface{ GetActions() []interface{} }).GetActions()
+								for _, dropdownAction := range dropdownActions {
+									// uri唯一标识
+									uriKey := dropdownAction.(interface {
+										GetUriKey(interface{}) string
+									}).GetUriKey(dropdownAction)
+
+									v = strings.Replace(v, ":uriKey", uriKey, -1)
+								}
+							} else {
+								v = strings.Replace(v, ":uriKey", uriKey, -1)
+							}
 						}
 					}
 

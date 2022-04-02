@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/component/action"
+	"github.com/quarkcms/quark-go/pkg/ui/component/dropdown"
 	"github.com/quarkcms/quark-go/pkg/ui/component/space"
 )
 
@@ -187,6 +188,46 @@ func (p *Resource) buildAction(c *fiber.Ctx, item interface{}, resourceInstance 
 	confirmTitle := item.(interface{ GetConfirmTitle() string }).GetConfirmTitle()
 	confirmText := item.(interface{ GetConfirmText() string }).GetConfirmText()
 	confirmType := item.(interface{ GetConfirmType() string }).GetConfirmType()
+
+	if actionType == "dropdown" {
+		overlay := item.(interface {
+			GetOverlay(c *fiber.Ctx, resourceInstance interface{}) interface{}
+		}).GetOverlay(c, resourceInstance)
+
+		overlayStyle := item.(interface {
+			GetOverlayStyle() map[string]interface{}
+		}).GetOverlayStyle()
+
+		placement := item.(interface {
+			GetPlacement() string
+		}).GetPlacement()
+
+		trigger := item.(interface {
+			GetTrigger() []string
+		}).GetTrigger()
+
+		arrow := item.(interface {
+			GetArrow() bool
+		}).GetArrow()
+
+		getAction := (&dropdown.Component{}).
+			Init().
+			SetLabel(name).
+			SetOverlay(overlay).
+			SetOverlayStyle(overlayStyle).
+			SetPlacement(placement).
+			SetTrigger(trigger).
+			SetArrow(arrow).
+			SetType(buttonType, false).
+			SetSize(size)
+
+		if icon != "" {
+			getAction = getAction.
+				SetIcon(icon)
+		}
+
+		return getAction
+	}
 
 	getAction := (&action.Component{}).
 		Init().

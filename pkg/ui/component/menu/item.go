@@ -33,7 +33,7 @@ type Item struct {
 
 // 初始化
 func (p *Item) Init() *Item {
-	p.Component = "action"
+	p.Component = "menuItem"
 	p.Size = "default"
 	p.Type = "default"
 
@@ -210,7 +210,7 @@ func (p *Item) SetWithLoading(loading bool) *Item {
 
 // 组件json序列化
 func (p *Item) JsonSerialize() *Item {
-	p.Component = "action"
+	p.Component = "menuItem"
 
 	return p
 }
