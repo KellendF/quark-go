@@ -195,6 +195,7 @@ func (p *Admin) Searches(c *fiber.Ctx) []interface{} {
 // 行为
 func (p *Admin) Actions(c *fiber.Ctx) []interface{} {
 	return []interface{}{
+		(&actions.Import{}).Init(),
 		(&actions.CreateLink{}).Init(p.Title),
 		(&actions.Delete{}).Init("批量删除"),
 		(&actions.Disable{}).Init("批量禁用"),

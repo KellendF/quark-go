@@ -15,6 +15,13 @@ func (p *Component) Init() *Component {
 	return p
 }
 
+// Set style.
+func (p *Component) SetStyle(style map[string]interface{}) *Component {
+	p.Style = style
+
+	return p
+}
+
 // 容器控件里面的内容
 func (p *Component) SetBody(body interface{}) *Component {
 	p.Body = body
