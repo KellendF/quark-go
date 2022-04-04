@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/framework/rand"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
 	"github.com/quarkcms/quark-go/pkg/ui/component/space"
 	"github.com/quarkcms/quark-go/pkg/ui/component/tpl"
@@ -175,15 +176,18 @@ func (p *ResourceImport) HandleImport(c *fiber.Ctx) (interface{}, bool, error) {
 
 		f.SetActiveSheet(index)
 
+		filePath := "./storage/app/public/failImports/"
+		fileName := rand.MakeAlphanumeric(40) + ".xlsx"
+
 		// 不存在路径，则创建
-		if utils.PathExist("./storage/app/public/failImports/") == false {
-			err := os.MkdirAll("./storage/app/public/failImports/", 0666)
+		if utils.PathExist(filePath) == false {
+			err := os.MkdirAll(filePath, 0666)
 			if err != nil {
 				return nil, false, err
 			}
 		}
 
-		if err := f.SaveAs("./storage/app/public/failImports/" + strconv.Itoa(getFileId) + ".xlsx"); err != nil {
+		if err := f.SaveAs(filePath + fileName); err != nil {
 			fmt.Println(err)
 		}
 
@@ -197,7 +201,7 @@ func (p *ResourceImport) HandleImport(c *fiber.Ctx) (interface{}, bool, error) {
 
 		importFailedNumTpl := (&tpl.Component{}).
 			Init().
-			SetBody("失败数量: <span style='color:#ff4d4f'>" + strconv.Itoa(importFailedNum) + "</span> <a href='" + c.BaseURL() + "/storage/failImports/" + strconv.Itoa(getFileId) + ".xlsx' target='_blank'>下载失败数据</a>")
+			SetBody("失败数量: <span style='color:#ff4d4f'>" + strconv.Itoa(importFailedNum) + "</span> <a href='" + c.BaseURL() + "/storage/failImports/" + fileName + "' target='_blank'>下载失败数据</a>")
 
 		component := (&space.Component{}).
 			Init().
