@@ -24,7 +24,7 @@ type Modal struct {
 // 初始化
 func (p *Modal) Init() *Modal {
 	p.Component = "modal"
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.SetKey("modal", component.DEFAULT_CRYPT)
 	p.Closable = true
 	p.Keyboard = true
 	p.Mask = true

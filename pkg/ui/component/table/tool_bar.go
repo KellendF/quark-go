@@ -19,7 +19,7 @@ type ToolBar struct {
 func (p *ToolBar) Init() *ToolBar {
 	p.Component = "toolBar"
 
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.SetKey("toolBar", component.DEFAULT_CRYPT)
 
 	return p
 }

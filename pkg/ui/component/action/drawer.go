@@ -27,7 +27,7 @@ type Drawer struct {
 // 初始化
 func (p *Drawer) Init() *Drawer {
 	p.Component = "drawer"
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.SetKey("drawer", component.DEFAULT_CRYPT)
 	p.Closable = true
 	p.FooterStyle = map[string]interface{}{
 		"textAlign": "right",

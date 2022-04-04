@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -9,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/framework/token"
+	"github.com/xuri/excelize/v2"
 )
 
 // 获取管理员Token
@@ -280,4 +282,46 @@ func GetFile(c *fiber.Ctx, id interface{}) string {
 	}
 
 	return ""
+}
+
+// 获取导入文件数据
+func Import(fileId int) ([][]interface{}, error) {
+	filePath := ""
+	file := map[string]interface{}{}
+	importData := [][]interface{}{}
+
+	(&db.Model{}).Model(&File{}).Where("id", fileId).Where("status", 1).First(&file)
+
+	if len(file) > 0 {
+		filePath = file["path"].(string)
+	}
+
+	if filePath == "" {
+		return importData, errors.New("参数错误！")
+	}
+
+	f, err := excelize.OpenFile(filePath)
+	if err != nil {
+		return importData, err
+	}
+	defer func() {
+		if err := f.Close(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	rows, err := f.GetRows("Sheet1")
+	if err != nil {
+		return importData, err
+	}
+
+	for _, row := range rows {
+		getRows := []interface{}{}
+		for _, colCell := range row {
+			getRows = append(getRows, colCell)
+		}
+		importData = append(importData, getRows)
+	}
+
+	return importData, err
 }

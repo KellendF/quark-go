@@ -28,7 +28,7 @@ type File struct {
 // 插入数据并返回ID
 func (model *File) InsertGetId(data map[string]interface{}) int {
 	size := strconv.FormatInt(data["size"].(int64), 10)
-	picture := Picture{
+	file := File{
 		ObjType: data["obj_type"].(string),
 		ObjId:   data["obj_id"].(int),
 		Name:    data["name"].(string),
@@ -38,7 +38,7 @@ func (model *File) InsertGetId(data map[string]interface{}) int {
 		Ext:     data["ext"].(string),
 		Status:  1,
 	}
-	model.DB().Create(&picture)
+	model.DB().Create(&file)
 
-	return picture.Id
+	return file.Id
 }

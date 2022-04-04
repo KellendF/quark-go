@@ -33,7 +33,7 @@ func (p *Component) Init() *Component {
 	p.Size = "default"
 	p.Type = "default"
 
-	p.SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
+	p.SetKey("action", component.DEFAULT_CRYPT)
 
 	return p
 }

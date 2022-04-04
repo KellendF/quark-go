@@ -463,6 +463,6 @@ func (p *Resource) BeforeExporting(c *fiber.Ctx, list []map[string]interface{}) 
 }
 
 // 数据导入前回调
-func (p *Resource) BeforeImporting(c *fiber.Ctx, list []map[string]interface{}) []map[string]interface{} {
+func (p *Resource) BeforeImporting(c *fiber.Ctx, list [][]interface{}) [][]interface{} {
 	return list
 }

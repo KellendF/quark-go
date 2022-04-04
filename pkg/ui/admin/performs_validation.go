@@ -487,7 +487,7 @@ func (p *Resource) RulesForImport(c *fiber.Ctx, resourceInstance interface{}) ([
 	rules := []interface{}{}
 	ruleMessages := []interface{}{}
 
-	for _, v := range fields.([]map[string]interface{}) {
+	for _, v := range fields.([]interface{}) {
 		getResult := p.getRulesForCreation(c, v)
 
 		if len(getResult["rules"].(map[string]interface{})) > 0 {

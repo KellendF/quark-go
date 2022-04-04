@@ -17,16 +17,20 @@ func (p *Admin) Route(app *fiber.App) {
 	ag.Get("/captcha", (&controllers.Captcha{}).Make)
 
 	amg := app.Group("/api/admin", (&middleware.AdminMiddleware{}).Handle)
-	amg.Get("/dashboard/:dashboard", (&controllers.Dashboard{}).Handle)          // 仪表盘
-	amg.Get("/:resource/index", (&controllers.ResourceIndex{}).Handle)           // 列表页面
-	amg.Get("/:resource/editable", (&controllers.ResourceEditable{}).Handle)     // 表格行内编辑
-	amg.All("/:resource/action/:uriKey", (&controllers.ResourceAction{}).Handle) // 执行行为
-	amg.Get("/:resource/create", (&controllers.ResourceCreate{}).Handle)         // 创建页面
-	amg.Post("/:resource/store", (&controllers.ResourceStore{}).Handle)          // 创建方法
-	amg.Get("/:resource/edit", (&controllers.ResourceEdit{}).Handle)             // 编辑页面
-	amg.Get("/:resource/edit/values", (&controllers.ResourceEdit{}).Values)      // 获取编辑页面表单值
-	amg.Post("/:resource/save", (&controllers.ResourceUpdate{}).Handle)          // 保存编辑值
-	amg.Get("/:resource/detail", (&controllers.ResourceDetail{}).Handle)         // 详情页面
+	amg.Get("/dashboard/:dashboard", (&controllers.Dashboard{}).Handle)                         // 仪表盘
+	amg.Get("/:resource/index", (&controllers.ResourceIndex{}).Handle)                          // 列表页面
+	amg.Get("/:resource/editable", (&controllers.ResourceEditable{}).Handle)                    // 表格行内编辑
+	amg.All("/:resource/action/:uriKey", (&controllers.ResourceAction{}).Handle)                // 执行行为
+	amg.Get("/:resource/create", (&controllers.ResourceCreate{}).Handle)                        // 创建页面
+	amg.Post("/:resource/store", (&controllers.ResourceStore{}).Handle)                         // 创建方法
+	amg.Get("/:resource/edit", (&controllers.ResourceEdit{}).Handle)                            // 编辑页面
+	amg.Get("/:resource/edit/values", (&controllers.ResourceEdit{}).Values)                     // 获取编辑页面表单值
+	amg.Post("/:resource/save", (&controllers.ResourceUpdate{}).Handle)                         // 保存编辑值
+	amg.Get("/:resource/detail", (&controllers.ResourceDetail{}).Handle)                        // 详情页面
+	amg.Get("/:resource/export", (&controllers.ResourceExport{}).Handle)                        // 导出
+	amg.All("/:resource/import", (&controllers.ResourceImport{}).Handle)                        // 导入
+	amg.Get("/:resource/import/template", (&controllers.ResourceImport{}).Template)             // 导入模板
+	amg.All("/:resource/import/downloadFailed", (&controllers.ResourceImport{}).DownloadFailed) // 导入失败列表
 
 	// 通用表单资源
 	amg.Get("/:resource/:uriKey-form", (&controllers.ResourceCreate{}).Handle)

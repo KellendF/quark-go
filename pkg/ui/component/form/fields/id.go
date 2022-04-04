@@ -15,6 +15,7 @@ func (p *ID) Init() *ID {
 	p.Component = "idField"
 	p.InitItem().SetKey(component.DEFAULT_KEY, component.DEFAULT_CRYPT)
 	p.OnIndexDisplayed = true
+	p.ShowOnImport = false
 
 	return p
 }
