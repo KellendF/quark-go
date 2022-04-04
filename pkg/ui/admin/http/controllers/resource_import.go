@@ -73,24 +73,6 @@ func (p *ResourceImport) Template(c *fiber.Ctx) error {
 	return c.SendStream(buf)
 }
 
-// 下载导入失败的数据
-func (p *ResourceImport) DownloadFailed(c *fiber.Ctx) error {
-	failedFileId := c.Query("failedFileId")
-
-	// failed = cache("failedFileId" + failedFileId)
-
-	// if failed == nil {
-	// 	return msg.Error("数据已过期！", "")
-	// }
-
-	// return c.JSON(map[string]interface{}{
-	// 	"failedHead": failed["failedHead"],
-	// 	"failedData": failed["failedData"],
-	// })
-
-	return c.JSON(failedFileId)
-}
-
 // 导入字段提示信息
 func (p *ResourceImport) getFieldRemark(field interface{}) string {
 	remark := ""

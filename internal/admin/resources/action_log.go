@@ -28,6 +28,8 @@ func (p *ActionLog) Init() interface{} {
 	// 分页
 	p.PerPage = 10
 
+	p.WithExport = true
+
 	return p
 }
 

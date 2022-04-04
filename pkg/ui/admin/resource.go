@@ -458,8 +458,14 @@ func (p *Resource) AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{} {
 }
 
 // 数据导出前回调
-func (p *Resource) BeforeExporting(c *fiber.Ctx, list []map[string]interface{}) []map[string]interface{} {
-	return list
+func (p *Resource) BeforeExporting(c *fiber.Ctx, list []map[string]interface{}) []interface{} {
+	result := []interface{}{}
+
+	for _, v := range list {
+		result = append(result, v)
+	}
+
+	return result
 }
 
 // 数据导入前回调

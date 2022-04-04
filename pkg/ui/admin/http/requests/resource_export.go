@@ -2,7 +2,6 @@ package requests
 
 import (
 	"reflect"
-	"strconv"
 
 	"github.com/derekstavis/go-qs"
 	"github.com/gofiber/fiber/v2"
@@ -30,47 +29,13 @@ func (p *ResourceExport) IndexQuery(c *fiber.Ctx) interface{} {
 	}).Filters(c)
 
 	query := resourceInstance.(interface {
-		BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
-	}).BuildIndexQuery(c, resourceInstance, model, searches, filters, p.columnFilters(c), p.orderings(c))
+		BuildExportQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB
+	}).BuildExportQuery(c, resourceInstance, model, searches, filters, p.columnFilters(c), p.orderings(c))
 
-	// 获取分页
-	perPage := reflect.
-		ValueOf(resourceInstance).
-		Elem().
-		FieldByName("PerPage").Interface()
+	query.Find(&lists)
 
-	// 不分页，直接返回lists
-	if reflect.TypeOf(perPage).String() != "int" {
-		query.Find(&lists)
-
-		// 返回解析列表
-		return p.performsList(c, resourceInstance, lists)
-	}
-
-	var total int64
-	page := c.Query("page", "1")
-	pageSize := c.Query("pageSize")
-
-	if pageSize != "" {
-		perPage, _ = strconv.Atoi(pageSize)
-	}
-	getPage, _ := strconv.Atoi(page)
-
-	// 获取总数量
-	query.Count(&total)
-
-	// 获取列表
-	query.Limit(perPage.(int)).Offset((getPage - 1) * perPage.(int)).Find(&lists)
-
-	// 解析列表
-	result := p.performsList(c, resourceInstance, lists)
-
-	return map[string]interface{}{
-		"currentPage": getPage,
-		"perPage":     perPage,
-		"total":       total,
-		"items":       result,
-	}
+	// 返回解析列表
+	return p.performsList(c, resourceInstance, lists)
 }
 
 /**
@@ -120,9 +85,9 @@ func (p *ResourceExport) performsList(c *fiber.Ctx, resourceInstance interface{}
 	result := []map[string]interface{}{}
 
 	// 获取列表字段
-	indexFields := resourceInstance.(interface {
-		IndexFields(c *fiber.Ctx, resourceInstance interface{}) interface{}
-	}).IndexFields(c, resourceInstance)
+	exportFields := resourceInstance.(interface {
+		ExportFields(c *fiber.Ctx, resourceInstance interface{}) interface{}
+	}).ExportFields(c, resourceInstance)
 
 	// 解析字段回调函数
 	for _, v := range lists {
@@ -133,7 +98,7 @@ func (p *ResourceExport) performsList(c *fiber.Ctx, resourceInstance interface{}
 		}).SetField(v)
 
 		fields := make(map[string]interface{})
-		for _, field := range indexFields.([]interface{}) {
+		for _, field := range exportFields.([]interface{}) {
 
 			// 字段名
 			name := reflect.
@@ -159,6 +124,6 @@ func (p *ResourceExport) performsList(c *fiber.Ctx, resourceInstance interface{}
 
 	// 回调处理列表字段值
 	return resourceInstance.(interface {
-		BeforeIndexShowing(c *fiber.Ctx, result []map[string]interface{}) []interface{}
-	}).BeforeIndexShowing(c, result)
+		BeforeExporting(c *fiber.Ctx, result []map[string]interface{}) []interface{}
+	}).BeforeExporting(c, result)
 }

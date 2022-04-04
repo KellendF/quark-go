@@ -46,7 +46,7 @@ func (p *Resource) BuildIndexQuery(c *fiber.Ctx, resourceInstance interface{}, q
 }
 
 // 创建详情页查询
-func (p *Resource) BuildDetailQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB) interface{} {
+func (p *Resource) BuildDetailQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB) *gorm.DB {
 	// 初始化查询
 	query = p.initializeQuery(c, resourceInstance, query)
 
@@ -59,7 +59,7 @@ func (p *Resource) BuildDetailQuery(c *fiber.Ctx, resourceInstance interface{}, 
 }
 
 // 创建导出查询
-func (p *Resource) BuildExportQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) interface{} {
+func (p *Resource) BuildExportQuery(c *fiber.Ctx, resourceInstance interface{}, query *gorm.DB, search []interface{}, filters []interface{}, columnFilters map[string]interface{}, orderings map[string]interface{}) *gorm.DB {
 
 	// 初始化查询
 	query = p.initializeQuery(c, resourceInstance, query)
