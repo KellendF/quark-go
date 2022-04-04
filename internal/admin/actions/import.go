@@ -20,9 +20,6 @@ func (p *Import) Init() *Import {
 	// 初始化父结构
 	p.ParentInit()
 
-	// 类型
-	p.Type = "primary"
-
 	// 文字
 	p.Name = "导入数据"
 
