@@ -37,7 +37,7 @@ var Admin = map[string]interface{}{
 				"component": "icon",
 				"icon":      "icon-question-circle",
 				"tooltip":   "使用文档",
-				"href":      "https://www.qasl.cn/",
+				"href":      "https://www.quarkcms.com/",
 				"target":    "_blank",
 				"style": map[string]interface{}{
 					"color": "#000",
@@ -85,16 +85,16 @@ var Admin = map[string]interface{}{
 	// 友情链接
 	"links": []map[string]interface{}{
 		{
-			"title": "迁安信息港",
-			"href":  "https://www.qa114.com/",
+			"title": "Quark",
+			"href":  "http://www.quarkcms.com/",
 		},
 		{
-			"title": "迁安人才网",
-			"href":  "https://www.qarc.cn",
+			"title": "爱小圈",
+			"href":  "http://www.ixiaoquan.com",
 		},
 		{
-			"title": "深蓝科技",
-			"href":  "https://www.qasl.cn",
+			"title": "Github",
+			"href":  "https://github.com/quarkcms",
 		},
 	},
 }
