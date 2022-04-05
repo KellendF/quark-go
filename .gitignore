@@ -23,3 +23,5 @@ vendor/
 tmp/
 
 .env
+
+install.lock
