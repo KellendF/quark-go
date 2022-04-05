@@ -12,5 +12,8 @@ var App = map[string]interface{}{
 	"host": env.Get("APP_HOST", "127.0.0.1:3000"),
 
 	// 令牌加密key，默认自动生成，如果设置绝对不可泄漏
+	"debug": env.Get("APP_DEBUG", "false"),
+
+	// 令牌加密key，默认自动生成，如果设置绝对不可泄漏
 	"key": env.Get("APP_KEY"),
 }

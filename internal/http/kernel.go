@@ -1,8 +1,11 @@
 package http
 
 import (
+	"fmt"
 	"io/fs"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
@@ -14,6 +17,11 @@ import (
 type Kernel struct{}
 
 func (p *Kernel) Run(assets fs.FS) {
+
+	if config.Get("app.debug").(string) == "false" {
+		// 安装
+		p.install()
+	}
 
 	// 配置
 	app := fiber.New(fiber.Config{
@@ -39,4 +47,17 @@ func (p *Kernel) Run(assets fs.FS) {
 	}))
 
 	app.Listen(config.Get("app.host").(string))
+}
+
+// 安装操作
+func (p *Kernel) install() {
+
+	// 创建软连接
+	storagePath := filepath.Join("..", "storage", "app", "public")
+	SymlinkPath := filepath.Join("public", "storage")
+
+	err := os.Symlink(storagePath, SymlinkPath)
+	if err != nil {
+		fmt.Print(err)
+	}
 }
