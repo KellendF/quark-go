@@ -80,7 +80,7 @@ var Admin = map[string]interface{}{
 	},
 
 	// 网站版权
-	"copyright": time.Now().Format("2006") + "QASL",
+	"copyright": time.Now().Format("2006") + "QuarkGo",
 
 	// 友情链接
 	"links": []map[string]interface{}{
