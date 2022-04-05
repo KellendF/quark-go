@@ -2,11 +2,18 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	"os"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/quarkcms/quark-go/pkg/framework/msg"
+	"github.com/quarkcms/quark-go/pkg/framework/rand"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/http/requests"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
+	"github.com/xuri/excelize/v2"
 )
 
 type ResourceExport struct{}
@@ -30,11 +37,12 @@ func (p *ResourceExport) Handle(c *fiber.Ctx) error {
 		ExportFields(c *fiber.Ctx, resourceInstance interface{}) interface{}
 	}).ExportFields(c, resourceInstance)
 
-	exportData := []map[string]interface{}{}
-	exportTitles := []string{}
+	f := excelize.NewFile()
+	index := f.NewSheet("Sheet1")
 
 	rowData := map[string]interface{}{}
 
+	var a = 'a'
 	for _, fieldValue := range fields.([]interface{}) {
 		Label := reflect.
 			ValueOf(fieldValue).
@@ -42,11 +50,13 @@ func (p *ResourceExport) Handle(c *fiber.Ctx) error {
 			FieldByName("Label").
 			String()
 
-		exportTitles = append(exportTitles, Label)
+		f.SetCellValue("Sheet1", string(a)+"1", Label)
+
+		a++
 	}
 
-	for _, dataValue := range data.([]interface{}) {
-
+	for dataKey, dataValue := range data.([]interface{}) {
+		var a = 'a'
 		for _, fieldValue := range fields.([]interface{}) {
 
 			name := reflect.
@@ -109,13 +119,30 @@ func (p *ResourceExport) Handle(c *fiber.Ctx) error {
 			default:
 				rowData[name] = dataValue.(map[string]interface{})[name]
 			}
+
+			f.SetCellValue("Sheet1", string(a)+strconv.Itoa(dataKey+2), rowData[name])
+			a++
 		}
-		exportData = append(exportData, rowData)
 	}
 
-	return c.JSON(map[string]interface{}{
-		"a": exportTitles, "b": exportData,
-	})
+	f.SetActiveSheet(index)
+
+	filePath := "./storage/app/public/exports/"
+	fileName := rand.MakeAlphanumeric(40) + ".xlsx"
+
+	// 不存在路径，则创建
+	if utils.PathExist(filePath) == false {
+		err := os.MkdirAll(filePath, 0666)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+	}
+
+	if err := f.SaveAs(filePath + fileName); err != nil {
+		fmt.Println(err)
+	}
+
+	return c.Redirect(c.BaseURL() + strings.Replace(filePath+fileName, "./storage/app/public", "/storage", -1))
 }
 
 // 获取属性值
