@@ -152,7 +152,7 @@ func (p *ResourceExport) getOptionValue(options interface{}, value interface{}) 
 
 	if value, ok := value.(string); ok {
 		if strings.Contains(value, "[") || strings.Contains(value, "{") {
-			json.Unmarshal([]byte(value), arr)
+			json.Unmarshal([]byte(value), &arr)
 		}
 	}
 
