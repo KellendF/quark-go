@@ -34,7 +34,7 @@ func (p *ActionLog) Init() interface{} {
 }
 
 // 列表查询
-func (p *ActionLog) IndexQuery(c *fiber.Ctx, query *gorm.DB) *gorm.DB {
+func (p *ActionLog) Query(c *fiber.Ctx, query *gorm.DB) *gorm.DB {
 
 	return query.
 		Select("action_logs.*,admins.username").
