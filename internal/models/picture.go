@@ -11,18 +11,18 @@ import (
 type Picture struct {
 	db.Model
 	Id                int
-	ObjType           string
+	ObjType           string `gorm:"size:255"`
 	ObjId             int
 	PictureCategoryId int
-	Sort              int
-	Name              string
-	Size              string
-	Width             int
-	Height            int
-	Ext               string
-	Path              string
-	Md5               string
-	Status            int
+	Sort              int    `gorm:"size:11;default:0"`
+	Name              string `gorm:"size:255;not null"`
+	Size              string `gorm:"size:20;default:0"`
+	Width             int    `gorm:"size:11;default:0"`
+	Height            int    `gorm:"size:11;default:0"`
+	Ext               string `gorm:"size:255"`
+	Path              string `gorm:"size:255;not null"`
+	Md5               string `gorm:"size:255;not null"`
+	Status            int    `gorm:"size:1;not null;default:1"`
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 }

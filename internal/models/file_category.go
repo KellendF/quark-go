@@ -5,7 +5,7 @@ import (
 )
 
 // 字段
-type PictureCategory struct {
+type FileCategory struct {
 	db.Model
 	Id          int
 	ObjType     string `gorm:"size:100"`

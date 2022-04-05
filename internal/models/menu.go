@@ -12,17 +12,17 @@ type Menu struct {
 	db.Model
 	Key        string
 	Id         int
-	Name       string
-	GuardName  string
-	Icon       string
-	Type       string
-	Pid        int
-	Sort       int
-	Path       string
-	Show       int
-	Status     int
-	Locale     string
-	HideInMenu int
+	Name       string `gorm:"size:100;not null"`
+	GuardName  string `gorm:"size:100;not null"`
+	Icon       string `gorm:"size:100;"`
+	Type       string `gorm:"size:100;not null"`
+	Pid        int    `gorm:"size:11;default:0"`
+	Sort       int    `gorm:"size:11;default:0"`
+	Path       string `gorm:"size:255"`
+	Show       int    `gorm:"size:1;not null;default:1"`
+	Status     int    `gorm:"size:1;not null;default:1"`
+	Locale     string `gorm:"<-:false"`
+	HideInMenu int    `gorm:"<-:false"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

@@ -12,11 +12,11 @@ type ActionLog struct {
 	Id        int
 	ObjectId  int
 	Username  string `gorm:"<-:false"`
-	Url       string
-	Remark    string
-	Ip        string
-	Type      string
-	Status    int
+	Url       string `gorm:"size:255;not null"`
+	Remark    string `gorm:"size:255;not null"`
+	Ip        string `gorm:"size:100;not null"`
+	Type      string `gorm:"size:100;not null"`
+	Status    int    `gorm:"size:1;not null;default:1"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

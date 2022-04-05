@@ -11,16 +11,16 @@ import (
 type File struct {
 	db.Model
 	Id             int
-	ObjType        string
+	ObjType        string `gorm:"size:255"`
 	ObjId          int
 	FileCategoryId int
-	Sort           int
-	Name           string
-	Size           string
-	Ext            string
-	Path           string
-	Md5            string
-	Status         int
+	Sort           int    `gorm:"size:11;default:0"`
+	Name           string `gorm:"size:255;not null"`
+	Size           string `gorm:"size:20;default:0"`
+	Ext            string `gorm:"size:255"`
+	Path           string `gorm:"size:255;not null"`
+	Md5            string `gorm:"size:255;not null"`
+	Status         int    `gorm:"size:1;not null;default:1"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }

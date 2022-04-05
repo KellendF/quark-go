@@ -11,8 +11,8 @@ type Permission struct {
 	db.Model
 	Id        int
 	MenuId    int
-	Name      string
-	GuardName string
+	Name      string `gorm:"size:100;not null"`
+	GuardName string `gorm:"size:100"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

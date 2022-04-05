@@ -1,14 +1,12 @@
 package http
 
 import (
-	"fmt"
 	"io/fs"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/quarkcms/quark-go/database"
 	"github.com/quarkcms/quark-go/internal/http/middleware"
 	"github.com/quarkcms/quark-go/internal/providers"
 	"github.com/quarkcms/quark-go/pkg/framework/config"
@@ -53,11 +51,17 @@ func (p *Kernel) Run(assets fs.FS) {
 func (p *Kernel) install() {
 
 	// 创建软连接
-	storagePath := filepath.Join("..", "storage", "app", "public")
-	SymlinkPath := filepath.Join("public", "storage")
+	// storagePath := filepath.Join("..", "storage", "app", "public")
+	// SymlinkPath := filepath.Join("public", "storage")
 
-	err := os.Symlink(storagePath, SymlinkPath)
-	if err != nil {
-		fmt.Print(err)
-	}
+	// err := os.Symlink(storagePath, SymlinkPath)
+	// if err != nil {
+	// 	fmt.Print(err)
+	// }
+
+	// 执行迁移
+	(&database.Migrate{}).Handle()
+
+	// 数据填充
+	(&database.Seed{}).Handle()
 }
