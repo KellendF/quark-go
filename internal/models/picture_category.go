@@ -7,7 +7,7 @@ import (
 // 字段
 type PictureCategory struct {
 	db.Model
-	Id          int
+	Id          int    `gorm:"autoIncrement"`
 	ObjType     string `gorm:"size:100"`
 	ObjId       int
 	Title       string `gorm:"size:255;not null"`

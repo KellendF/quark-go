@@ -1,8 +1,6 @@
 package actions
 
 import (
-	"time"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
@@ -43,7 +41,7 @@ func (p *SyncPermission) Init() *SyncPermission {
 func (p *SyncPermission) Handle(c *fiber.Ctx, model *gorm.DB) error {
 	// 获取当前权限
 	permissions := utils.GetPermissions()
-	data := []map[string]interface{}{}
+	data := []models.Permission{}
 
 	var names []string
 	(&db.Model{}).Model(&models.Permission{}).Pluck("name", &names)
@@ -57,12 +55,10 @@ func (p *SyncPermission) Handle(c *fiber.Ctx, model *gorm.DB) error {
 		}
 
 		if has == false {
-			permission := map[string]interface{}{
-				"menu_id":    0,
-				"name":       v,
-				"guard_name": "admin",
-				"created_at": time.Now(),
-				"updated_at": time.Now(),
+			permission := models.Permission{
+				MenuId:    0,
+				Name:      v,
+				GuardName: "admin",
 			}
 			data = append(data, permission)
 		}
@@ -78,7 +74,7 @@ func (p *SyncPermission) Handle(c *fiber.Ctx, model *gorm.DB) error {
 		return msg.Error("操作失败，请重试！", "")
 	}
 
-	result1 := model.Where("name NOT IN ?", permissions).Delete("")
+	result1 := (&db.Model{}).Model(&models.Permission{}).Where("name NOT IN ?", permissions).Delete("")
 
 	if result1.Error != nil {
 		return msg.Error("操作失败，请重试！", "")

@@ -9,7 +9,7 @@ import (
 // 字段
 type ActionLog struct {
 	db.Model
-	Id        int
+	Id        int `gorm:"autoIncrement"`
 	ObjectId  int
 	Username  string `gorm:"<-:false"`
 	Url       string `gorm:"size:255;not null"`

@@ -10,8 +10,8 @@ import (
 // 字段
 type Menu struct {
 	db.Model
-	Key        string
-	Id         int
+	Key        string `gorm:"<-:false"`
+	Id         int    `gorm:"autoIncrement"`
 	Name       string `gorm:"size:100;not null"`
 	GuardName  string `gorm:"size:100;not null"`
 	Icon       string `gorm:"size:100;"`

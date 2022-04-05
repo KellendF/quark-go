@@ -13,7 +13,7 @@ import (
 // 字段
 type Admin struct {
 	db.Model
-	Id            int
+	Id            int    `gorm:"autoIncrement"`
 	Username      string `gorm:"size:20;index:admins_username_unique,unique;not null"`
 	Nickname      string `gorm:"size:200;not null"`
 	Sex           int    `gorm:"size:4;not null;default:1"`

@@ -9,7 +9,7 @@ import (
 // 权限
 type Permission struct {
 	db.Model
-	Id        int
+	Id        int `gorm:"autoIncrement"`
 	MenuId    int
 	Name      string `gorm:"size:100;not null"`
 	GuardName string `gorm:"size:100"`

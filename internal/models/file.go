@@ -10,7 +10,7 @@ import (
 // 字段
 type File struct {
 	db.Model
-	Id             int
+	Id             int    `gorm:"autoIncrement"`
 	ObjType        string `gorm:"size:255"`
 	ObjId          int
 	FileCategoryId int

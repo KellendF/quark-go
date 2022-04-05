@@ -9,7 +9,7 @@ import (
 // 字段
 type Config struct {
 	db.Model
-	Id        int
+	Id        int    `gorm:"autoIncrement"`
 	Title     string `gorm:"size:255;not null"`
 	Type      string `gorm:"size:20;not null"`
 	Name      string `gorm:"size:255;not null"`
