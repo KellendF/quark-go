@@ -12,7 +12,7 @@ type ActionLog struct {
 	Id        int `gorm:"autoIncrement"`
 	ObjectId  int
 	Username  string `gorm:"<-:false"`
-	Url       string `gorm:"size:255;not null"`
+	Url       string `gorm:"size:500;not null"`
 	Remark    string `gorm:"size:255;not null"`
 	Ip        string `gorm:"size:100;not null"`
 	Type      string `gorm:"size:100;not null"`
