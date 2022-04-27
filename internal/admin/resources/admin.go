@@ -84,8 +84,6 @@ func (p *Admin) Fields(c *fiber.Ctx) []interface{} {
 			SetOptions(roles).
 			OnlyOnForms(),
 
-		field.Editor("content", "内容"),
-
 		field.Text("nickname", "昵称").
 			SetEditable(true).
 			SetRules(

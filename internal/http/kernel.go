@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
@@ -31,7 +32,14 @@ func (p *Kernel) Run(assets fs.FS) {
 	})
 
 	// 静态资源
-	app.Static("/", "./public")
+	app.Static("/", "./public", fiber.Static{
+		Compress:      true,
+		ByteRange:     true,
+		Browse:        true,
+		Index:         "index.html",
+		CacheDuration: 1 * time.Second,
+		MaxAge:        3600,
+	})
 
 	// 中间件
 	app.Use((&middleware.AppServiceInit{}).Handle)
