@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"image"
 	_ "image/gif"
@@ -54,11 +55,11 @@ func (p *Picture) GetLists(c *fiber.Ctx) error {
 	model.Count(&total)
 
 	pictures := []map[string]interface{}{}
-	model.Where("status =?", 1).Order("id desc").Limit(12).Offset((getPage - 1) * 12).Find(&pictures)
+	model.Where("status =?", 1).Order("id desc").Limit(8).Offset((getPage - 1) * 8).Find(&pictures)
 
 	for k, v := range pictures {
 		if strings.Contains(v["path"].(string), "./") {
-			v["path"] = c.BaseURL() + strings.Replace(v["path"].(string), "./storage/app/public", "/storage", -1)
+			v["path"] = c.BaseURL() + strings.Replace(v["path"].(string), "./storage/app/public", "/storage", -1) + "?timestamp=" + strconv.Itoa(int(time.Now().Unix()))
 			pictures[k] = v
 		}
 	}
@@ -680,4 +681,158 @@ func (p *Picture) Download(c *fiber.Ctx) error {
 	}
 
 	return c.Redirect(c.BaseURL() + strings.Replace(path, "./storage/app/public", "/storage", -1))
+}
+
+// 图片删除
+func (p *Picture) Delete(c *fiber.Ctx) error {
+	data := map[string]interface{}{}
+	json.Unmarshal(c.Body(), &data)
+
+	if data["id"] == "" {
+		return msg.Error("参数错误！", "")
+	}
+
+	err := (&db.Model{}).Model(&models.Picture{}).Where("id =?", data["id"]).Delete("").Error
+
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	} else {
+		return msg.Success("操作成功！", "", "")
+	}
+}
+
+// 图片裁剪
+func (p *Picture) Crop(c *fiber.Ctx) error {
+	var result error
+
+	data := map[string]interface{}{}
+	json.Unmarshal(c.Body(), &data)
+
+	if data["id"] == "" {
+		return msg.Error("参数错误！", "")
+	}
+
+	if data["file"] == "" {
+		return msg.Error("参数错误！", "")
+	}
+
+	picture := map[string]interface{}{}
+	err := (&db.Model{}).Model(&models.Picture{}).Where("id =?", data["id"]).First(&picture).Error
+
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	datasource := data["file"]
+	limitW := c.Query("limitW")
+	limitH := c.Query("limitH")
+
+	fileArray := strings.Split(datasource.(string), ",")
+	if len(fileArray) != 2 {
+		return msg.Error("图片格式错误!", "")
+	}
+
+	fileExt := ""
+	switch fileArray[0] {
+	case "data:image/jpg;base64":
+		fileExt = "jpg"
+	case "data:image/jpeg;base64":
+		fileExt = "jpeg"
+	case "data:image/png;base64":
+		fileExt = "png"
+	case "data:image/gif;base64":
+		fileExt = "gif"
+	}
+
+	// 限制格式
+	if fileExt == "" {
+		return msg.Error("只能上传jpg,jpeg,png,gif格式图片!", "")
+	}
+
+	base64Buffer, err := base64.StdEncoding.DecodeString(fileArray[1]) //成图片文件并把文件写入到buffer
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	file := bytes.NewBuffer(base64Buffer) // 必须加一个buffer 不然没有read方法就会报错
+	imageConfig, _, err := image.DecodeConfig(file)
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+
+	// 限制宽高
+	if limitW != "" && limitH != "" {
+		w, err := strconv.Atoi(limitW)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+
+		h, err := strconv.Atoi(limitH)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+
+		if imageConfig.Width != w || imageConfig.Height != h {
+			return msg.Error("请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
+		}
+	}
+
+	fileSize := int64(len(datasource.(string)))
+
+	// 文件md5值
+	body, err := ioutil.ReadAll(file)
+	if err != nil {
+		return msg.Error(err.Error(), "")
+	}
+	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
+
+	if utils.WebConfig("OSS_OPEN") == "1" {
+
+		accessKeyId := utils.WebConfig("OSS_ACCESS_KEY_ID")
+		accessKeySecret := utils.WebConfig("OSS_ACCESS_KEY_SECRET")
+		endpoint := utils.WebConfig("OSS_ENDPOINT")
+		ossBucket := utils.WebConfig("OSS_BUCKET")
+
+		client, err := oss.New(endpoint, accessKeyId, accessKeySecret)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+
+		bucket, err := client.Bucket(ossBucket)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+
+		// 指定Object访问权限
+		objectAcl := oss.ObjectACL(oss.ACLPublicRead)
+
+		err = bucket.PutObject(picture["path"].(string), bytes.NewBuffer(base64Buffer), objectAcl)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+
+		result = (&db.Model{}).Model(&models.Picture{}).Where("id", data["id"]).Updates(map[string]interface{}{
+			"md5":  fileMd5,
+			"size": fileSize,
+		}).Error
+
+	} else {
+
+		// 保存文件
+		err = ioutil.WriteFile(picture["path"].(string), base64Buffer, 0666)
+		if err != nil {
+			return msg.Error(err.Error(), "")
+		}
+
+		result = (&db.Model{}).Model(&models.Picture{}).Where("id", data["id"]).Updates(map[string]interface{}{
+			"md5":  fileMd5,
+			"size": fileSize,
+		}).Error
+	}
+
+	if result != nil {
+		return msg.Error(result.Error(), "")
+	} else {
+		return msg.Success("操作成功", "", "")
+	}
 }

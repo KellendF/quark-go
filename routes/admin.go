@@ -42,6 +42,8 @@ func (p *Admin) Route(app *fiber.App) {
 	amg.Get("/picture/getLists", (&controllers.Picture{}).GetLists)
 	amg.Post("/picture/upload", (&controllers.Picture{}).Upload)
 	amg.Get("/picture/download", (&controllers.Picture{}).Download)
+	amg.All("/picture/delete", (&controllers.Picture{}).Delete)
+	amg.Post("/picture/crop", (&controllers.Picture{}).Crop)
 
 	// 文件上传、下载
 	amg.Post("/file/upload", (&controllers.File{}).Upload)
