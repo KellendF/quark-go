@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,6 +30,17 @@ func (p *Kernel) Run(assets fs.FS) {
 	// 配置
 	app := fiber.New(fiber.Config{
 		AppName: config.Get("app.name").(string),
+	})
+
+	// 将/admin重定向到/admin/
+	app.Use("/admin", func(c *fiber.Ctx) error {
+		originalUrl := c.OriginalURL()
+
+		if !strings.HasSuffix(originalUrl, "/") {
+			return c.Redirect(originalUrl + "/")
+		}
+
+		return c.Next()
 	})
 
 	// 静态资源
