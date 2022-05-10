@@ -82,10 +82,9 @@ func (p *Menu) Fields(c *fiber.Ctx) []interface{} {
 			SetDefault(0).
 			OnlyOnForms(),
 
-		field.Text("sort", "排序").
+		field.Number("sort", "排序").
 			SetEditable(true).
-			SetDefault(0).
-			OnlyOnForms(),
+			SetDefault(0),
 
 		field.Select("permission_ids", "绑定权限").
 			SetMode("tags").
