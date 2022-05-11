@@ -103,6 +103,6 @@ func (p *Search) Apply(c *fiber.Ctx, query *gorm.DB, value interface{}) *gorm.DB
  * @param  Request  request
  * @return array
  */
-func (p *Search) Options(c *fiber.Ctx) map[string]string {
+func (p *Search) Options(c *fiber.Ctx) map[interface{}]interface{} {
 	return nil
 }

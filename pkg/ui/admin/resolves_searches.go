@@ -32,7 +32,7 @@ func (p *Resource) IndexSearches(c *fiber.Ctx, resourceInstance interface{}) int
 		operator := v.(interface{ GetOperator() string }).GetOperator() // 获取操作符
 		api := v.(interface{ GetApi() string }).GetApi()                // 获取接口
 		options := v.(interface {
-			Options(c *fiber.Ctx) map[string]string
+			Options(c *fiber.Ctx) map[interface{}]interface{}
 		}).Options(c) // 获取属性
 
 		// 搜索栏表单项

@@ -171,9 +171,8 @@ func (p *SearchItem) SetLoad(field string, api string) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) Input(options map[string]string) *SearchItem {
+func (p *SearchItem) Input(options map[interface{}]interface{}) *SearchItem {
 	p.Component = "input"
-	p.Options = options
 
 	return p
 }
@@ -184,10 +183,11 @@ func (p *SearchItem) Input(options map[string]string) *SearchItem {
  * @param array options
  * @return object
  */
-func (p *SearchItem) Select(options map[string]string) *SearchItem {
+func (p *SearchItem) Select(options map[interface{}]interface{}) *SearchItem {
 	p.Component = "select"
 
-	var data []interface{}
+	var data []map[string]interface{}
+
 	for k, v := range options {
 		option := map[string]interface{}{
 			"label": v,
@@ -214,10 +214,11 @@ func (p *SearchItem) Select(options map[string]string) *SearchItem {
  * @param array options
  * @return object
  */
-func (p *SearchItem) MultipleSelect(options map[string]string) *SearchItem {
+func (p *SearchItem) MultipleSelect(options map[interface{}]interface{}) *SearchItem {
 	p.Component = "multipleSelect"
 
-	var data []interface{}
+	var data []map[string]interface{}
+
 	for k, v := range options {
 		option := map[string]interface{}{
 			"label": v,
@@ -239,9 +240,8 @@ func (p *SearchItem) MultipleSelect(options map[string]string) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) Datetime(options map[string]string) *SearchItem {
+func (p *SearchItem) Datetime(options map[interface{}]interface{}) *SearchItem {
 	p.Component = "datetime"
-	p.Options = options
 
 	return p
 }
@@ -252,9 +252,8 @@ func (p *SearchItem) Datetime(options map[string]string) *SearchItem {
  * @param string options
  * @return object
  */
-func (p *SearchItem) Date(options map[string]string) *SearchItem {
+func (p *SearchItem) Date(options map[interface{}]interface{}) *SearchItem {
 	p.Component = "date"
-	p.Options = options
 
 	return p
 }
@@ -265,10 +264,11 @@ func (p *SearchItem) Date(options map[string]string) *SearchItem {
  * @param array options
  * @return object
  */
-func (p *SearchItem) Cascader(options map[string]string) *SearchItem {
+func (p *SearchItem) Cascader(options map[interface{}]interface{}) *SearchItem {
 	p.Component = "cascader"
 
-	var data []interface{}
+	var data []map[string]interface{}
+
 	for k, v := range options {
 		option := map[string]interface{}{
 			"label": v,

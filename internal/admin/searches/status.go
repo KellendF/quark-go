@@ -32,14 +32,9 @@ func (p *Status) Apply(c *fiber.Ctx, query *gorm.DB, value interface{}) *gorm.DB
 	return query.Where("status = ?", status)
 }
 
-/**
- * 属性
- *
- * @param  Request  request
- * @return array
- */
-func (p *Status) Options(c *fiber.Ctx) map[string]string {
-	return map[string]string{
+// 属性
+func (p *Status) Options(c *fiber.Ctx) map[interface{}]interface{} {
+	return map[interface{}]interface{}{
 		"on":  "正常",
 		"off": "禁用",
 	}
