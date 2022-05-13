@@ -276,8 +276,8 @@ func (p *Item) parseFrontendRules(rules []string, messages map[string]string) []
 	return result
 }
 
-//设置前端验证规则
-func (p *Item) SetFrontendRules(c *fiber.Ctx) interface{} {
+// 自动创建前端验证规则
+func (p *Item) BuildFrontendRules(c *fiber.Ctx) interface{} {
 	frontendRules := []map[string]interface{}{}
 
 	var (
@@ -646,9 +646,12 @@ func (p *Item) SetColumn(f func(column *table.Column) *table.Column) *Item {
 // 当前列值的枚举 valueEnum
 func (p *Item) GetValueEnum() map[interface{}]interface{} {
 	data := map[interface{}]interface{}{}
-	for _, v := range p.Options.([]map[string]interface{}) {
 
-		data[v["value"]] = v["label"]
+	if options, ok := p.Options.([]map[string]interface{}); ok {
+		for _, v := range options {
+
+			data[v["value"]] = v["label"]
+		}
 	}
 
 	return data

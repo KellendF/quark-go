@@ -859,3 +859,12 @@ func (p *Field) Year(params ...interface{}) *fields.Year {
 
 	return field
 }
+
+// Select组合组件
+func (p *Field) Selects(body interface{}) *fields.Selects {
+	field := &fields.Selects{}
+
+	field.Init().SetBody(body)
+
+	return field
+}

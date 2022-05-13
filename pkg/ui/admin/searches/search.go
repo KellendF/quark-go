@@ -85,24 +85,17 @@ func (p *Search) GetDefault() interface{} {
 	return true
 }
 
-/**
- * 执行查询
- *
- * @param  Request  request
- * @param  Builder  query
- * @param  mixed  value
- * @return Builder
- */
+// 执行查询
 func (p *Search) Apply(c *fiber.Ctx, query *gorm.DB, value interface{}) *gorm.DB {
 	return query
 }
 
-/**
- * 属性
- *
- * @param  Request  request
- * @return array
- */
+// 属性
 func (p *Search) Options(c *fiber.Ctx) map[interface{}]interface{} {
+	return nil
+}
+
+// 单向联动,返回数据类型：map[string]string{"field": "you_want_load_field","api":   "admin/resource_name/action/select-options"}
+func (p *Search) Load(c *fiber.Ctx) map[string]string {
 	return nil
 }

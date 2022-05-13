@@ -34,6 +34,9 @@ func (p *Resource) IndexSearches(c *fiber.Ctx, resourceInstance interface{}) int
 		options := v.(interface {
 			Options(c *fiber.Ctx) map[interface{}]interface{}
 		}).Options(c) // 获取属性
+		load := v.(interface {
+			Load(c *fiber.Ctx) map[string]string
+		}).Load(c) // 获取接口
 
 		// 搜索栏表单项
 		item := (&table.SearchItem{}).
@@ -47,6 +50,11 @@ func (p *Resource) IndexSearches(c *fiber.Ctx, resourceInstance interface{}) int
 		case "input":
 			item = item.Input(options)
 		case "select":
+
+			if load != nil {
+				item.SetLoad(load["field"], load["api"])
+			}
+
 			item = item.Select(options)
 		case "multipleSelect":
 			item = item.MultipleSelect(options)

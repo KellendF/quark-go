@@ -16,13 +16,14 @@ func (p *Resource) IndexFields(c *fiber.Ctx, resourceInstance interface{}) inter
 	var items []interface{}
 
 	for _, v := range fields.([]interface{}) {
-
-		isShownOnIndex := v.(interface {
+		if v, ok := v.(interface {
 			IsShownOnIndex() bool
-		}).IsShownOnIndex()
+		}); ok {
+			isShownOnIndex := v.IsShownOnIndex()
 
-		if isShownOnIndex {
-			items = append(items, v)
+			if isShownOnIndex {
+				items = append(items, v)
+			}
 		}
 	}
 
@@ -35,7 +36,6 @@ func (p *Resource) IndexColumns(c *fiber.Ctx, resourceInstance interface{}) inte
 	var columns []interface{}
 
 	for _, v := range fields.([]interface{}) {
-
 		isShownOnIndex := v.(interface {
 			IsShownOnIndex() bool
 		}).IsShownOnIndex()
@@ -231,8 +231,8 @@ func (p *Resource) CreationFieldsWithinComponents(c *fiber.Ctx, resourceInstance
 
 				if isShownOnCreation {
 					sv.(interface {
-						SetFrontendRules(c *fiber.Ctx) interface{}
-					}).SetFrontendRules(c)
+						BuildFrontendRules(c *fiber.Ctx) interface{}
+					}).BuildFrontendRules(c)
 
 					subItems = append(subItems, sv)
 				}
@@ -250,8 +250,8 @@ func (p *Resource) CreationFieldsWithinComponents(c *fiber.Ctx, resourceInstance
 
 			if isShownOnCreation {
 				v.(interface {
-					SetFrontendRules(c *fiber.Ctx) interface{}
-				}).SetFrontendRules(c)
+					BuildFrontendRules(c *fiber.Ctx) interface{}
+				}).BuildFrontendRules(c)
 				items = append(items, v)
 			}
 		}
@@ -330,8 +330,8 @@ func (p *Resource) UpdateFieldsWithinComponents(c *fiber.Ctx, resourceInstance i
 				if isShownOnUpdate {
 
 					sv.(interface {
-						SetFrontendRules(c *fiber.Ctx) interface{}
-					}).SetFrontendRules(c)
+						BuildFrontendRules(c *fiber.Ctx) interface{}
+					}).BuildFrontendRules(c)
 
 					subItems = append(subItems, sv)
 				}
@@ -347,8 +347,8 @@ func (p *Resource) UpdateFieldsWithinComponents(c *fiber.Ctx, resourceInstance i
 			if isShownOnUpdate {
 
 				v.(interface {
-					SetFrontendRules(c *fiber.Ctx) interface{}
-				}).SetFrontendRules(c)
+					BuildFrontendRules(c *fiber.Ctx) interface{}
+				}).BuildFrontendRules(c)
 
 				items = append(items, v)
 			}
@@ -535,39 +535,47 @@ func (p *Resource) getFieldsWithoutWhen(c *fiber.Ctx, resourceInstance interface
 func (p *Resource) findFields(fields interface{}, when bool) interface{} {
 	var items []interface{}
 
-	for _, v := range fields.([]interface{}) {
-		hasBody := reflect.
-			ValueOf(v).
-			Elem().
-			FieldByName("Body").IsValid()
-
-		if hasBody {
-			body := reflect.
+	if fields, ok := fields.([]interface{}); ok {
+		for _, v := range fields {
+			hasBody := reflect.
 				ValueOf(v).
 				Elem().
-				FieldByName("Body").Interface()
+				FieldByName("Body").IsValid()
 
-			getItems := p.findFields(body, true)
+			if hasBody {
+				body := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Body").Interface()
 
-			items = append(items, getItems)
-		} else {
+				getItems := p.findFields(body, true)
 
-			component := reflect.
-				ValueOf(v).
-				Elem().
-				FieldByName("Component").String()
+				if getItems, ok := getItems.([]interface{}); ok {
+					if len(getItems) > 0 {
+						items = append(items, getItems...)
+					}
+				}
 
-			if strings.Contains(component, "Field") {
-				items = append(items, v)
-				if when {
-					whenFields := p.getWhenFields(v)
-					if len(whenFields) > 0 {
-						items = append(items, whenFields)
+			} else {
+
+				component := reflect.
+					ValueOf(v).
+					Elem().
+					FieldByName("Component").String()
+
+				if strings.Contains(component, "Field") {
+					items = append(items, v)
+					if when {
+						whenFields := p.getWhenFields(v)
+						if len(whenFields) > 0 {
+							items = append(items, whenFields...)
+						}
 					}
 				}
 			}
 		}
 	}
+
 	return items
 }
 
@@ -604,7 +612,16 @@ func (p *Resource) getWhenFields(item interface{}) []interface{} {
 				FieldByName("Body").Interface()
 
 			if body != nil {
-				items = append(items, body)
+
+				if body, ok := body.([]interface{}); ok {
+					if len(body) > 0 {
+						items = append(items, body...)
+					}
+				}
+
+				if body, ok := body.(interface{}); ok {
+					items = append(items, body)
+				}
 			}
 		}
 	}

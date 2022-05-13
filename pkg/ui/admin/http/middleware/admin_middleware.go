@@ -10,6 +10,7 @@ type AdminMiddleware struct{}
 
 // 后台中间件
 func (p *AdminMiddleware) Handle(c *fiber.Ctx) error {
+
 	guardName := utils.Admin(c, "guard_name")
 	if guardName != "admin" {
 		return c.SendStatus(401)
