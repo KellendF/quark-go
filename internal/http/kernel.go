@@ -36,7 +36,7 @@ func (p *Kernel) Run(assets fs.FS) {
 	app.Use("/admin", func(c *fiber.Ctx) error {
 		originalUrl := c.OriginalURL()
 
-		if !strings.HasSuffix(originalUrl, "/") {
+		if !strings.HasSuffix(originalUrl, "/") && !strings.Contains("originalUrl", ".") {
 			return c.Redirect(originalUrl + "/")
 		}
 
