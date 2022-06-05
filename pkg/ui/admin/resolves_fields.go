@@ -337,7 +337,10 @@ func (p *Resource) UpdateFieldsWithinComponents(c *fiber.Ctx, resourceInstance i
 				}
 			}
 
-			v.(interface{ SetBody(interface{}) interface{} }).SetBody(subItems)
+			v.(interface {
+				SetBody(interface{}) *tabs.TabPane
+			}).SetBody(subItems)
+
 			items = append(items, v)
 		} else {
 			isShownOnUpdate := v.(interface {
