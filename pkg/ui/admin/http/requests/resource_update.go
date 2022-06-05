@@ -57,6 +57,8 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 		Elem().
 		FieldByName("Model").Interface()
 
+	zeroValues := map[string]interface{}{}
+
 	for _, v := range fields.([]interface{}) {
 
 		name := reflect.
@@ -100,6 +102,11 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 
 				if value, ok := formValue.(float64); ok {
 					reflectValue = reflect.ValueOf(int(value))
+
+					// 因为gorm结构体不更新零值，使用map记录零值，单独更新
+					if int(value) == 0 {
+						zeroValues[fieldName] = 0
+					}
 				}
 			case "time.Time":
 				getTime, _ := time.ParseInLocation("2006-01-02 15:04:05", formValue.(string), time.Local)
@@ -118,6 +125,11 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 
 	// 获取对象
 	getModel := model.Where("id = ?", data["id"]).Updates(modelInstance)
+
+	// 因为gorm使用结构体，不更新零值，需要使用map更新零值
+	if len(zeroValues) > 0 {
+		getModel = model.Where("id = ?", data["id"]).Updates(zeroValues)
+	}
 
 	return resourceInstance.(interface {
 		AfterSaved(c *fiber.Ctx, model *gorm.DB) interface{}
