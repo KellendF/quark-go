@@ -47,7 +47,7 @@ func (p *Kernel) Run(assets fs.FS) {
 	app.Static("/", "./public", fiber.Static{
 		Compress:      true,
 		ByteRange:     true,
-		Browse:        true,
+		Browse:        false,
 		Index:         "index.html",
 		CacheDuration: 1 * time.Second,
 		MaxAge:        3600,

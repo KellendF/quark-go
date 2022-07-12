@@ -31,9 +31,9 @@ func consoleService() {
 
 func main() {
 
+	// 控制台应用
+	go consoleService()
+
 	// 网站应用
 	httpService()
-
-	// 控制台应用
-	// consoleService()
 }
