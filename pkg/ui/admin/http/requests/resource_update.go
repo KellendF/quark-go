@@ -97,6 +97,7 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 						reflectValue = reflect.ValueOf(1)
 					} else {
 						reflectValue = reflect.ValueOf(0)
+						zeroValues[fieldName] = 0
 					}
 				}
 
