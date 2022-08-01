@@ -16,7 +16,7 @@ type Install struct {
 
 // 初始化
 func (p *Install) Init() *Install {
-	p.Signature = "install"
+	p.Signature = "go artisan install"
 	p.Description = ""
 
 	return p
@@ -54,6 +54,6 @@ func (p *Install) Handle() {
 	file.Close()
 
 	color.Set(color.FgGreen)
-	fmt.Println("The application installed successfully")
+	fmt.Println("The application have been installed.")
 	color.Unset()
 }

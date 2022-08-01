@@ -22,6 +22,8 @@ vendor/
 
 tmp/
 
+public/storage/
+
 .env
 
 install.lock

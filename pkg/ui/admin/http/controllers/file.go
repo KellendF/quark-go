@@ -122,7 +122,7 @@ func (p *File) LocalUploadFromBase64(c *fiber.Ctx) error {
 	result := map[string]interface{}{
 		"id":   id,
 		"name": fileName,
-		"url":  c.BaseURL() + strings.Replace(filePath+fileName, "./storage/app/public", "/storage", -1),
+		"url":  strings.Replace(filePath+fileName, "./storage/app/public", "/storage", -1),
 		"size": fileSize,
 	}
 
@@ -277,7 +277,7 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 		result = map[string]interface{}{
 			"id":   fileInfo["id"],
 			"name": fileInfo["name"],
-			"url":  c.BaseURL() + strings.Replace(fileInfo["path"].(string), "./storage/app/public", "/storage", -1),
+			"url":  strings.Replace(fileInfo["path"].(string), "./storage/app/public", "/storage", -1),
 			"size": fileInfo["size"],
 		}
 
@@ -315,7 +315,7 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 	result = map[string]interface{}{
 		"id":   id,
 		"name": fileName,
-		"url":  c.BaseURL() + strings.Replace(filePath+fileNewName, "./storage/app/public", "/storage", -1),
+		"url":  strings.Replace(filePath+fileNewName, "./storage/app/public", "/storage", -1),
 		"size": fileSize,
 	}
 
@@ -471,5 +471,5 @@ func (p *File) Download(c *fiber.Ctx) error {
 		return c.Redirect(path)
 	}
 
-	return c.Redirect(c.BaseURL() + strings.Replace(path, "./storage/app/public", "/storage", -1))
+	return c.Redirect(strings.Replace(path, "./storage/app/public", "/storage", -1))
 }

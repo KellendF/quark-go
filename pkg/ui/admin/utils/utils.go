@@ -198,7 +198,7 @@ func GetPicture(c *fiber.Ctx, id interface{}) string {
 		}
 
 		if strings.Contains(path, "./") {
-			return c.BaseURL() + strings.Replace(path, "./storage/app/public", "/storage", -1)
+			return strings.Replace(path, "./storage/app/public", "/storage", -1)
 		}
 	}
 
@@ -213,11 +213,11 @@ func GetPicture(c *fiber.Ctx, id interface{}) string {
 		}
 
 		if strings.Contains(path, "./") {
-			return c.BaseURL() + strings.Replace(path, "./storage/app/public", "/storage", -1)
+			return strings.Replace(path, "./storage/app/public", "/storage", -1)
 		}
 	}
 
-	return c.BaseURL() + "/admin/default.png"
+	return "/admin/default.png"
 }
 
 // 文件结构体
@@ -262,7 +262,7 @@ func GetFile(c *fiber.Ctx, id interface{}) string {
 		}
 
 		if strings.Contains(path, "./") {
-			return c.BaseURL() + strings.Replace(path, "./storage/app/public", "/storage", -1)
+			return strings.Replace(path, "./storage/app/public", "/storage", -1)
 		}
 	}
 
@@ -277,7 +277,7 @@ func GetFile(c *fiber.Ctx, id interface{}) string {
 		}
 
 		if strings.Contains(path, "./") {
-			return c.BaseURL() + strings.Replace(path, "./storage/app/public", "/storage", -1)
+			return strings.Replace(path, "./storage/app/public", "/storage", -1)
 		}
 	}
 

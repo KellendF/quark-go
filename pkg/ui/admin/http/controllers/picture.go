@@ -59,7 +59,7 @@ func (p *Picture) GetLists(c *fiber.Ctx) error {
 
 	for k, v := range pictures {
 		if strings.Contains(v["path"].(string), "./") {
-			v["path"] = c.BaseURL() + strings.Replace(v["path"].(string), "./storage/app/public", "/storage", -1) + "?timestamp=" + strconv.Itoa(int(time.Now().Unix()))
+			v["path"] = strings.Replace(v["path"].(string), "./storage/app/public", "/storage", -1) + "?timestamp=" + strconv.Itoa(int(time.Now().Unix()))
 			pictures[k] = v
 		}
 	}
@@ -211,7 +211,7 @@ func (p *Picture) LocalUploadFromBase64(c *fiber.Ctx) error {
 	result := map[string]interface{}{
 		"id":   id,
 		"name": fileName,
-		"url":  c.BaseURL() + strings.Replace(filePath+fileName, "./storage/app/public", "/storage", -1),
+		"url":  strings.Replace(filePath+fileName, "./storage/app/public", "/storage", -1),
 		"size": fileSize,
 	}
 
@@ -434,7 +434,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 		result = map[string]interface{}{
 			"id":   picture["id"],
 			"name": picture["name"],
-			"url":  c.BaseURL() + strings.Replace(picture["path"].(string), "./storage/app/public", "/storage", -1),
+			"url":  strings.Replace(picture["path"].(string), "./storage/app/public", "/storage", -1),
 			"size": picture["size"],
 		}
 
@@ -474,7 +474,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 	result = map[string]interface{}{
 		"id":   id,
 		"name": fileName,
-		"url":  c.BaseURL() + strings.Replace(filePath+fileNewName, "./storage/app/public", "/storage", -1),
+		"url":  strings.Replace(filePath+fileNewName, "./storage/app/public", "/storage", -1),
 		"size": fileSize,
 	}
 
@@ -680,7 +680,7 @@ func (p *Picture) Download(c *fiber.Ctx) error {
 		return c.Redirect(path)
 	}
 
-	return c.Redirect(c.BaseURL() + strings.Replace(path, "./storage/app/public", "/storage", -1))
+	return c.Redirect(strings.Replace(path, "./storage/app/public", "/storage", -1))
 }
 
 // 图片删除
