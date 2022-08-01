@@ -22,7 +22,7 @@ vendor/
 
 tmp/
 
-public/storage/
+public/storage
 
 .env
 
