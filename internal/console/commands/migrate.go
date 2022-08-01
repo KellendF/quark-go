@@ -13,7 +13,7 @@ type Migrate struct {
 
 // 初始化
 func (p *Migrate) Init() *Migrate {
-	p.Signature = "go artisan migrate"
+	p.Signature = "migrate"
 	p.Description = ""
 
 	return p

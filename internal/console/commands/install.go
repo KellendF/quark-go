@@ -16,7 +16,7 @@ type Install struct {
 
 // 初始化
 func (p *Install) Init() *Install {
-	p.Signature = "go artisan install"
+	p.Signature = "install"
 	p.Description = ""
 
 	return p

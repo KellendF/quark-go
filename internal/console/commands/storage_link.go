@@ -14,7 +14,7 @@ type StorageLink struct {
 
 // 初始化
 func (p *StorageLink) Init() *StorageLink {
-	p.Signature = "go artisan storage:link"
+	p.Signature = "storage:link"
 	p.Description = ""
 
 	return p

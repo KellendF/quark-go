@@ -13,7 +13,7 @@ type DBSeed struct {
 
 // 初始化
 func (p *DBSeed) Init() *DBSeed {
-	p.Signature = "go artisan db:seed"
+	p.Signature = "db:seed"
 	p.Description = ""
 
 	return p
