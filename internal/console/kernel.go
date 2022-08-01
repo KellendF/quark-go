@@ -14,6 +14,8 @@ type Kernel struct{}
 // 注册服务
 var Commands = []interface{}{
 	(&commands.Install{}).Init(),
+	(&commands.Migrate{}).Init(),
+	(&commands.DBSeed{}).Init(),
 	(&commands.StorageLink{}).Init(),
 }
 
