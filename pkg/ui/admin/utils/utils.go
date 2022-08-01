@@ -180,7 +180,7 @@ func GetPicture(c *fiber.Ctx, id interface{}) string {
 		// json字符串
 		if strings.Contains(getId, "{") {
 			var jsonData interface{}
-			json.Unmarshal([]byte(getId), jsonData)
+			json.Unmarshal([]byte(getId), &jsonData)
 
 			// 如果为map
 			if mapData, ok := jsonData.(map[string]interface{}); ok {
@@ -244,7 +244,7 @@ func GetFile(c *fiber.Ctx, id interface{}) string {
 		// json字符串
 		if strings.Contains(getId, "{") {
 			var jsonData interface{}
-			json.Unmarshal([]byte(getId), jsonData)
+			json.Unmarshal([]byte(getId), &jsonData)
 
 			// 如果为map
 			if mapData, ok := jsonData.(map[string]interface{}); ok {

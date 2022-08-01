@@ -1,6 +1,9 @@
 package resources
 
 import (
+	"encoding/json"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/admin/actions"
 	"github.com/quarkcms/quark-go/internal/models"
@@ -138,6 +141,25 @@ func (p *WebConfig) BeforeCreating(c *fiber.Ctx) map[string]interface{} {
 				data[config["name"].(string)] = true
 			} else {
 				data[config["name"].(string)] = false
+			}
+		}
+
+		if config["type"] == "picture" || config["type"] == "file" {
+
+			// json字符串
+			if strings.Contains(config["value"].(string), "{") {
+				var jsonData interface{}
+				json.Unmarshal([]byte(config["value"].(string)), &jsonData)
+
+				// 如果为map
+				if mapData, ok := jsonData.(map[string]interface{}); ok {
+					data[config["name"].(string)] = mapData
+				}
+
+				// 如果为数组，返回第一个key的path
+				if arrayData, ok := jsonData.([]map[string]interface{}); ok {
+					data[config["name"].(string)] = arrayData
+				}
 			}
 		}
 	}
