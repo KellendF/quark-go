@@ -184,12 +184,12 @@ func GetPicture(c *fiber.Ctx, id interface{}) string {
 
 			// 如果为map
 			if mapData, ok := jsonData.(map[string]interface{}); ok {
-				path = mapData["path"].(string)
+				path = mapData["url"].(string)
 			}
 
 			// 如果为数组，返回第一个key的path
 			if arrayData, ok := jsonData.([]map[string]interface{}); ok {
-				path = arrayData[0]["path"].(string)
+				path = arrayData[0]["url"].(string)
 			}
 		}
 
