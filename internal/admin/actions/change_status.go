@@ -54,7 +54,7 @@ func (p *ChangeStatus) Handle(c *fiber.Ctx, model *gorm.DB) error {
 	status := c.Query("status")
 
 	if status == "" {
-		return msg.Error("参数错误！", "")
+		return msg.Error(c, "参数错误！", "")
 	}
 
 	var fieldStatus int
@@ -69,8 +69,8 @@ func (p *ChangeStatus) Handle(c *fiber.Ctx, model *gorm.DB) error {
 	result = model.Update("status", fieldStatus).Error
 
 	if result == nil {
-		return msg.Success("操作成功！", "", "")
+		return msg.Success(c, "操作成功！", "", "")
 	} else {
-		return msg.Error("操作失败，请重试！", "")
+		return msg.Error(c, "操作失败，请重试！", "")
 	}
 }

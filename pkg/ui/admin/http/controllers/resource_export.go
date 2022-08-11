@@ -134,7 +134,7 @@ func (p *ResourceExport) Handle(c *fiber.Ctx) error {
 	if utils.PathExist(filePath) == false {
 		err := os.MkdirAll(filePath, 0666)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 	}
 

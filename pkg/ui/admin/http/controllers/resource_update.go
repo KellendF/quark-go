@@ -16,7 +16,7 @@ func (p *ResourceUpdate) Handle(c *fiber.Ctx) error {
 	if value, ok := result.(error); ok {
 		errorMsg := value.Error()
 		if errorMsg != "" {
-			return msg.Error(errorMsg, "")
+			return msg.Error(c, errorMsg, "")
 		} else {
 			return value
 		}
@@ -24,11 +24,11 @@ func (p *ResourceUpdate) Handle(c *fiber.Ctx) error {
 
 	if value, ok := result.(*gorm.DB); ok {
 		if value.Error == nil {
-			return msg.Success("操作成功！", "/index?api=admin/"+c.Params("resource")+"/index", "")
+			return msg.Success(c, "操作成功！", "/index?api=admin/"+c.Params("resource")+"/index", "")
 		} else {
-			return msg.Error("操作失败！", "")
+			return msg.Error(c, "操作失败！", "")
 		}
 	}
 
-	return msg.Error("错误！", "")
+	return msg.Error(c, "错误！", "")
 }

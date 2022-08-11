@@ -45,12 +45,12 @@ func (p *Login) Login(c *fiber.Ctx) error {
 		return err
 	}
 
-	if !(&Captcha{}).Check(request.Captcha) {
-		return msg.Error("验证码错误", msg.DEFAULT_URL)
+	if !(&Captcha{}).Check(c, request.Captcha) {
+		return msg.Error(c, "验证码错误", msg.DEFAULT_URL)
 	}
 
 	if request.Username == "" || request.Password == "" {
-		return msg.Error("用户名或密码不能为空", msg.DEFAULT_URL)
+		return msg.Error(c, "用户名或密码不能为空", msg.DEFAULT_URL)
 	}
 
 	model := &models.Admin{}
@@ -58,7 +58,7 @@ func (p *Login) Login(c *fiber.Ctx) error {
 
 	// 检验账号和密码
 	if !hash.Check(admin.Password, request.Password) {
-		return msg.Error("用户名或密码错误", msg.DEFAULT_URL)
+		return msg.Error(c, "用户名或密码错误", msg.DEFAULT_URL)
 	}
 
 	data := make(map[string]interface{})
@@ -72,11 +72,11 @@ func (p *Login) Login(c *fiber.Ctx) error {
 	getToken, _ := token.Make(data)
 	data["token"] = getToken
 
-	return msg.Success("登录成功", msg.DEFAULT_URL, data)
+	return msg.Success(c, "登录成功", msg.DEFAULT_URL, data)
 }
 
 // 用户退出方法
 func (p *Login) Logout(c *fiber.Ctx) error {
 
-	return msg.Success("已退出", msg.DEFAULT_URL, msg.DEFAULT_DATA)
+	return msg.Success(c, "已退出", msg.DEFAULT_URL, msg.DEFAULT_DATA)
 }

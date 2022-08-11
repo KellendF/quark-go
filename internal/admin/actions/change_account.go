@@ -34,8 +34,8 @@ func (p *ChangeAccount) Handle(c *fiber.Ctx, model *gorm.DB) error {
 	result := model.Where("id", utils.Admin(c, "id")).Updates(data).Error
 
 	if result != nil {
-		return msg.Error(result.Error(), "")
+		return msg.Error(c, result.Error(), "")
 	}
 
-	return msg.Success("操作成功！", "", "")
+	return msg.Success(c, "操作成功！", "", "")
 }

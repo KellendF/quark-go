@@ -57,5 +57,5 @@ func (p *ResourceEdit) Values(c *fiber.Ctx) error {
 		BeforeEditing(*fiber.Ctx, map[string]interface{}) map[string]interface{}
 	}).BeforeEditing(c, data)
 
-	return msg.Success("获取成功", "", data)
+	return msg.Success(c, "获取成功", "", data)
 }

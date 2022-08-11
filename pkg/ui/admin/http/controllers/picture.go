@@ -78,7 +78,7 @@ func (p *Picture) GetLists(c *fiber.Ctx) error {
 		Where("obj_id", utils.Admin(c, "id")).
 		Find(&categorys)
 
-	return msg.Success("获取成功", "", map[string]interface{}{
+	return msg.Success(c, "获取成功", "", map[string]interface{}{
 		"pagination": pagination,
 		"lists":      pictures,
 		"categorys":  categorys,
@@ -119,7 +119,7 @@ func (p *Picture) LocalUploadFromBase64(c *fiber.Ctx) error {
 
 	fileArray := strings.Split(datasource, ",")
 	if len(fileArray) != 2 {
-		return msg.Error("图片格式错误!", "")
+		return msg.Error(c, "图片格式错误!", "")
 	}
 
 	fileExt := ""
@@ -136,34 +136,34 @@ func (p *Picture) LocalUploadFromBase64(c *fiber.Ctx) error {
 
 	// 限制格式
 	if fileExt == "" {
-		return msg.Error("只能上传jpg,jpeg,png,gif格式图片!", "")
+		return msg.Error(c, "只能上传jpg,jpeg,png,gif格式图片!", "")
 	}
 
 	base64Buffer, err := base64.StdEncoding.DecodeString(fileArray[1]) //成图片文件并把文件写入到buffer
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	file := bytes.NewBuffer(base64Buffer) // 必须加一个buffer 不然没有read方法就会报错
 	imageConfig, _, err := image.DecodeConfig(file)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 限制宽高
 	if limitW != "" && limitH != "" {
 		w, err := strconv.Atoi(limitW)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		h, err := strconv.Atoi(limitH)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		if imageConfig.Width != w || imageConfig.Height != h {
-			return msg.Error("请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
+			return msg.Error(c, "请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
 		}
 	}
 
@@ -174,7 +174,7 @@ func (p *Picture) LocalUploadFromBase64(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(file)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -182,14 +182,14 @@ func (p *Picture) LocalUploadFromBase64(c *fiber.Ctx) error {
 	if utils.PathExist(filePath) == false {
 		err := os.MkdirAll(filePath, 0666)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 	}
 
 	// 保存文件
 	err = ioutil.WriteFile(filePath+fileName, base64Buffer, 0666)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	id := (&models.Picture{}).InsertGetId(map[string]interface{}{
@@ -205,7 +205,7 @@ func (p *Picture) LocalUploadFromBase64(c *fiber.Ctx) error {
 	})
 
 	if id == 0 {
-		return msg.Error("上传失败！", "")
+		return msg.Error(c, "上传失败！", "")
 	}
 
 	result := map[string]interface{}{
@@ -215,7 +215,7 @@ func (p *Picture) LocalUploadFromBase64(c *fiber.Ctx) error {
 		"size": fileSize,
 	}
 
-	return msg.Success("上传成功！", "", result)
+	return msg.Success(c, "上传成功！", "", result)
 }
 
 // 通过base64字符串上传图片
@@ -226,7 +226,7 @@ func (p *Picture) OssUploadFromBase64(c *fiber.Ctx) error {
 
 	fileArray := strings.Split(datasource, ",")
 	if len(fileArray) != 2 {
-		return msg.Error("图片格式错误!", "")
+		return msg.Error(c, "图片格式错误!", "")
 	}
 
 	fileExt := ""
@@ -243,34 +243,34 @@ func (p *Picture) OssUploadFromBase64(c *fiber.Ctx) error {
 
 	// 限制格式
 	if fileExt == "" {
-		return msg.Error("只能上传jpg,jpeg,png,gif格式图片!", "")
+		return msg.Error(c, "只能上传jpg,jpeg,png,gif格式图片!", "")
 	}
 
 	base64Buffer, err := base64.StdEncoding.DecodeString(fileArray[1]) //成图片文件并把文件写入到buffer
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	file := bytes.NewBuffer(base64Buffer) // 必须加一个buffer 不然没有read方法就会报错
 	imageConfig, _, err := image.DecodeConfig(file)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 限制宽高
 	if limitW != "" && limitH != "" {
 		w, err := strconv.Atoi(limitW)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		h, err := strconv.Atoi(limitH)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		if imageConfig.Width != w || imageConfig.Height != h {
-			return msg.Error("请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
+			return msg.Error(c, "请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
 		}
 	}
 
@@ -281,7 +281,7 @@ func (p *Picture) OssUploadFromBase64(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(file)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -293,12 +293,12 @@ func (p *Picture) OssUploadFromBase64(c *fiber.Ctx) error {
 
 	client, err := oss.New(endpoint, accessKeyId, accessKeySecret)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	bucket, err := client.Bucket(ossBucket)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 指定Object访问权限
@@ -306,7 +306,7 @@ func (p *Picture) OssUploadFromBase64(c *fiber.Ctx) error {
 
 	err = bucket.PutObject(filePath+fileName, bytes.NewBuffer(base64Buffer), objectAcl)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	path := ""
@@ -329,7 +329,7 @@ func (p *Picture) OssUploadFromBase64(c *fiber.Ctx) error {
 	})
 
 	if id == 0 {
-		return msg.Error("上传失败！", "")
+		return msg.Error(c, "上传失败！", "")
 	}
 
 	result := map[string]interface{}{
@@ -339,7 +339,7 @@ func (p *Picture) OssUploadFromBase64(c *fiber.Ctx) error {
 		"size": fileSize,
 	}
 
-	return msg.Success("上传成功！", "", result)
+	return msg.Success(c, "上传成功！", "", result)
 }
 
 // 图片上传到本地
@@ -367,13 +367,13 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 
 	// 限制格式
 	if typeAllowed == false {
-		return msg.Error("只能上传jpg,jpeg,png,gif格式图片!", "")
+		return msg.Error(c, "只能上传jpg,jpeg,png,gif格式图片!", "")
 	}
 
 	f, err := file.Open()
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	defer func() {
@@ -386,23 +386,23 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 	imageConfig, _, err := image.DecodeConfig(f)
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 限制宽高
 	if limitW != "" && limitH != "" {
 		w, err := strconv.Atoi(limitW)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		h, err := strconv.Atoi(limitH)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		if imageConfig.Width != w || imageConfig.Height != h {
-			return msg.Error("请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
+			return msg.Error(c, "请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
 		}
 	}
 
@@ -412,7 +412,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 
 	fileNames := strings.Split(fileName, ".")
 	if len(fileNames) <= 1 {
-		return msg.Error("无法获取文件扩展名！", "")
+		return msg.Error(c, "无法获取文件扩展名！", "")
 	}
 
 	fileExt := fileNames[len(fileNames)-1]
@@ -421,7 +421,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(f)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -438,21 +438,21 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 			"size": picture["size"],
 		}
 
-		return msg.Success("上传成功！", "", result)
+		return msg.Success(c, "上传成功！", "", result)
 	}
 
 	// 不存在路径，则创建
 	if utils.PathExist(filePath) == false {
 		err := os.MkdirAll(filePath, 0666)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 	}
 
 	// 保存文件
 	err = c.SaveFile(file, filePath+fileNewName)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	id := (&models.Picture{}).InsertGetId(map[string]interface{}{
@@ -468,7 +468,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 	})
 
 	if id == 0 {
-		return msg.Error("上传失败！", "")
+		return msg.Error(c, "上传失败！", "")
 	}
 
 	result = map[string]interface{}{
@@ -478,7 +478,7 @@ func (p *Picture) LocalUpload(c *fiber.Ctx) error {
 		"size": fileSize,
 	}
 
-	return msg.Success("上传成功！", "", result)
+	return msg.Success(c, "上传成功！", "", result)
 }
 
 // 图片上传到阿里云OSS
@@ -507,13 +507,13 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 
 	// 限制格式
 	if typeAllowed == false {
-		return msg.Error("只能上传jpg,jpeg,png,gif格式图片!", "")
+		return msg.Error(c, "只能上传jpg,jpeg,png,gif格式图片!", "")
 	}
 
 	f, err := file.Open()
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	defer func() {
@@ -526,23 +526,23 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 	imageConfig, _, err := image.DecodeConfig(f)
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 限制宽高
 	if limitW != "" && limitH != "" {
 		w, err := strconv.Atoi(limitW)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		h, err := strconv.Atoi(limitH)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		if imageConfig.Width != w || imageConfig.Height != h {
-			return msg.Error("请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
+			return msg.Error(c, "请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
 		}
 	}
 
@@ -552,7 +552,7 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 
 	fileNames := strings.Split(fileName, ".")
 	if len(fileNames) <= 1 {
-		return msg.Error("无法获取文件扩展名！", "")
+		return msg.Error(c, "无法获取文件扩展名！", "")
 	}
 
 	fileExt := fileNames[len(fileNames)-1]
@@ -561,7 +561,7 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(f)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -578,7 +578,7 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 			"size": picture["size"],
 		}
 
-		return msg.Success("上传成功！", "", result)
+		return msg.Success(c, "上传成功！", "", result)
 	}
 
 	accessKeyId := utils.WebConfig("OSS_ACCESS_KEY_ID")
@@ -589,12 +589,12 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 
 	client, err := oss.New(endpoint, accessKeyId, accessKeySecret)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	bucket, err := client.Bucket(ossBucket)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 指定Object访问权限
@@ -603,7 +603,7 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 	getFile, err := file.Open()
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	defer func() {
@@ -615,7 +615,7 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 
 	err = bucket.PutObject(filePath+fileNewName, getFile, objectAcl)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	path := ""
@@ -638,7 +638,7 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 	})
 
 	if id == 0 {
-		return msg.Error("上传失败！", "")
+		return msg.Error(c, "上传失败！", "")
 	}
 
 	result = map[string]interface{}{
@@ -648,7 +648,7 @@ func (p *Picture) OssUpload(c *fiber.Ctx) error {
 		"size": fileSize,
 	}
 
-	return msg.Success("上传成功！", "", result)
+	return msg.Success(c, "上传成功！", "", result)
 }
 
 // 图片下载
@@ -656,24 +656,24 @@ func (p *Picture) Download(c *fiber.Ctx) error {
 	id := c.Query("id")
 
 	if id == "" {
-		return msg.Error("参数错误！", "")
+		return msg.Error(c, "参数错误！", "")
 	}
 
 	picture := map[string]interface{}{}
 	err := (&db.Model{}).Model(&models.Picture{}).Where("id =?", id).First(&picture).Error
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	if len(picture) == 0 {
-		return msg.Error("无此数据！", "")
+		return msg.Error(c, "无此数据！", "")
 	}
 
 	path, ok := picture["path"].(string)
 
 	if !ok {
-		return msg.Error("路径错误！", "")
+		return msg.Error(c, "路径错误！", "")
 	}
 
 	if strings.Contains(path, "//") {
@@ -689,15 +689,15 @@ func (p *Picture) Delete(c *fiber.Ctx) error {
 	json.Unmarshal(c.Body(), &data)
 
 	if data["id"] == "" {
-		return msg.Error("参数错误！", "")
+		return msg.Error(c, "参数错误！", "")
 	}
 
 	err := (&db.Model{}).Model(&models.Picture{}).Where("id =?", data["id"]).Delete("").Error
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	} else {
-		return msg.Success("操作成功！", "", "")
+		return msg.Success(c, "操作成功！", "", "")
 	}
 }
 
@@ -709,18 +709,18 @@ func (p *Picture) Crop(c *fiber.Ctx) error {
 	json.Unmarshal(c.Body(), &data)
 
 	if data["id"] == "" {
-		return msg.Error("参数错误！", "")
+		return msg.Error(c, "参数错误！", "")
 	}
 
 	if data["file"] == "" {
-		return msg.Error("参数错误！", "")
+		return msg.Error(c, "参数错误！", "")
 	}
 
 	picture := map[string]interface{}{}
 	err := (&db.Model{}).Model(&models.Picture{}).Where("id =?", data["id"]).First(&picture).Error
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	datasource := data["file"]
@@ -729,7 +729,7 @@ func (p *Picture) Crop(c *fiber.Ctx) error {
 
 	fileArray := strings.Split(datasource.(string), ",")
 	if len(fileArray) != 2 {
-		return msg.Error("图片格式错误!", "")
+		return msg.Error(c, "图片格式错误!", "")
 	}
 
 	fileExt := ""
@@ -746,34 +746,34 @@ func (p *Picture) Crop(c *fiber.Ctx) error {
 
 	// 限制格式
 	if fileExt == "" {
-		return msg.Error("只能上传jpg,jpeg,png,gif格式图片!", "")
+		return msg.Error(c, "只能上传jpg,jpeg,png,gif格式图片!", "")
 	}
 
 	base64Buffer, err := base64.StdEncoding.DecodeString(fileArray[1]) //成图片文件并把文件写入到buffer
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	file := bytes.NewBuffer(base64Buffer) // 必须加一个buffer 不然没有read方法就会报错
 	imageConfig, _, err := image.DecodeConfig(file)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 限制宽高
 	if limitW != "" && limitH != "" {
 		w, err := strconv.Atoi(limitW)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		h, err := strconv.Atoi(limitH)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		if imageConfig.Width != w || imageConfig.Height != h {
-			return msg.Error("请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
+			return msg.Error(c, "请上传 "+limitW+"*"+limitH+" 尺寸的图片", "")
 		}
 	}
 
@@ -782,7 +782,7 @@ func (p *Picture) Crop(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(file)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -795,12 +795,12 @@ func (p *Picture) Crop(c *fiber.Ctx) error {
 
 		client, err := oss.New(endpoint, accessKeyId, accessKeySecret)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		bucket, err := client.Bucket(ossBucket)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		// 指定Object访问权限
@@ -808,7 +808,7 @@ func (p *Picture) Crop(c *fiber.Ctx) error {
 
 		err = bucket.PutObject(picture["path"].(string), bytes.NewBuffer(base64Buffer), objectAcl)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		result = (&db.Model{}).Model(&models.Picture{}).Where("id", data["id"]).Updates(map[string]interface{}{
@@ -821,7 +821,7 @@ func (p *Picture) Crop(c *fiber.Ctx) error {
 		// 保存文件
 		err = ioutil.WriteFile(picture["path"].(string), base64Buffer, 0666)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 
 		result = (&db.Model{}).Model(&models.Picture{}).Where("id", data["id"]).Updates(map[string]interface{}{
@@ -831,8 +831,8 @@ func (p *Picture) Crop(c *fiber.Ctx) error {
 	}
 
 	if result != nil {
-		return msg.Error(result.Error(), "")
+		return msg.Error(c, result.Error(), "")
 	} else {
-		return msg.Success("操作成功", "", "")
+		return msg.Success(c, "操作成功", "", "")
 	}
 }

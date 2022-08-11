@@ -53,7 +53,7 @@ func (p *File) LocalUploadFromBase64(c *fiber.Ctx) error {
 
 	fileArray := strings.Split(datasource, ",")
 	if len(fileArray) != 2 {
-		return msg.Error("文件格式错误!", "")
+		return msg.Error(c, "文件格式错误!", "")
 	}
 
 	fileExt := ""
@@ -70,12 +70,12 @@ func (p *File) LocalUploadFromBase64(c *fiber.Ctx) error {
 
 	// 限制格式
 	if fileExt == "" {
-		return msg.Error("只能上传jpg,jpeg,png,gif格式文件!", "")
+		return msg.Error(c, "只能上传jpg,jpeg,png,gif格式文件!", "")
 	}
 
 	base64Buffer, err := base64.StdEncoding.DecodeString(fileArray[1]) //成文件文件并把文件写入到buffer
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	file := bytes.NewBuffer(base64Buffer) // 必须加一个buffer 不然没有read方法就会报错
@@ -87,7 +87,7 @@ func (p *File) LocalUploadFromBase64(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(file)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -95,14 +95,14 @@ func (p *File) LocalUploadFromBase64(c *fiber.Ctx) error {
 	if utils.PathExist(filePath) == false {
 		err := os.MkdirAll(filePath, 0666)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 	}
 
 	// 保存文件
 	err = ioutil.WriteFile(filePath+fileName, base64Buffer, 0666)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	id := (&models.File{}).InsertGetId(map[string]interface{}{
@@ -116,7 +116,7 @@ func (p *File) LocalUploadFromBase64(c *fiber.Ctx) error {
 	})
 
 	if id == 0 {
-		return msg.Error("上传失败！", "")
+		return msg.Error(c, "上传失败！", "")
 	}
 
 	result := map[string]interface{}{
@@ -126,7 +126,7 @@ func (p *File) LocalUploadFromBase64(c *fiber.Ctx) error {
 		"size": fileSize,
 	}
 
-	return msg.Success("上传成功！", "", result)
+	return msg.Success(c, "上传成功！", "", result)
 }
 
 // 通过base64字符串上传文件
@@ -135,7 +135,7 @@ func (p *File) OssUploadFromBase64(c *fiber.Ctx) error {
 
 	fileArray := strings.Split(datasource, ",")
 	if len(fileArray) != 2 {
-		return msg.Error("文件格式错误!", "")
+		return msg.Error(c, "文件格式错误!", "")
 	}
 
 	fileExt := ""
@@ -152,12 +152,12 @@ func (p *File) OssUploadFromBase64(c *fiber.Ctx) error {
 
 	// 限制格式
 	if fileExt == "" {
-		return msg.Error("只能上传jpg,jpeg,png,gif格式文件!", "")
+		return msg.Error(c, "只能上传jpg,jpeg,png,gif格式文件!", "")
 	}
 
 	base64Buffer, err := base64.StdEncoding.DecodeString(fileArray[1]) //成文件文件并把文件写入到buffer
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	file := bytes.NewBuffer(base64Buffer) // 必须加一个buffer 不然没有read方法就会报错
@@ -169,7 +169,7 @@ func (p *File) OssUploadFromBase64(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(file)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -181,12 +181,12 @@ func (p *File) OssUploadFromBase64(c *fiber.Ctx) error {
 
 	client, err := oss.New(endpoint, accessKeyId, accessKeySecret)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	bucket, err := client.Bucket(ossBucket)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 指定Object访问权限
@@ -194,7 +194,7 @@ func (p *File) OssUploadFromBase64(c *fiber.Ctx) error {
 
 	err = bucket.PutObject(filePath+fileName, bytes.NewBuffer(base64Buffer), objectAcl)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	path := ""
@@ -215,7 +215,7 @@ func (p *File) OssUploadFromBase64(c *fiber.Ctx) error {
 	})
 
 	if id == 0 {
-		return msg.Error("上传失败！", "")
+		return msg.Error(c, "上传失败！", "")
 	}
 
 	result := map[string]interface{}{
@@ -225,7 +225,7 @@ func (p *File) OssUploadFromBase64(c *fiber.Ctx) error {
 		"size": fileSize,
 	}
 
-	return msg.Success("上传成功！", "", result)
+	return msg.Success(c, "上传成功！", "", result)
 }
 
 // 文件上传到本地
@@ -235,7 +235,7 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 	f, err := file.Open()
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	defer func() {
@@ -246,7 +246,7 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 	}()
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	filePath := "./storage/app/public/files/" + time.Now().Format("20060102") + "/"
@@ -255,7 +255,7 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 
 	fileNames := strings.Split(fileName, ".")
 	if len(fileNames) <= 1 {
-		return msg.Error("无法获取文件扩展名！", "")
+		return msg.Error(c, "无法获取文件扩展名！", "")
 	}
 
 	fileExt := fileNames[len(fileNames)-1]
@@ -264,7 +264,7 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(f)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -281,21 +281,21 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 			"size": fileInfo["size"],
 		}
 
-		return msg.Success("上传成功！", "", result)
+		return msg.Success(c, "上传成功！", "", result)
 	}
 
 	// 不存在路径，则创建
 	if utils.PathExist(filePath) == false {
 		err := os.MkdirAll(filePath, 0666)
 		if err != nil {
-			return msg.Error(err.Error(), "")
+			return msg.Error(c, err.Error(), "")
 		}
 	}
 
 	// 保存文件
 	err = c.SaveFile(file, filePath+fileNewName)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	id := (&models.File{}).InsertGetId(map[string]interface{}{
@@ -309,7 +309,7 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 	})
 
 	if id == 0 {
-		return msg.Error("上传失败！", "")
+		return msg.Error(c, "上传失败！", "")
 	}
 
 	result = map[string]interface{}{
@@ -319,7 +319,7 @@ func (p *File) LocalUpload(c *fiber.Ctx) error {
 		"size": fileSize,
 	}
 
-	return msg.Success("上传成功！", "", result)
+	return msg.Success(c, "上传成功！", "", result)
 }
 
 // 文件上传到阿里云OSS
@@ -329,7 +329,7 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 	f, err := file.Open()
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	defer func() {
@@ -345,7 +345,7 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 
 	fileNames := strings.Split(fileName, ".")
 	if len(fileNames) <= 1 {
-		return msg.Error("无法获取文件扩展名！", "")
+		return msg.Error(c, "无法获取文件扩展名！", "")
 	}
 
 	fileExt := fileNames[len(fileNames)-1]
@@ -354,7 +354,7 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 	// 文件md5值
 	body, err := ioutil.ReadAll(f)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 	fileMd5 := fmt.Sprintf("%x", md5.Sum(body))
 
@@ -371,7 +371,7 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 			"size": fileInfo["size"],
 		}
 
-		return msg.Success("上传成功！", "", result)
+		return msg.Success(c, "上传成功！", "", result)
 	}
 
 	accessKeyId := utils.WebConfig("OSS_ACCESS_KEY_ID")
@@ -382,12 +382,12 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 
 	client, err := oss.New(endpoint, accessKeyId, accessKeySecret)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	bucket, err := client.Bucket(ossBucket)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	// 指定Object访问权限
@@ -396,7 +396,7 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 	getFile, err := file.Open()
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	defer func() {
@@ -408,7 +408,7 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 
 	err = bucket.PutObject(filePath+fileNewName, getFile, objectAcl)
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	path := ""
@@ -429,7 +429,7 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 	})
 
 	if id == 0 {
-		return msg.Error("上传失败！", "")
+		return msg.Error(c, "上传失败！", "")
 	}
 
 	result = map[string]interface{}{
@@ -439,7 +439,7 @@ func (p *File) OssUpload(c *fiber.Ctx) error {
 		"size": fileSize,
 	}
 
-	return msg.Success("上传成功！", "", result)
+	return msg.Success(c, "上传成功！", "", result)
 }
 
 // 文件下载
@@ -447,24 +447,24 @@ func (p *File) Download(c *fiber.Ctx) error {
 	id := c.Query("id")
 
 	if id == "" {
-		return msg.Error("参数错误！", "")
+		return msg.Error(c, "参数错误！", "")
 	}
 
 	fileInfo := map[string]interface{}{}
 	err := (&db.Model{}).Model(&models.File{}).Where("id =?", id).First(&fileInfo).Error
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	if len(fileInfo) == 0 {
-		return msg.Error("无此数据！", "")
+		return msg.Error(c, "无此数据！", "")
 	}
 
 	path, ok := fileInfo["path"].(string)
 
 	if !ok {
-		return msg.Error("路径错误！", "")
+		return msg.Error(c, "路径错误！", "")
 	}
 
 	if strings.Contains(path, "//") {

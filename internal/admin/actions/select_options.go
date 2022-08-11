@@ -33,5 +33,5 @@ func (p *SelectOptions) Handle(c *fiber.Ctx, model *gorm.DB) error {
 		}
 	}
 
-	return msg.Success("操作成功！", "", results)
+	return msg.Success(c, "操作成功！", "", results)
 }

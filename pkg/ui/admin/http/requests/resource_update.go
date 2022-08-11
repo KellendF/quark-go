@@ -29,7 +29,7 @@ func (p *ResourceUpdate) HandleUpdate(c *fiber.Ctx) interface{} {
 	json.Unmarshal(c.Body(), &data)
 
 	if data["id"] == "" {
-		return msg.Error("参数错误！", "")
+		return msg.Error(c, "参数错误！", "")
 	}
 
 	getData := resourceInstance.(interface {

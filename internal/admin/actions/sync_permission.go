@@ -65,20 +65,20 @@ func (p *SyncPermission) Handle(c *fiber.Ctx, model *gorm.DB) error {
 	}
 
 	if len(data) == 0 {
-		return msg.Success("暂无新增权限！", "", "")
+		return msg.Success(c, "暂无新增权限！", "", "")
 	}
 
 	result := model.Create(data)
 
 	if result.Error != nil {
-		return msg.Error("操作失败，请重试！", "")
+		return msg.Error(c, "操作失败，请重试！", "")
 	}
 
 	result1 := (&db.Model{}).Model(&models.Permission{}).Where("name NOT IN ?", permissions).Delete("")
 
 	if result1.Error != nil {
-		return msg.Error("操作失败，请重试！", "")
+		return msg.Error(c, "操作失败，请重试！", "")
 	}
 
-	return msg.Success("操作成功！", "", "")
+	return msg.Success(c, "操作成功！", "", "")
 }

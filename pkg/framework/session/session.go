@@ -6,17 +6,11 @@ import (
 )
 
 var store = session.New()
-var ctx *fiber.Ctx
-
-// 初始化
-func Init(c *fiber.Ctx) {
-	ctx = c
-}
 
 // 设置值
-func Set(key string, value interface{}) error {
+func Set(c *fiber.Ctx, key string, value interface{}) error {
 
-	sess, err := store.Get(ctx)
+	sess, err := store.Get(c)
 	if err != nil {
 		panic(err)
 	}
@@ -26,9 +20,9 @@ func Set(key string, value interface{}) error {
 }
 
 // 获取值
-func Get(key string) interface{} {
+func Get(c *fiber.Ctx, key string) interface{} {
 
-	sess, err := store.Get(ctx)
+	sess, err := store.Get(c)
 	if err != nil {
 		panic(err)
 	}

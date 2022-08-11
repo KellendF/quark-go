@@ -18,11 +18,11 @@ func (p *ResourceImport) Handle(c *fiber.Ctx) error {
 	component, result, err := (&requests.ResourceImport{}).HandleImport(c)
 
 	if err != nil {
-		return msg.Error(err.Error(), "")
+		return msg.Error(c, err.Error(), "")
 	}
 
 	if result {
-		return msg.Success("操作成功！", "/index?api=admin/"+c.Params("resource")+"/index", "")
+		return msg.Success(c, "操作成功！", "/index?api=admin/"+c.Params("resource")+"/index", "")
 	} else {
 		return c.JSON(component)
 	}

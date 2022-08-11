@@ -56,5 +56,5 @@ func (p *ResourceDetail) Values(c *fiber.Ctx) error {
 		BeforeDetailShowing(*fiber.Ctx, map[string]interface{}) map[string]interface{}
 	}).BeforeDetailShowing(c, data)
 
-	return msg.Success("获取成功", "", data)
+	return msg.Success(c, "获取成功", "", data)
 }

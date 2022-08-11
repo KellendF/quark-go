@@ -16,7 +16,7 @@ func (p *Captcha) Make(c *fiber.Ctx) error {
 
 	digits := captcha.RandomDigits(4)
 
-	session.Set("captcha", digits)
+	session.Set(c, "captcha", digits)
 
 	image := captcha.NewImage(uuid.New(), digits, 110, 38)
 	writer := bytes.Buffer{}
@@ -26,8 +26,8 @@ func (p *Captcha) Make(c *fiber.Ctx) error {
 }
 
 // 验证session验证码
-func (p *Captcha) Check(digits string) bool {
-	sessionCaptcha := session.Get("captcha")
+func (p *Captcha) Check(c *fiber.Ctx, digits string) bool {
+	sessionCaptcha := session.Get(c, "captcha")
 
 	if digits == "" || sessionCaptcha == nil {
 		return false

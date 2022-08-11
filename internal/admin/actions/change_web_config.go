@@ -52,8 +52,8 @@ func (p *ChangeWebConfig) Handle(c *fiber.Ctx, model *gorm.DB) error {
 		utils.RefreshWebConfig()
 
 		// 返回成功
-		return msg.Success("操作成功！", "", "")
+		return msg.Success(c, "操作成功！", "", "")
 	} else {
-		return msg.Error("操作失败，请重试！", "")
+		return msg.Error(c, "操作失败，请重试！", "")
 	}
 }
