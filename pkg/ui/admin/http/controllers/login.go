@@ -27,6 +27,7 @@ func (p *Login) Show(c *fiber.Ctx) error {
 	component := loginComponent.
 		SetApi("admin/login").
 		SetRedirect("/index?api=admin/dashboard/index").
+		SetLogo(config.Get("admin.logo")).
 		SetTitle(config.Get("admin.name").(string)).
 		SetDescription(config.Get("admin.description").(string)).
 		SetCaptchaUrl("/api/admin/captcha").

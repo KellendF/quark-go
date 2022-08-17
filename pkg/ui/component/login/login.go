@@ -7,6 +7,7 @@ type Component struct {
 	Component   string                   `json:"component"`
 	Api         string                   `json:"api"`
 	Redirect    string                   `json:"redirect"`
+	Logo        interface{}              `json:"logo"`
 	Title       string                   `json:"title"`
 	Description string                   `json:"description"`
 	CaptchaUrl  string                   `json:"captchaUrl"`
@@ -39,6 +40,12 @@ func (p *Component) SetApi(api string) *Component {
 // 登录后跳转地址
 func (p *Component) SetRedirect(redirect string) *Component {
 	p.Redirect = redirect
+	return p
+}
+
+// Logo
+func (p *Component) SetLogo(logo interface{}) *Component {
+	p.Logo = logo
 	return p
 }
 
