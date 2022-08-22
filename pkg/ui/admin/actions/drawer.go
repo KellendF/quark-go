@@ -4,7 +4,8 @@ import "github.com/gofiber/fiber/v2"
 
 type Drawer struct {
 	Action
-	Width int `json:"width"`
+	Width          int  `json:"width"`
+	DestroyOnClose bool `json:"destroyOnClose"`
 }
 
 // 初始化
@@ -18,6 +19,11 @@ func (p *Drawer) ParentInit() interface{} {
 // 宽度
 func (p *Drawer) GetWidth() int {
 	return p.Width
+}
+
+// 关闭时销毁 Modal 里的子元素
+func (p *Drawer) GetDestroyOnClose() bool {
+	return p.DestroyOnClose
 }
 
 // 内容

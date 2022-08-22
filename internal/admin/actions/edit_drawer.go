@@ -25,6 +25,9 @@ func (p *EditDrawer) Init(name string) *EditDrawer {
 	// 文字
 	p.Name = name
 
+	// 关闭时销毁 Drawer 里的子元素
+	p.DestroyOnClose = true
+
 	// 执行成功后刷新的组件
 	p.Reload = "table"
 

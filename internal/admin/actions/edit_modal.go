@@ -25,6 +25,9 @@ func (p *EditModal) Init(name string) *EditModal {
 	// 文字
 	p.Name = name
 
+	// 关闭时销毁 Modal 里的子元素
+	p.DestroyOnClose = true
+
 	// 执行成功后刷新的组件
 	p.Reload = "table"
 

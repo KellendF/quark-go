@@ -25,6 +25,9 @@ func (p *CreateModal) Init(name string) *CreateModal {
 	// 文字
 	p.Name = "创建" + name
 
+	// 关闭时销毁 Modal 里的子元素
+	p.DestroyOnClose = true
+
 	// 执行成功后刷新的组件
 	p.Reload = "table"
 

@@ -122,6 +122,10 @@ func (p *Dropdown) buildAction(c *fiber.Ctx, item interface{}, resourceInstance 
 			GetWidth() int
 		}).GetWidth()
 
+		formDestroyOnClose := item.(interface {
+			GetDestroyOnClose() bool
+		}).GetDestroyOnClose()
+
 		formBody := item.(interface {
 			GetBody(c *fiber.Ctx, resourceInstance interface{}) interface{}
 		}).GetBody(c, resourceInstance)
@@ -136,12 +140,16 @@ func (p *Dropdown) buildAction(c *fiber.Ctx, item interface{}, resourceInstance 
 				SetWidth(formWidth).
 				SetBody(formBody).
 				SetActions(formActions).
-				SetDestroyOnClose(true)
+				SetDestroyOnClose(formDestroyOnClose)
 		})
 	case "drawer":
 		formWidth := item.(interface {
 			GetWidth() int
 		}).GetWidth()
+
+		formDestroyOnClose := item.(interface {
+			GetDestroyOnClose() bool
+		}).GetDestroyOnClose()
 
 		formBody := item.(interface {
 			GetBody(c *fiber.Ctx, resourceInstance interface{}) interface{}
@@ -157,7 +165,7 @@ func (p *Dropdown) buildAction(c *fiber.Ctx, item interface{}, resourceInstance 
 				SetWidth(formWidth).
 				SetBody(formBody).
 				SetActions(formActions).
-				SetDestroyOnClose(true)
+				SetDestroyOnClose(formDestroyOnClose)
 		})
 	}
 
