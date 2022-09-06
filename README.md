@@ -40,6 +40,9 @@ go mod tidy
 
 # 第三步，然后运行下面的命令启动服务：
 go run main.go
+
+# 第四布，在程序命令行里输入：
+install
 ```
 
 后台地址： http://127.0.0.1:3000/admin/
