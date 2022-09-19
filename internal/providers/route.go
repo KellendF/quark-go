@@ -14,6 +14,9 @@ func (p *Route) Register(app *fiber.App) {
 	// 注册Admin路由
 	(&routes.Admin{}).Route(app)
 
+	// 注册Mix路由
+	(&routes.Mix{}).Route(app)
+
 	// 注册Web路由
 	(&routes.Web{}).Route(app)
 }
