@@ -1,8 +1,8 @@
 package metrics
 
 import (
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/descriptions"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/metrics"
-	"github.com/quarkcms/quark-go/pkg/ui/component/descriptions"
 )
 
 type TeamInfo struct {

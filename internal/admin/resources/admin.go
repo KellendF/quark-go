@@ -12,7 +12,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/framework/db"
 	"github.com/quarkcms/quark-go/pkg/framework/hash"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
-	"github.com/quarkcms/quark-go/pkg/ui/component/table"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/table"
 	"gorm.io/gorm"
 )
 

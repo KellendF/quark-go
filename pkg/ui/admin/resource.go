@@ -7,10 +7,10 @@ import (
 	"github.com/gobeam/stringy"
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/framework/db"
-	"github.com/quarkcms/quark-go/pkg/ui/component/card"
-	"github.com/quarkcms/quark-go/pkg/ui/component/form"
-	"github.com/quarkcms/quark-go/pkg/ui/component/table"
-	"github.com/quarkcms/quark-go/pkg/ui/component/tabs"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/card"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/form"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/table"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/tabs"
 	"gorm.io/gorm"
 )
 

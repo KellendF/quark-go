@@ -8,8 +8,8 @@ import (
 	"github.com/quarkcms/quark-go/internal/admin/searches"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/ui/admin"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/table"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
-	"github.com/quarkcms/quark-go/pkg/ui/component/table"
 )
 
 type Picture struct {

@@ -7,7 +7,7 @@ import (
 	"github.com/quarkcms/quark-go/pkg/framework/hash"
 	"github.com/quarkcms/quark-go/pkg/framework/msg"
 	"github.com/quarkcms/quark-go/pkg/framework/token"
-	"github.com/quarkcms/quark-go/pkg/ui/component/login"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/login"
 )
 
 type Login struct{}

@@ -11,9 +11,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/framework/rand"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/space"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/tpl"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
-	"github.com/quarkcms/quark-go/pkg/ui/component/space"
-	"github.com/quarkcms/quark-go/pkg/ui/component/tpl"
 	"github.com/xuri/excelize/v2"
 	"gorm.io/gorm"
 )

@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/ui/component/action"
-	"github.com/quarkcms/quark-go/pkg/ui/component/menu"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/action"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/menu"
 )
 
 type Dropdown struct {

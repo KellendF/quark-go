@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/ui/component/action"
-	"github.com/quarkcms/quark-go/pkg/ui/component/dropdown"
-	"github.com/quarkcms/quark-go/pkg/ui/component/space"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/action"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/dropdown"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/space"
 )
 
 // 列表行为

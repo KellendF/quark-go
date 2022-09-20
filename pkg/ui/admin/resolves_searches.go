@@ -4,7 +4,7 @@ import (
 	"reflect"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/ui/component/table"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/table"
 )
 
 // 列表页搜索表单

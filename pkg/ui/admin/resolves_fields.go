@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/quarkcms/quark-go/pkg/ui/component/descriptions"
-	"github.com/quarkcms/quark-go/pkg/ui/component/table"
-	"github.com/quarkcms/quark-go/pkg/ui/component/tabs"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/descriptions"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/table"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/tabs"
 )
 
 // 列表字段

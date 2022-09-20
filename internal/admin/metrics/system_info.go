@@ -8,8 +8,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/framework/config"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/descriptions"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/metrics"
-	"github.com/quarkcms/quark-go/pkg/ui/component/descriptions"
 	"github.com/shirou/gopsutil/cpu"
 	"github.com/shirou/gopsutil/mem"
 )

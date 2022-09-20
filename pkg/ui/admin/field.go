@@ -3,7 +3,7 @@ package admin
 import (
 	"reflect"
 
-	"github.com/quarkcms/quark-go/pkg/ui/component/form/fields"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/form/fields"
 )
 
 type Field struct{}

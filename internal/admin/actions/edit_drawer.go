@@ -3,8 +3,8 @@ package actions
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/actions"
-	"github.com/quarkcms/quark-go/pkg/ui/component/action"
-	"github.com/quarkcms/quark-go/pkg/ui/component/form"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/action"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/form"
 )
 
 type EditDrawer struct {

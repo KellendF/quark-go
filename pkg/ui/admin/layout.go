@@ -6,11 +6,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/quarkcms/quark-go/internal/models"
 	"github.com/quarkcms/quark-go/pkg/framework/config"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/footer"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/layout"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/page"
+	"github.com/quarkcms/quark-go/pkg/ui/admin/component/pagecontainer"
 	"github.com/quarkcms/quark-go/pkg/ui/admin/utils"
-	"github.com/quarkcms/quark-go/pkg/ui/component/footer"
-	"github.com/quarkcms/quark-go/pkg/ui/component/layout"
-	"github.com/quarkcms/quark-go/pkg/ui/component/page"
-	"github.com/quarkcms/quark-go/pkg/ui/component/pagecontainer"
 )
 
 // 结构体
